@@ -15,6 +15,7 @@
 		78CFD33F212873C000519038 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 78CFD33D212873C000519038 /* LaunchScreen.storyboard */; };
 		78CFD34A212873C000519038 /* MovieDBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CFD349212873C000519038 /* MovieDBTests.swift */; };
 		78CFD355212873C000519038 /* MovieDBUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CFD354212873C000519038 /* MovieDBUITests.swift */; };
+		78CFD364212873EF00519038 /* APIEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CFD363212873EF00519038 /* APIEndpoints.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		78CFD350212873C000519038 /* MovieDBUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieDBUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		78CFD354212873C000519038 /* MovieDBUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDBUITests.swift; sourceTree = "<group>"; };
 		78CFD356212873C000519038 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		78CFD363212873EF00519038 /* APIEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoints.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		78CFD330212873B900519038 /* MovieDB */ = {
 			isa = PBXGroup;
 			children = (
+				78CFD362212873DC00519038 /* API */,
 				78CFD331212873B900519038 /* AppDelegate.swift */,
 				78CFD333212873B900519038 /* ViewController.swift */,
 				78CFD335212873B900519038 /* Main.storyboard */,
@@ -126,6 +129,14 @@
 				78CFD356212873C000519038 /* Info.plist */,
 			);
 			path = MovieDBUITests;
+			sourceTree = "<group>";
+		};
+		78CFD362212873DC00519038 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				78CFD363212873EF00519038 /* APIEndpoints.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,6 +273,7 @@
 				78CFD334212873B900519038 /* ViewController.swift in Sources */,
 				78CFD33A212873B900519038 /* MovieDB.xcdatamodeld in Sources */,
 				78CFD332212873B900519038 /* AppDelegate.swift in Sources */,
+				78CFD364212873EF00519038 /* APIEndpoints.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
