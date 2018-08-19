@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7856BB2421295B5F0057A193 /* APITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7856BB2321295B5F0057A193 /* APITest.swift */; };
 		78CFD332212873B900519038 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CFD331212873B900519038 /* AppDelegate.swift */; };
 		78CFD334212873B900519038 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CFD333212873B900519038 /* ViewController.swift */; };
 		78CFD337212873B900519038 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 78CFD335212873B900519038 /* Main.storyboard */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7856BB2321295B5F0057A193 /* APITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITest.swift; sourceTree = "<group>"; };
 		78CFD32E212873B900519038 /* MovieDB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieDB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78CFD331212873B900519038 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		78CFD333212873B900519038 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 			children = (
 				78CFD349212873C000519038 /* MovieDBTests.swift */,
 				78CFD34B212873C000519038 /* Info.plist */,
+				7856BB2321295B5F0057A193 /* APITest.swift */,
 			);
 			path = MovieDBTests;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7856BB2421295B5F0057A193 /* APITest.swift in Sources */,
 				78CFD34A212873C000519038 /* MovieDBTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

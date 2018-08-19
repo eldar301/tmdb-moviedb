@@ -70,7 +70,7 @@ struct API {
     
     static let imageBaseURL = "https://image.tmdb.org/t/p/"
     
-    fileprivate static func url(forEndpoint endpoint: String) -> URL {
+    fileprivate static func url(forEndpoint endpoint: String, queries: [String: String]) -> URL {
         let region = NSLocale().localeIdentifier.replacingOccurrences(of: "_", with: "-")
         let includeAdult = "false"
         
@@ -79,6 +79,10 @@ struct API {
         configurator.queryItems = [URLQueryItem(name: "api_key", value: apiKey),
                                    URLQueryItem(name: "region", value: region),
                                    URLQueryItem(name: "include_adult", value: includeAdult)]
+        
+        for query in queries {
+            configurator.queryItems?.append(URLQueryItem(name: query.key, value: query.value))
+        }
         
         return configurator.url!
     }
@@ -117,18 +121,12 @@ enum SearchAPI {
     var url: URL {
         switch self {
         case .search(let title):
-            let url = API.url(forEndpoint: "search/movie")
             let title = title.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
             
-            var configurator = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-            
-            configurator.queryItems?.append(URLQueryItem(name: "query", value: title))
-            
-            return configurator.url!
+            return API.url(forEndpoint: "search/movie",
+                           queries: ["query": title])
             
         case .detailedSearch(let page, let genres, let yearRange, let sortBy):
-            let url = API.url(forEndpoint: "discover/movie")
-            
             let convertedGenres = genres.enumerated().reduce("") { (result, indexedGenre) -> String in
                 let (index, genre) = indexedGenre
                 var nextResult = result + "\(genre.rawValue)"
@@ -139,43 +137,18 @@ enum SearchAPI {
             }
             
             let (fromYear, toYear) = yearRange
-            
-            var configurator = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-            
-            configurator.queryItems?.append(contentsOf: [URLQueryItem(name: "page", value: "\(page)"),
-                                                         URLQueryItem(name: "with_genres", value: convertedGenres),
-                                                         URLQueryItem(name: "release_date.gte", value: "\(fromYear)"),
-                                                         URLQueryItem(name: "release_data.lte", value: "\(toYear)"),
-                                                         URLQueryItem(name: "sort_by", value: sortBy.rawValue)])
-            
-            return configurator.url!
+
+            return API.url(forEndpoint: "discover/movie",
+                           queries: ["page": "\(page)", "with_genres": convertedGenres, "release_date.gte": "\(fromYear)", "release_data.lte": "\(toYear)", "sort_by": sortBy.rawValue])
             
         case .popular(let page):
-            let url = API.url(forEndpoint: "movie/popular")
-            
-            var configurator = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-            
-            configurator.queryItems?.append(URLQueryItem(name: "page", value: "\(page)"))
-            
-            return configurator.url!
+            return API.url(forEndpoint: "movie/popular", queries: ["page": "\(page)"])
             
         case .topRated(let page):
-            let url = API.url(forEndpoint: "movie/top_rated")
-            
-            var configurator = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-            
-            configurator.queryItems?.append(URLQueryItem(name: "page", value: "\(page)"))
-            
-            return configurator.url!
+            return API.url(forEndpoint: "movie/top_rated", queries: ["page": "\(page)"])
             
         case .upcoming(let page):
-            let url = API.url(forEndpoint: "movie/upcoming")
-            
-            var configurator = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-            
-            configurator.queryItems?.append(URLQueryItem(name: "page", value: "\(page)"))
-            
-            return configurator.url!
+            return API.url(forEndpoint: "movie/upcoming", queries: ["page": "\(page)"])
         }
     }
     
@@ -206,7 +179,27 @@ enum MovieAPI {
     /*
      https://developers.themoviedb.org/3/getting-started/append-to-response
      */
-    case allData(movieID: Int)
+    case fullData(movieID: Int)
+    
+    var url: URL {
+        switch self {
+        case .details(let movieID):
+            return API.url(forEndpoint: "movie/\(movieID)", queries: [:])
+            
+        case .credits(let movieID):
+            return API.url(forEndpoint: "movie/\(movieID)/credits", queries: [:])
+            
+        case .videos(let movieID):
+            return API.url(forEndpoint: "movie/\(movieID)/videos", queries: [:])
+            
+        case .reviews(let movieID):
+            return API.url(forEndpoint: "movie/\(movieID)/reviews", queries: [:])
+            
+        case .fullData(let movieID):
+            return API.url(forEndpoint: "movie/\(movieID)", queries: ["append_to_response": "credits,videos,reviews"])
+            
+        }
+    }
     
 }
 
@@ -225,6 +218,19 @@ enum PersonAPI {
     /*
      https://developers.themoviedb.org/3/getting-started/append-to-response
      */
-    case allData(personID: Int)
+    case fullData(personID: Int)
+    
+    var url: URL {
+        switch self {
+        case .details(let personID):
+            return API.url(forEndpoint: "person/\(personID)", queries: [:])
+            
+        case .credits(let personID):
+            return API.url(forEndpoint: "person/\(personID)/combined_credits", queries: [:])
+            
+        case .fullData(let personID):
+            return API.url(forEndpoint: "person/\(personID)", queries: ["append_to_response": "combined_credits"])
+        }
+    }
     
 }
