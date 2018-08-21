@@ -1,13 +1,16 @@
 //
-//  MovieDetailsReceiver.swift
+//  MovieCD+CoreDataClass.swift
 //  MovieDB
 //
 //  Created by Eldar Goloviznin on 21/08/2018.
 //  Copyright © 2018 Eldar Goloviznin. All rights reserved.
 //
+//
 
 import Foundation
+import CoreData
 
-protocol MovieDetailsReceiver {
-    func details(movie: Result<Movie>)
+@objc(MovieCD)
+public class MovieCD: NSManagedObject {
+
 }

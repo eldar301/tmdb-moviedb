@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Gender {
+enum Gender: Int {
     case male
     case female
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class RemotePopularMoviesProvider: MoviesProvider, PagedDelegate {
+class RemotePopularMoviesProvider: PopularMoviesProvider, PagedDelegate {
     
     var networkHelper: NetworkHelper
     

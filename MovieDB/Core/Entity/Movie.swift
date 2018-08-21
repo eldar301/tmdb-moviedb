@@ -21,6 +21,10 @@ struct Movie {
     var budget: Int?
     var voteAverage: Double?
     var voteCount: Int?
+    var favorite: Bool?
+    
+    var persons: [Person]?
+    var reviews: [Review]?
     
     init(id: Int) {
         self.id = id

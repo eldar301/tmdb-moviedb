@@ -8,7 +8,7 @@
 
 import Foundation
 
-class RemoteTopRatedMoviesProvider: MoviesProvider, PagedDelegate {
+class RemoteTopRatedMoviesProvider: TopRatedMoviesProvider, PagedDelegate {
     
     var networkHelper: NetworkHelper
     

@@ -49,7 +49,7 @@ enum MovieSearchAPI {
                             "query": title])
             
         case .detailedSearch(let genres, let ratingRange, let yearRange, let sortBy, let page):
-            let convertedGenres = genres.map({ "\($0.rawValue)" }).joined(separator: ",")
+            let convertedGenres = genres.map({ "\(APIHelper.id(forGenre: $0))" }).joined(separator: ",")
             
             let fromRating = ratingRange.lowerBound
             let toRating = ratingRange.upperBound

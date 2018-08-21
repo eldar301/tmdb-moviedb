@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import ObjectMapper
-import SwiftyJSON
 
 class RemoteMoviesSearchProvider: MoviesSearchProvider, PagedDelegate {
     
