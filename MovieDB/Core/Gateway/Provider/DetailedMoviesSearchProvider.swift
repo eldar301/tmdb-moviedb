@@ -17,11 +17,7 @@ enum SortBy: String {
     case yearDescending       = "release_date.desc"
 }
 
-protocol DetailedMovieSearchProviderDelegate: class {
-    func detailedMovieSearch(movies: [Movie])
-}
-
 protocol DetailedMoviesSearchProvider {
-    func fetchMovies(withGenres: [Genre], ratingGreaterThan: Double, ratingLowerThan: Double, fromYear: Int, toYear: Int)
-    func fetchNext()
+    func fetchMovies(withGenres: [Genre], ratingGreaterThan: Double, ratingLowerThan: Double, fromYear: Int, toYear: Int, sortBy: SortBy, completition: @escaping (Result<[Movie]>) -> ())
+    func fetchNext(completition: @escaping (Result<[Movie]>) -> ())
 }

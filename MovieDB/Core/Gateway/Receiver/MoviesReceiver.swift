@@ -7,3 +7,7 @@
 //
 
 import Foundation
+
+protocol MoviesReceiver {
+    func receive(movies: [Movie])
+}

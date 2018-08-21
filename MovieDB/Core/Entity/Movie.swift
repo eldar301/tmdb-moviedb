@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Movie {
+struct Movie {
     let id: Int
     var title: String?
     var overview: String?
@@ -18,8 +18,6 @@ class Movie {
     var posterURL: URL?
     var backdropURL: URL?
     var trailerURL: URL?
-    var persons: [Person]?
-    var reviews: [Review]?
     var budget: Int?
     var voteAverage: Double?
     var voteCount: Int?

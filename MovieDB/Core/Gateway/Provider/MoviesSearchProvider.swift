@@ -8,11 +8,7 @@
 
 import Foundation
 
-protocol MoviesSearchProviderDelegate: class {
-    func moviesSearch(movies: [Movie])
-}
-
 protocol MoviesSearchProvider {
-    func fetchMovies(withTitle: String)
-    func fetchNext()
+    func fetchMovies(withTitle: String, completition: @escaping (Result<[Movie]>) -> ())
+    func fetchNext(completition: @escaping (Result<[Movie]>) -> ())
 }

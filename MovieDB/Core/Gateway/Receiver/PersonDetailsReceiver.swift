@@ -1,5 +1,5 @@
 //
-//  MovieConsumer.swift
+//  PersonDetailsReceiver.swift
 //  MovieDB
 //
 //  Created by Eldar Goloviznin on 19/08/2018.
@@ -7,3 +7,7 @@
 //
 
 import Foundation
+
+protocol PersonDetailsReceiver {
+    func receive(forPersonID: Int, person: Person, movies: [Movie])
+}

@@ -8,11 +8,7 @@
 
 import Foundation
 
-protocol ReviewsProviderDelegate: class {
-    func reviews(reviews: [Review])
-}
-
 protocol ReviewsProvider {
-    func fetchReviews(forMovieID: Int)
-    func fetchNext()
+    func fetchReviews(forMovieID: Int, completition: @escaping (Result<[Review]>) -> ())
+    func fetchNext(completition: @escaping (Result<[Review]>) -> ())
 }

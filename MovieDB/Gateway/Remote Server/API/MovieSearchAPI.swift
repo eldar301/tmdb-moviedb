@@ -8,20 +8,20 @@
 
 import Foundation
 
-typealias YearRange = (from: Int, to: Int)
-typealias RatingRange = (from: Double, to: Double)
+typealias YearRange = ClosedRange<Int>
+typealias RatingRange = ClosedRange<Double>
 
 enum MovieSearchAPI {
     
     /*
      https://developers.themoviedb.org/3/search/search-movies
      */
-    case search(title: String)
+    case search(title: String, page: Int)
     
     /*
      https://developers.themoviedb.org/3/discover/movie-discover
      */
-    case detailedSearch(page: Int, genres: [Genre], ratingRange: RatingRange, yearRange: YearRange, sortBy: SortBy)
+    case detailedSearch(genres: [Genre], ratingRange: RatingRange, yearRange: YearRange, sortBy: SortBy, page: Int)
     
     /*
      https://developers.themoviedb.org/3/movies/get-popular-movies
@@ -36,22 +36,26 @@ enum MovieSearchAPI {
     /*
      https://developers.themoviedb.org/3/movies/get-top-rated-movies
      */
-    case upcoming(page: Int)
+//    case upcoming(page: Int)
     
     var urlRequest: URLRequest {
         var url: URL
         
         switch self {
-        case .search(let title):
+        case .search(let title, let page):
             url = API.url(forEndpoint: "search/movie",
-                           queries: ["query": title])
+                           queries: [
+                            "page": "\(page)",
+                            "query": title])
             
-        case .detailedSearch(let page, let genres, let ratingRange, let yearRange, let sortBy):
+        case .detailedSearch(let genres, let ratingRange, let yearRange, let sortBy, let page):
             let convertedGenres = genres.map({ "\($0.rawValue)" }).joined(separator: ",")
             
-            let (fromRating, toRating) = ratingRange
+            let fromRating = ratingRange.lowerBound
+            let toRating = ratingRange.upperBound
             
-            let (fromYear, toYear) = yearRange
+            let fromYear = yearRange.lowerBound
+            let toYear = yearRange.upperBound
             
             url = API.url(forEndpoint: "discover/movie",
                            queries: [
@@ -69,8 +73,8 @@ enum MovieSearchAPI {
         case .topRated(let page):
             url = API.url(forEndpoint: "movie/top_rated", queries: ["page": "\(page)"])
             
-        case .upcoming(let page):
-            url = API.url(forEndpoint: "movie/upcoming", queries: ["page": "\(page)"])
+//        case .upcoming(let page):
+//            url = API.url(forEndpoint: "movie/upcoming", queries: ["page": "\(page)"])
         }
         
         return URLRequest(url: url)

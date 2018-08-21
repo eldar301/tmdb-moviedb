@@ -13,7 +13,7 @@ enum Gender {
     case female
 }
 
-class Person {
+struct Person {
     let id: Int
     var name: String?
     var profileImageURL: URL?
@@ -22,7 +22,6 @@ class Person {
     var placeOfBirth: String?
     var birthday: Date?
     var deathday: Date?
-    var movies: [Movie]?
     
     init(id: Int) {
         self.id = id

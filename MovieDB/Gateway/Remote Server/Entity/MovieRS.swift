@@ -31,7 +31,7 @@ class TransformToDateFromYYYYMMDD: TransformType {
     
 }
 
-class MovieRS {
+struct MovieRS {
     var id: Int!
     var title: String?
     var overview: String?
@@ -41,13 +41,11 @@ class MovieRS {
     var posterPath: String?
     var backdropPath: String?
     var videos: [[String: Any]]?
-    var persons: [PersonRS]?
-    var reviews: [ReviewRS]?
     var budget: Int?
     var voteAverage: Double?
     var voteCount: Int?
     
-    required init?(map: Map) {
+    init?(map: Map) {
         guard map.JSON["id"] != nil else {
             return nil
         }
@@ -57,7 +55,7 @@ class MovieRS {
 
 extension MovieRS: Mappable {
     
-    func mapping(map: Map) {
+    mutating func mapping(map: Map) {
         id              <- map["id"]
         title           <- map["title"]
         overview        <- map["overview"]
@@ -67,8 +65,6 @@ extension MovieRS: Mappable {
         posterPath      <- map["poster_path"]
         backdropPath    <- map["backdrop_path"]
         videos          <- map["videos.results"]
-        persons         <- map["credits.cast"]
-        reviews         <- map["reviews.results"]
         budget          <- map["budget"]
         voteAverage     <- map["vote_average"]
         voteCount       <- map["vote_count"]
@@ -96,7 +92,7 @@ extension MovieRS {
         let voteAverage = (self.voteAverage ?? 0.0) / 2.0
         
         
-        let movie = Movie(id: self.id)
+        var movie = Movie(id: self.id)
         
         movie.title = self.title
         movie.overview = self.overview
@@ -106,8 +102,6 @@ extension MovieRS {
         movie.posterURL = posterURL
         movie.backdropURL = backdropURL
         movie.trailerURL = trailerURL
-        movie.persons = self.persons?.compactMap({ $0.person })
-        movie.reviews = self.reviews?.compactMap({ $0.review })
         movie.budget = self.budget
         movie.voteAverage = voteAverage
         movie.voteCount = self.voteCount

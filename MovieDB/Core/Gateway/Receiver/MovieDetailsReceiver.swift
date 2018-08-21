@@ -1,5 +1,5 @@
 //
-//  ReviewsReceiver.swift
+//  MovieDetailsReceiver.swift
 //  MovieDB
 //
 //  Created by Eldar Goloviznin on 19/08/2018.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-protocol ReviewsReceiver {
-    func receive(forMovieID: Int, reviews: [Review])
+protocol MovieDetailsReceiver {
+    func receive(forMovieID: Int, movie: Movie, reviews: [Review], persons: [Person])
 }

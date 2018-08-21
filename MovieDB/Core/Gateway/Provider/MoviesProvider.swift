@@ -8,11 +8,7 @@
 
 import Foundation
 
-protocol MoviesProviderDelegate: class {
-    func movies(movies: [Movie])
-}
-
 protocol MoviesProvider {
-    func fetchMovies()
-    func fetchNext()
+    func fetchMovies(completition: @escaping (Result<[Movie]>) -> ())
+    func fetchNext(completition: @escaping (Result<[Movie]>) -> ())
 }

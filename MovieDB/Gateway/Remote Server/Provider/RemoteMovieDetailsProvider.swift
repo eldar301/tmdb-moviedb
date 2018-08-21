@@ -7,13 +7,44 @@
 //
 
 import Foundation
+import ObjectMapper
+import SwiftyJSON
 
 class RemoteMovieDetailsProvider: MovieDetailsProvider {
     
-    private weak var delegate: MovieDetailsProviderDelegate?
+    fileprivate var networkHelper: NetworkHelper
     
-    func detailsFor(movieID id: Int) {
-        let request = MovieAPI.fullData(movieID: id).urlRequest
+    init(networkHelper: NetworkHelper) {
+        self.networkHelper = networkHelper
+    }
+    
+    func details(forMovieID movieID: Int, completition: @escaping (Result<MovieDetails>) -> ()) {
+        let request = MovieAPI.fullData(movieID: movieID).urlRequest
+        
+        networkHelper.jsonTask(request: request) { [weak self] result in
+            self?.handle(result: result, completition: completition)
+        }
+    }
+    
+    fileprivate func handle(result: Result<JSON>, completition: @escaping (Result<MovieDetails>) -> ()) {
+        switch result {
+        case .success(let json):
+            let movie = Mapper<MovieRS>()
+                .map(JSONObject: json.rawValue)!
+                .movie
+            
+            let reviews = Mapper<ReviewRS>()
+                .mapArray(JSONObject: json["reviews"]["results"].rawValue)!
+                .compactMap({ $0.review })
+            
+            let persons = Mapper<PersonRS>()
+                .mapArray(JSONObject: json["credits"]["cast"].rawValue)!
+                .compactMap({ $0.person })
+            
+            completition(.success((movie: movie, reviews: reviews, persons: persons)))
+        case .error(let description):
+            completition(.error(description))
+        }
     }
     
 }

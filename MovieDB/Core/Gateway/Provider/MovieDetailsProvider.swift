@@ -8,10 +8,8 @@
 
 import Foundation
 
-protocol MovieDetailsProviderDelegate: class {
-    func movieDetails(movie: Movie)
-}
+typealias MovieDetails = (movie: Movie, reviews: [Review], persons: [Person])
 
 protocol MovieDetailsProvider {
-    func detailsFor(movieID: Int)
+    func details(forMovieID: Int, completition: @escaping (Result<MovieDetails>) -> ())
 }
