@@ -22,7 +22,7 @@ class PagedProvider<T: Mappable> {
     fileprivate var currentPage: Int = 0
     fileprivate var requestedPage: Int?
     fileprivate var totalPages: Int?
-    
+
     var nextPage: Int {
         return currentPage + 1
     }

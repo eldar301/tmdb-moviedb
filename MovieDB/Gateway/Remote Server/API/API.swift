@@ -11,27 +11,27 @@ import Foundation
 struct APIHelper {
     
     struct BackdropSize {
-        let w300 = "w300"
-        let w780 = "w780"
-        let w1280 = "w1280"
-        let original = "original"
+        static let w300 = "w300"
+        static let w780 = "w780"
+        static let w1280 = "w1280"
+        static let original = "original"
     }
     
     struct PosterSize {
-        let w92 = "w92"
-        let w154 = "w154"
-        let w185 = "w185"
-        let w342 = "w342"
-        let w500 = "w500"
-        let w780 = "w780"
-        let original = "original"
+        static let w92 = "w92"
+        static let w154 = "w154"
+        static let w185 = "w185"
+        static let w342 = "w342"
+        static let w500 = "w500"
+        static let w780 = "w780"
+        static let original = "original"
     }
     
     struct ProfileSize {
-        let w45 = "w45"
-        let w185 = "w185"
-        let h632 = "h632"
-        let original = "original"
+        static let w45 = "w45"
+        static let w185 = "w185"
+        static let h632 = "h632"
+        static let original = "original"
     }
     
     static func id(forGenre genre: Genre) -> Int {
@@ -100,22 +100,13 @@ struct APIHelper {
         return URL(string: "https://www.youtube.com/watch?v=\(key)")
     }
     
-}
-
-struct API {
-    
-    fileprivate static let apiKey = "c10c04cb3d4049b358a035c060a8502c"
-    fileprivate static let baseURL = "https://api.themoviedb.org/3/"
-    
-    fileprivate static let imageBaseURL = "https://image.tmdb.org/t/p"
-    
     static func url(forEndpoint endpoint: String, queries: [String: String]) -> URL {
         let region = NSLocale().localeIdentifier.replacingOccurrences(of: "_", with: "-")
         let includeAdult = "false"
         
-        var configurator = URLComponents(string: baseURL + endpoint)!
+        var configurator = URLComponents(string: API.baseURL + endpoint)!
         
-        configurator.queryItems = [URLQueryItem(name: "api_key", value: apiKey),
+        configurator.queryItems = [URLQueryItem(name: "api_key", value: API.apiKey),
                                    URLQueryItem(name: "region", value: region),
                                    URLQueryItem(name: "include_adult", value: includeAdult)]
         
@@ -126,11 +117,20 @@ struct API {
         return configurator.url!
     }
     
-    static func url(forPath path: String?) -> URL? {
+    static func url(forPath path: String?, withSize size: String) -> URL? {
         guard let path = path else {
             return nil
         }
-        return URL(string: imageBaseURL + path)!
+        return URL(string: API.imageBaseURL + "/\(size)\(path)")!
     }
+    
+}
+
+struct API {
+    
+    fileprivate static let apiKey = "c10c04cb3d4049b358a035c060a8502c"
+    fileprivate static let baseURL = "https://api.themoviedb.org/3/"
+    
+    fileprivate static let imageBaseURL = "https://image.tmdb.org/t/p"
     
 }

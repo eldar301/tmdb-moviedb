@@ -43,7 +43,7 @@ enum MovieSearchAPI {
         
         switch self {
         case .search(let title, let page):
-            url = API.url(forEndpoint: "search/movie",
+            url = APIHelper.url(forEndpoint: "search/movie",
                            queries: [
                             "page": "\(page)",
                             "query": title])
@@ -57,7 +57,7 @@ enum MovieSearchAPI {
             let fromYear = yearRange.lowerBound
             let toYear = yearRange.upperBound
             
-            url = API.url(forEndpoint: "discover/movie",
+            url = APIHelper.url(forEndpoint: "discover/movie",
                            queries: [
                             "page": "\(page)",
                             "with_genres": convertedGenres,
@@ -68,10 +68,10 @@ enum MovieSearchAPI {
                             "sort_by": sortBy.rawValue])
             
         case .popular(let page):
-            url = API.url(forEndpoint: "movie/popular", queries: ["page": "\(page)"])
+            url = APIHelper.url(forEndpoint: "movie/popular", queries: ["page": "\(page)"])
             
         case .topRated(let page):
-            url = API.url(forEndpoint: "movie/top_rated", queries: ["page": "\(page)"])
+            url = APIHelper.url(forEndpoint: "movie/top_rated", queries: ["page": "\(page)"])
             
 //        case .upcoming(let page):
 //            url = API.url(forEndpoint: "movie/upcoming", queries: ["page": "\(page)"])

@@ -40,19 +40,19 @@ enum MovieAPI {
         
         switch self {
         case .details(let movieID):
-            url = API.url(forEndpoint: "movie/\(movieID)", queries: [:])
+            url = APIHelper.url(forEndpoint: "movie/\(movieID)", queries: [:])
             
         case .credits(let movieID):
-            url = API.url(forEndpoint: "movie/\(movieID)/credits", queries: [:])
+            url = APIHelper.url(forEndpoint: "movie/\(movieID)/credits", queries: [:])
             
         case .videos(let movieID):
-            url = API.url(forEndpoint: "movie/\(movieID)/videos", queries: [:])
+            url = APIHelper.url(forEndpoint: "movie/\(movieID)/videos", queries: [:])
             
         case .reviews(let movieID):
-            url = API.url(forEndpoint: "movie/\(movieID)/reviews", queries: [:])
+            url = APIHelper.url(forEndpoint: "movie/\(movieID)/reviews", queries: [:])
             
         case .fullData(let movieID):
-            url = API.url(forEndpoint: "movie/\(movieID)", queries: ["append_to_response": "credits,videos,reviews"])
+            url = APIHelper.url(forEndpoint: "movie/\(movieID)", queries: ["append_to_response": "credits,videos,reviews"])
             
         }
         

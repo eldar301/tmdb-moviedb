@@ -30,13 +30,13 @@ enum PersonAPI {
         
         switch self {
         case .details(let personID):
-            url = API.url(forEndpoint: "person/\(personID)", queries: [:])
+            url = APIHelper.url(forEndpoint: "person/\(personID)", queries: [:])
             
         case .credits(let personID):
-            url = API.url(forEndpoint: "person/\(personID)/combined_credits", queries: [:])
+            url = APIHelper.url(forEndpoint: "person/\(personID)/combined_credits", queries: [:])
             
         case .fullData(let personID):
-            url = API.url(forEndpoint: "person/\(personID)", queries: ["append_to_response": "combined_credits"])
+            url = APIHelper.url(forEndpoint: "person/\(personID)", queries: ["append_to_response": "combined_credits"])
         }
         
         return URLRequest(url: url)

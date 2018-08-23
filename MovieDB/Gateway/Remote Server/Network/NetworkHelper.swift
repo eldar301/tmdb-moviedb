@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftyJSON
+import Alamofire
 
 enum NetworkError: Error {
     case failedToParseResponse
@@ -20,29 +21,41 @@ protocol NetworkHelper {
 class NetworkHelperDefault: NetworkHelper {
     
     func jsonTask(request: URLRequest, completition: @escaping (Result<JSON>) -> ()) {
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completition(.error(error.localizedDescription))
-                return
-            }
-            
-            guard let httpURLResponse = response as? HTTPURLResponse else {
-                completition(.error(NetworkError.failedToParseResponse.localizedDescription))
-                return
-            }
-            
-            guard 200 ... 299 ~= httpURLResponse.statusCode else {
-                completition(.error("Bad response"))
-                return
-            }
-            
-            do {
-                let json = try JSON(data: data!)
-                completition(.success(json))
-            } catch let error {
-                completition(.error(error.localizedDescription))
-            }
+        Alamofire
+            .request(request)
+            .validate()
+            .responseJSON { response in
+                switch response.result {
+                case .success(let value):
+                    completition(.success(JSON(value)))
+                    
+                case .failure(let error):
+                    completition(.error(error.localizedDescription))
+                }
         }
+//        URLSession.shared.dataTask(with: request) { data, response, error in
+//            if let error = error {
+//                completition(.error(error.localizedDescription))
+//                return
+//            }
+//            
+//            guard let httpURLResponse = response as? HTTPURLResponse else {
+//                completition(.error(NetworkError.failedToParseResponse.localizedDescription))
+//                return
+//            }
+//            
+//            guard 200 ... 299 ~= httpURLResponse.statusCode else {
+//                completition(.error("Bad response"))
+//                return
+//            }
+//            
+//            do {
+//                let json = try JSON(data: data!)
+//                completition(.success(json))
+//            } catch let error {
+//                completition(.error(error.localizedDescription))
+//            }
+//        }.resume()
     }
     
 }

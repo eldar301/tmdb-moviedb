@@ -48,7 +48,7 @@ extension PersonRS {
         
         var person = Person(id: self.id)
         
-        let profileImageURL = API.url(forPath: self.profilePath)
+        let profileImageURL = APIHelper.url(forPath: self.profilePath, withSize: APIHelper.ProfileSize.w185)
         
         person.name = self.name
         person.profileImageURL = profileImageURL

@@ -10,7 +10,6 @@ import Foundation
 
 typealias TopRatedMoviesProvider = MoviesProvider
 typealias PopularMoviesProvider = MoviesProvider
-typealias FavoritesMoviesProvider = MoviesProvider
 
 protocol MoviesProvider {
     func fetchMovies(completition: @escaping (Result<[Movie]>) -> ())

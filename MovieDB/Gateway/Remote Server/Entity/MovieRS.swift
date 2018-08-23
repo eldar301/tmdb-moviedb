@@ -77,8 +77,8 @@ extension MovieRS {
     var movie: Movie {
         let convertedGenres = self.genres?.compactMap({ $0["id"] as? Int }).compactMap({ APIHelper.genre(forID: $0) })
 
-        let posterURL = API.url(forPath: self.posterPath)
-        let backdropURL = API.url(forPath: self.backdropPath)
+        let posterURL = APIHelper.url(forPath: self.posterPath, withSize: APIHelper.PosterSize.w500)
+        let backdropURL = APIHelper.url(forPath: self.backdropPath, withSize: APIHelper.BackdropSize.w780)
         
         var trailerURL: URL?
         if let videos = self.videos {
