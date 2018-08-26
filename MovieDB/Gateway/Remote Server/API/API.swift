@@ -101,18 +101,20 @@ struct APIHelper {
     }
     
     static func url(forEndpoint endpoint: String, queries: [String: String]) -> URL {
-        let region = NSLocale().localeIdentifier.replacingOccurrences(of: "_", with: "-")
+        let locale = Locale.current
+        let language = "\(locale.languageCode ?? "en")-\(locale.regionCode ?? "US")"
         let includeAdult = "false"
         
         var configurator = URLComponents(string: API.baseURL + endpoint)!
         
         configurator.queryItems = [URLQueryItem(name: "api_key", value: API.apiKey),
-                                   URLQueryItem(name: "region", value: region),
+                                   URLQueryItem(name: "language", value: language),
                                    URLQueryItem(name: "include_adult", value: includeAdult)]
         
         for query in queries {
             configurator.queryItems?.append(URLQueryItem(name: query.key, value: query.value))
         }
+        print(configurator.url!)
         
         return configurator.url!
     }
@@ -121,6 +123,7 @@ struct APIHelper {
         guard let path = path else {
             return nil
         }
+        
         return URL(string: API.imageBaseURL + "/\(size)\(path)")!
     }
     

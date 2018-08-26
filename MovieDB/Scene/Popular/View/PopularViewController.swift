@@ -16,10 +16,13 @@ class PopularViewController: UIViewController {
     
     fileprivate var moviesCount: Int = 0
     
+    fileprivate let spacing: CGFloat = 10
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         presenter.view = self
+        presenter.refresh()
         
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -34,18 +37,12 @@ class PopularViewController: UIViewController {
         self.extendedLayoutIncludesOpaqueBars = true
         
         collectionView.register(UINib(nibName: "PopularCell", bundle: nil), forCellWithReuseIdentifier: "popularCell")
-        
-        presenter.refresh()
-        
-        back = navigationController?.navigationBar.backgroundImage(for: .default)
     }
-    
-    var back: UIImage?
     
     @objc func refresh() {
         presenter.refresh()
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -107,16 +104,16 @@ extension PopularViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
+        return spacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let insets = collectionView.contentInset
-        let availableWidth = collectionView.bounds.width - insets.left - insets.right - 10
+        let availableWidth = collectionView.bounds.width - insets.left - insets.right
         if (indexPath.row + 1) % 3 == 0 {
-            return CGSize(width: availableWidth + 10, height: availableWidth + 10)
+            return CGSize(width: availableWidth, height: availableWidth)
         } else {
-            return CGSize(width: availableWidth / 2, height: availableWidth / 2)
+            return CGSize(width: (availableWidth - spacing) / 2, height: (availableWidth - spacing) / 2)
         }
     }
     
@@ -127,5 +124,3 @@ extension PopularViewController: UICollectionViewDelegateFlowLayout {
     }
     
 }
-
-

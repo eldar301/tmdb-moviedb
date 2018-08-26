@@ -18,7 +18,7 @@ struct PopularCellConfigurator {
     let title: String?
     let posterURL: URL?
     
-    init(movie: Movie) {
+    fileprivate init(movie: Movie) {
         self.title = movie.title
         self.posterURL = movie.posterURL ?? movie.backdropURL
     }
@@ -39,6 +39,8 @@ protocol PopularPresenter: class {
 }
 
 class PopularPresenterDefault: PopularPresenter {
+    
+    private(set) static var movie: Movie!
     
     fileprivate let popularMoviesProvider: PopularMoviesProvider
     
@@ -84,8 +86,8 @@ class PopularPresenterDefault: PopularPresenter {
         return PopularCellConfigurator(movie: movies[index])
     }
     
-    func showDetails(ofMovieWithIndex: Int) {
-        print("On show")
+    func showDetails(ofMovieWithIndex index: Int) {
+        PopularPresenterDefault.movie = movies[index]
     }
     
 }

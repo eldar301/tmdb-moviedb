@@ -8,9 +8,13 @@
 
 import Foundation
 
-enum Gender: Int {
-    case male
-    case female
+enum Gender: String {
+    case male = "Male"
+    case female = "Female"
+    
+    var localizedString: String {
+        return NSLocalizedString(self.rawValue, comment: "Person.Gender")
+    }
 }
 
 struct Person {

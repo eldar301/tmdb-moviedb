@@ -21,7 +21,7 @@ struct PersonRS {
     
     init?(map: Map) {
         guard map.JSON["id"] != nil else {
-            return
+            return nil
         }
     }
 }

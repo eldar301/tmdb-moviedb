@@ -12,8 +12,10 @@ import SDWebImage
 
 class PopularCell: UICollectionViewCell {
     
-    @IBOutlet weak var label: UILabel!
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var posterImageView: UIImageView!
+    
+    fileprivate var requestedPosterImageURL: URL?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -22,26 +24,27 @@ class PopularCell: UICollectionViewCell {
         
         self.backgroundColor = .clear
         
-        imageView.contentMode = .scaleAspectFill
+        posterImageView.contentMode = .scaleAspectFill
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        imageView.image = nil
-        label.text = nil
+        posterImageView.image = nil
     }
     
     func configure(withConfigurator configurator: PopularCellConfigurator) {
-        label.text = configurator.title
+        titleLabel.text = configurator.title
         
-        imageView.sd_setImage(with: configurator.posterURL, placeholderImage: nil, options: []) { image, error, cacheType, imageURL in
+        requestedPosterImageURL = configurator.posterURL
+        
+        posterImageView.sd_setImage(with: requestedPosterImageURL, placeholderImage: nil, options: []) { image, error, cacheType, imageURL in
             DispatchQueue.main.async { [weak self] in
-                guard imageURL == configurator.posterURL else {
+                guard imageURL == self?.requestedPosterImageURL else {
                     return
                 }
                 
-                self?.imageView.image = image
+                self?.posterImageView.image = image
             }
         }
 

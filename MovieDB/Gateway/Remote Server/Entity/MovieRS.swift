@@ -20,7 +20,7 @@ class TransformToDateFromYYYYMMDD: TransformType {
         }
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-mm-dd"
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         
         return dateFormatter.date(from: stringDate)
     }
@@ -90,7 +90,6 @@ extension MovieRS {
         }
         
         let voteAverage = (self.voteAverage ?? 0.0) / 2.0
-        
         
         var movie = Movie(id: self.id)
         
