@@ -12,7 +12,7 @@ class PopularViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    let presenter: PopularPresenter = PopularPresenterDefault(popularMoviesProvider: RemotePopularMoviesProvider(networkHelper: NetworkHelperDefault()))
+    let presenter: PopularPresenter = PopularPresenterDefault(popularMoviesProvider: RemotePopularMoviesProvider(pagedProvider: PagedProvider(networkHelper: NetworkHelperDefault())))
     
     fileprivate var moviesCount: Int = 0
     

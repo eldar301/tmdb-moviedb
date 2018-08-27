@@ -12,23 +12,34 @@ import SwiftyJSON
 
 protocol PagedDelegate: class {
     var nextRequest: URLRequest? { get }
-    var networkHelper: NetworkHelper { get }
 }
 
 class PagedProvider<T: Mappable> {
+    
+    fileprivate let networkHelper: NetworkHelper
+    
+    init(networkHelper: NetworkHelper) {
+        self.networkHelper = networkHelper
+    }
+
+    var nextPage: Int {
+        return currentPage + 1
+    }
     
     weak var delegate: PagedDelegate?
     
     fileprivate var currentPage: Int = 0
     fileprivate var requestedPage: Int?
     fileprivate var totalPages: Int?
-
-    var nextPage: Int {
-        return currentPage + 1
+    
+    func reset() {
+        currentPage = 0
+        requestedPage = nil
+        totalPages = nil
     }
     
     func fetchNext(completition: @escaping (Result<[T]>) -> ()) {
-        guard let delegate = self.delegate, let nextRequest = delegate.nextRequest else {
+        guard let nextRequest = delegate?.nextRequest else {
             return
         }
         
@@ -48,7 +59,7 @@ class PagedProvider<T: Mappable> {
         
         requestedPage = currentPage + 1
         
-        delegate.networkHelper.jsonTask(request: nextRequest) { [weak self] result in
+        networkHelper.jsonTask(request: nextRequest) { [weak self] result in
             switch result {
             case .success(let json):
                 self?.update(withJSON: json)

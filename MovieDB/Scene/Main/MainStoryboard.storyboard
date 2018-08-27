@@ -20,7 +20,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="PF6-Mn-hZv"/>
                     </view>
-                    <tabBarItem key="tabBarItem" systemItem="topRated" id="uhc-jr-oJv"/>
+                    <tabBarItem key="tabBarItem" title="" systemItem="mostViewed" id="uhc-jr-oJv"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BMY-2m-VoE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

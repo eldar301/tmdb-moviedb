@@ -10,22 +10,19 @@ import Foundation
 
 class RemotePopularMoviesProvider: PopularMoviesProvider, PagedDelegate {
     
-    var networkHelper: NetworkHelper
+    fileprivate let pagedProvider: PagedProvider<MovieRS>
     
-    init(networkHelper: NetworkHelper) {
-        self.networkHelper = networkHelper
+    init(pagedProvider: PagedProvider<MovieRS>) {
+        self.pagedProvider = pagedProvider
+        pagedProvider.delegate = self
     }
-    
-    fileprivate var pagedProvider = PagedProvider<MovieRS>()
     
     var nextRequest: URLRequest? {
         return MovieSearchAPI.popular(page: pagedProvider.nextPage).urlRequest
     }
     
-    
     func fetchMovies(completition: @escaping (Result<[Movie]>) -> ()) {
-        pagedProvider = PagedProvider()
-        pagedProvider.delegate = self
+        pagedProvider.reset()
         
         fetch(completition: completition)
     }

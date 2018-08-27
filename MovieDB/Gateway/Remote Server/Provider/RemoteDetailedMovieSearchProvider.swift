@@ -10,13 +10,12 @@ import Foundation
 
 class RemoteDetailedMoviesSearchProvider: DetailedMoviesSearchProvider, PagedDelegate {
     
-    var networkHelper: NetworkHelper
+    fileprivate let pagedProvider: PagedProvider<MovieRS>
     
-    init(networkHelper: NetworkHelper) {
-        self.networkHelper = networkHelper
+    init(pagedProvider: PagedProvider<MovieRS>) {
+        self.pagedProvider = pagedProvider
+        pagedProvider.delegate = self
     }
-    
-    fileprivate var pagedProvider = PagedProvider<MovieRS>()
     
     var nextRequest: URLRequest? {
         guard let genres = self.genres,
@@ -40,7 +39,6 @@ class RemoteDetailedMoviesSearchProvider: DetailedMoviesSearchProvider, PagedDel
     fileprivate var toYear: Int?
     fileprivate var sortBy: SortBy?
     
-    
     func fetchMovies(withGenres genres: [Genre], ratingGreaterThan rgt: Double, ratingLowerThan rlt: Double, fromYear: Int, toYear: Int, sortBy: SortBy, completition: @escaping (Result<[Movie]>) -> ()) {
         self.genres = genres
         self.rgt = rgt
@@ -49,8 +47,7 @@ class RemoteDetailedMoviesSearchProvider: DetailedMoviesSearchProvider, PagedDel
         self.toYear = toYear
         self.sortBy = sortBy
         
-        pagedProvider = PagedProvider()
-        pagedProvider.delegate = self
+        pagedProvider.reset()
         
         fetch(completition: completition)
     }

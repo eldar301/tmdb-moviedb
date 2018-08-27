@@ -10,21 +10,19 @@ import Foundation
 
 class RemoteReviewsProvider: ReviewsProvider, PagedDelegate {
 
-    var networkHelper: NetworkHelper
+    fileprivate let pagedProvider: PagedProvider<ReviewRS>
     
-    init(networkHelper: NetworkHelper) {
-        self.networkHelper = networkHelper
+    init(pagedProvider: PagedProvider<ReviewRS>) {
+        self.pagedProvider = pagedProvider
+        pagedProvider.delegate = self
     }
-    
-    fileprivate var pagedProvider = PagedProvider<ReviewRS>()
     
     var nextRequest: URLRequest? {
         return MovieSearchAPI.topRated(page: pagedProvider.nextPage).urlRequest
     }
     
     func fetchReviews(forMovieID: Int, completition: @escaping (Result<[Review]>) -> ()) {
-        pagedProvider = PagedProvider()
-        pagedProvider.delegate = self
+        pagedProvider.reset()
         
         fetch(completition: completition)
     }
