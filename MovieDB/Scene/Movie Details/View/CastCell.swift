@@ -15,8 +15,8 @@ class CastCell: UICollectionViewCell {
     
     fileprivate var requestedProfileImageURL: URL?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
         profileImageView.contentMode = .scaleAspectFill
         profileImageView.layer.cornerRadius = profileImageView.bounds.width / 2

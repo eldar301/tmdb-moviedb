@@ -14,11 +14,19 @@ class MovieDetailsViewController: UIViewController {
     
     @IBOutlet weak var backdropHeightConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var watchTrailerSectionHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var reviewsSectionHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var castSectionHeightConstraint: NSLayoutConstraint!
+    
     @IBOutlet weak var backdropImageView: UIImageView!
     
     @IBOutlet weak var posterImageView: UIImageView!
     
     @IBOutlet weak var titleLabel: UILabel!
+    
+    @IBOutlet weak var ratingView: RatingView!
     
     @IBOutlet weak var overviewLabel: UILabel!
     
@@ -28,16 +36,12 @@ class MovieDetailsViewController: UIViewController {
     
     @IBOutlet weak var watchTrailerButton: UIButton!
     
-    @IBOutlet weak var releasedCaptionLabel: UILabel!
     @IBOutlet weak var releasedLabel: UILabel!
     
-    @IBOutlet weak var genreCaptionLabel: UILabel!
-    @IBOutlet weak var genreLabel: UILabel!
+    @IBOutlet weak var genresLabel: UILabel!
     
-    @IBOutlet weak var runtimeCaptionLabel: UILabel!
     @IBOutlet weak var runtimeLabel: UILabel!
     
-    @IBOutlet weak var budgetCaptionLabel: UILabel!
     @IBOutlet weak var budgetLabel: UILabel!
     
     fileprivate let presenter = MovieDetailsPresenterDefault(movie: PopularPresenterDefault.movie, movieDetailsProvider: RemoteMovieDetailsProvider(networkHelper: NetworkHelperDefault()))
@@ -133,18 +137,36 @@ extension MovieDetailsViewController: MovieDetailsView {
         titleLabel.text = details.title
         overviewLabel.text = details.overview
         
-        if let releaseDate = details.releaseDate {
-            releasedLabel.text = details.releaseDate
+        ratingView.rating = CGFloat(details.voteAverage ?? 0.0)
+        ratingView.votesCount = details.voteCount ?? 0
+        
+        if details.trailerURL == nil {
+            watchTrailerSectionHeightConstraint.constant = 0
+        } else {
+            watchTrailerSectionHeightConstraint.constant = 56
         }
         
-        runtimeLabel.text = details.runtime
+        releasedLabel.text = details.releaseDate ?? "-"
         
-        genreLabel.text = details.genres?.joined(separator: "\r")
+        runtimeLabel.text = details.runtime ?? "-"
         
-        budgetLabel.text = details.budget
+        genresLabel.text = details.genres?.joined(separator: "\r") ?? ""
         
-        reviewsCollectionView.reloadData()
-        castsCollectionView.reloadData()
+        budgetLabel.text = "$\(details.budget ?? 0)"
+        
+        if presenter.reviewsCount != 0 {
+            reviewsCollectionView.reloadData()
+            reviewsSectionHeightConstraint.constant = 250
+        } else {
+            reviewsSectionHeightConstraint.constant = 0
+        }
+        
+        if presenter.castsCount != 0 {
+            castsCollectionView.reloadData()
+            castSectionHeightConstraint.constant = 170
+        } else {
+            castSectionHeightConstraint.constant = 0
+        }
     }
     
     func showError(description: String) {

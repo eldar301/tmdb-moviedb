@@ -27,7 +27,7 @@ struct DetailsConfigurator {
     var posterURL: URL?
     var backdropURL: URL?
     var trailerURL: URL?
-    var budget: String?
+    var budget: Int?
     var voteAverage: Double?
     var voteCount: Int?
     
@@ -47,11 +47,6 @@ struct DetailsConfigurator {
             formattedGenres = originalGenres.map({ $0.localizedString })
         }
         
-        var formattedBudget: String?
-        if let originalBudget = movie.budget {
-            formattedBudget = "$\(originalBudget)"
-        }
-        
         self.title = movie.title
         self.overview = movie.overview
         self.runtime = formattedRuntime
@@ -60,7 +55,7 @@ struct DetailsConfigurator {
         self.posterURL = movie.posterURL ?? movie.backdropURL
         self.backdropURL = movie.backdropURL ?? movie.posterURL
         self.trailerURL = movie.trailerURL
-        self.budget = formattedBudget
+        self.budget = movie.budget
         self.voteAverage = movie.voteAverage
         self.voteCount = movie.voteCount
     }
@@ -103,6 +98,7 @@ protocol MovieDetailsPresenter {
     func castConfigurator(forIndex: Int) -> CastCellConfigurator
     func reviewConfigurator(forIndex: Int) -> ReviewCellConfigurator
     func showReviews()
+    func watchTrailer()
     
 }
 
@@ -172,6 +168,10 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     
     func showReviews() {
         print("ToDo")
+    }
+    
+    func watchTrailer() {
+        
     }
     
     

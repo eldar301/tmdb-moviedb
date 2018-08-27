@@ -11,10 +11,10 @@ import UIKit
 class ReviewCell: UICollectionViewCell {
 
     @IBOutlet weak var author: UILabel!
-    @IBOutlet weak var content: UITextView!
+    @IBOutlet weak var content: UILabel!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
         self.layer.cornerRadius = 5.0
     }
