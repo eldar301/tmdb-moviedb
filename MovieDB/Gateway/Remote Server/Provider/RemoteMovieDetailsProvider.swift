@@ -31,15 +31,15 @@ class RemoteMovieDetailsProvider: MovieDetailsProvider {
         case .success(let json):
             var movie = Mapper<MovieRS>()
                 .map(JSONObject: json.rawValue)!
-                .movie
+                .entity
             
             let reviews = Mapper<ReviewRS>()
                 .mapArray(JSONObject: json["reviews"]["results"].rawValue)!
-                .compactMap({ $0.review })
+                .compactMap({ $0.entity })
             
             let persons = Mapper<PersonRS>()
                 .mapArray(JSONObject: json["credits"]["cast"].rawValue)!
-                .compactMap({ $0.person })
+                .compactMap({ $0.entity })
             
             movie.reviews = reviews
             movie.persons = persons

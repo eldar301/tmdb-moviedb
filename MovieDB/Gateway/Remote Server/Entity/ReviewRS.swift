@@ -23,17 +23,15 @@ struct ReviewRS {
 
 extension ReviewRS: Mappable {
     
+    typealias Entity = Review
+    
     mutating func mapping(map: Map) {
         id      <- map["id"]
         author  <- map["author"]
         content <- map["content"]
     }
     
-}
-
-extension ReviewRS {
-    
-    var review: Review {
+    var entity: Review {
         var review = Review(id: self.id)
         
         review.author = self.author

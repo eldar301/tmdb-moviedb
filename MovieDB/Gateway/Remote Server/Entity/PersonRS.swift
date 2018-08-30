@@ -26,7 +26,9 @@ struct PersonRS {
     }
 }
 
-extension PersonRS: Mappable {
+extension PersonRS: EntityRS {
+    
+    typealias Entity = Person
     
     mutating func mapping(map: Map) {
         id               <- map["id"]
@@ -39,11 +41,7 @@ extension PersonRS: Mappable {
         deathday         <- (map["deathday"], TransformToDateFromYYYYMMDD())
     }
     
-}
-
-extension PersonRS {
-    
-    var person: Person {
+    var entity: Person {
         let gender = APIHelper.gender(forID: self.gender)
         
         var person = Person(id: self.id)

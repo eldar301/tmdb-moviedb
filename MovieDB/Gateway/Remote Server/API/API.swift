@@ -84,6 +84,17 @@ struct APIHelper {
         }
     }
     
+    static func sortDescription(forSort sortBy: SortBy) -> String {
+        switch sortBy {
+        case .popularityAscending:     return "popularity.asc"
+        case .popularityDescending:    return "popularity.desc"
+        case .ratingAscending:         return "vote_average.asc"
+        case .ratingDescending:        return "vote_average.desc"
+        case .yearAscending:           return "release_date.asc"
+        case .yearDescending:          return "release_date.desc"
+        }
+    }
+    
     static func gender(forID id: Int?) -> Gender? {
         switch id {
         case 0: return .male

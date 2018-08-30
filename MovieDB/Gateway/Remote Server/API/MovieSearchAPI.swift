@@ -38,6 +38,10 @@ enum MovieSearchAPI {
      */
 //    case upcoming(page: Int)
     
+//    func request(page: Int) -> URLRequest {
+//        
+//    }
+//    
     var urlRequest: URLRequest {
         var url: URL
         
@@ -65,7 +69,7 @@ enum MovieSearchAPI {
                             "vote_average.lte": "\(toRating)",
                             "release_date.gte": "\(fromYear)",
                             "release_date.lte": "\(toYear)",
-                            "sort_by": sortBy.rawValue])
+                            "sort_by": APIHelper.sortDescription(forSort: sortBy)])
             
         case .popular(let page):
             url = APIHelper.url(forEndpoint: "movie/popular", queries: ["page": "\(page)"])

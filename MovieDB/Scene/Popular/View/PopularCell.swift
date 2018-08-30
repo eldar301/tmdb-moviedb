@@ -15,7 +15,7 @@ class PopularCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var posterImageView: UIImageView!
     
-    fileprivate var requestedPosterImageURL: URL?
+//    fileprivate var requestedPosterImageURL: URL?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -30,22 +30,19 @@ class PopularCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        posterImageView.sd_cancelCurrentImageLoad()
         posterImageView.image = nil
     }
     
     func configure(withConfigurator configurator: PopularCellConfigurator) {
         titleLabel.text = configurator.title
+//        titleLabel.te
         
-        requestedPosterImageURL = configurator.posterURL
-        
-        posterImageView.sd_setImage(with: requestedPosterImageURL, placeholderImage: nil, options: []) { image, error, cacheType, imageURL in
-            DispatchQueue.main.async { [weak self] in
-                guard imageURL == self?.requestedPosterImageURL else {
-                    return
-                }
-                
-                self?.posterImageView.image = image
-            }
+//        requestedPosterImageURL = configurator.posterURL
+
+//        posterImageView.sd_setImage(with: configurator.posterURL)
+        posterImageView.sd_setImage(with: configurator.posterURL, placeholderImage: nil, options: []) { image, error, cacheType, imageURL in
+            self.titleLabel.text = nil
         }
 
     }

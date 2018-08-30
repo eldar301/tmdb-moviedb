@@ -10,8 +10,6 @@ import UIKit
 
 class FixedNavigationController: UINavigationController {
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
+
 
 }

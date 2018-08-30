@@ -11,9 +11,7 @@ import UIKit
 class AdvancedBlurView: UIVisualEffectView {
     
     fileprivate var animator: UIViewPropertyAnimator!
-    
-    fileprivate weak var subLayer: CALayer!
-    
+
     init(effect: UIVisualEffect?, intensity: CGFloat) {
         super.init(effect: nil)
         
@@ -33,14 +31,16 @@ class AdvancedBlurView: UIVisualEffectView {
         
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-        subLayer.frame = self.bounds
-        CATransaction.commit()
-    }
-
-    func addLayer(layer: CALayer) {
-        self.layer.addSublayer(layer)
+        // FIXME: - sometimes layer's sublayers missing the order
+        let gradientLayer = self.layer.sublayers!.first(where: { $0 is CAGradientLayer })!
+        gradientLayer.removeFromSuperlayer()
+        self.layer.addSublayer(gradientLayer)
         
-        subLayer = layer
+        for layer in self.layer.sublayers! {
+            layer.frame = self.layer.bounds
+        }
+        
+        CATransaction.commit()
     }
     
 }

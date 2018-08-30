@@ -31,11 +31,11 @@ class RemotePersonDetailsProvider: PersonDetailsProvider {
         case .success(let json):
             let person = Mapper<PersonRS>()
                 .map(JSONObject: json.rawValue)!
-                .person
+                .entity
             
             let movies = Mapper<MovieRS>()
                 .mapArray(JSONObject: json["combined_credits"]["cast"].rawValue)!
-                .compactMap({ $0.movie })
+                .compactMap({ $0.entity })
             
             completition(.success((person: person, movies: movies)))
         case .error(let description):

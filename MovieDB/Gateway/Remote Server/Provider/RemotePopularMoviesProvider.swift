@@ -35,7 +35,7 @@ class RemotePopularMoviesProvider: PopularMoviesProvider, PagedDelegate {
         pagedProvider.fetchNext { result in
             switch result {
             case .success(let movies):
-                completition(.success(movies.compactMap({ $0.movie })))
+                completition(.success(movies.compactMap({ $0.entity })))
                 
             case .error(let description):
                 completition(.error(description))

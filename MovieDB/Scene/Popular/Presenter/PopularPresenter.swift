@@ -9,12 +9,13 @@
 import Foundation
 
 protocol PopularView: class {
-    func updateWithNewData()
-    func updateWithAdditionalData()
+    func updateWithNewMovies()
+    func updateWithAdditionalMovies()
     func showError(description: String)
 }
 
 struct PopularCellConfigurator {
+    
     let title: String?
     let posterURL: URL?
     
@@ -38,15 +39,18 @@ protocol PopularPresenter: class {
     
 }
 
-class PopularPresenterDefault: PopularPresenter {
-    
-    private(set) static var movie: Movie!
+class PopularPresenterDefault: PopularPresenter, MovieDetailsPresenterInput {
     
     fileprivate let popularMoviesProvider: PopularMoviesProvider
     
-    init(popularMoviesProvider: PopularMoviesProvider) {
+    fileprivate let router: Router
+    
+    init(router: Router, popularMoviesProvider: PopularMoviesProvider) {
+        self.router = router
         self.popularMoviesProvider = popularMoviesProvider
     }
+    
+    private(set) var selectedMovie: Movie?
     
     fileprivate var movies: [Movie] = []
     
@@ -61,7 +65,7 @@ class PopularPresenterDefault: PopularPresenter {
             switch result {
             case .success(let movies):
                 self?.movies = movies
-                self?.view?.updateWithNewData()
+                self?.view?.updateWithNewMovies()
                 
             case .error(let description):
                 self?.view?.showError(description: description)
@@ -74,7 +78,7 @@ class PopularPresenterDefault: PopularPresenter {
             switch result {
             case .success(let movies):
                 self?.movies += movies
-                self?.view?.updateWithAdditionalData()
+                self?.view?.updateWithAdditionalMovies()
                 
             case .error(let description):
                 self?.view?.showError(description: description)
@@ -87,7 +91,8 @@ class PopularPresenterDefault: PopularPresenter {
     }
     
     func showDetails(ofMovieWithIndex index: Int) {
-        PopularPresenterDefault.movie = movies[index]
+        selectedMovie = movies[index]
+        router.showMovieDetailsScene(fromMovieDetailsPresenterInput: self)
     }
     
 }

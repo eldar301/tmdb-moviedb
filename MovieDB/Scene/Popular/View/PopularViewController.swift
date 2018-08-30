@@ -12,7 +12,7 @@ class PopularViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    let presenter: PopularPresenter = PopularPresenterDefault(popularMoviesProvider: RemotePopularMoviesProvider(pagedProvider: PagedProvider(networkHelper: NetworkHelperDefault())))
+    var presenter: PopularPresenter!
     
     fileprivate var moviesCount: Int = 0
     
@@ -20,6 +20,8 @@ class PopularViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        presenter = PopularPresenterDefault(router: Router(viewController: self), popularMoviesProvider: RemotePopularMoviesProvider(pagedProvider: PagedProvider(networkHelper: NetworkHelperDefault())))
         
         presenter.view = self
         presenter.refresh()
@@ -33,29 +35,54 @@ class PopularViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         
         collectionView.refreshControl = refreshControl
-        
+
         self.extendedLayoutIncludesOpaqueBars = true
         
         collectionView.register(UINib(nibName: "PopularCell", bundle: nil), forCellWithReuseIdentifier: "popularCell")
+        
+//        navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     }
     
     @objc func refresh() {
         presenter.refresh()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        self.transitionCoordinator?.animate(alongsideTransition: { _ in
-            self.navigationController?.navigationBar.alpha = 0.0
-        })
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(true)
+//        self.navigationController?.setNavigationBarHidden(false, animated: true)
+//    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(true)
+//        self.navigationController?.setNavigationBarHidden(true, animated: true)
+//    }
+    
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//        self.transitionCoordinator?.animate(alongsideTransition: { _ in
+//            self.navigationController?.navigationBar.alpha = 0.0
+//        })
+//    }
+    
+}
+
+extension PopularViewController: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return (navigationController?.viewControllers.count ?? 0) > 1
     }
     
 }
 
 extension PopularViewController: PopularView {
     
-    func updateWithNewData() {
+    func updateWithNewMovies() {
         DispatchQueue.main.async {
             self.collectionView.refreshControl?.endRefreshing()
             self.collectionView.reloadData()
@@ -63,7 +90,7 @@ extension PopularViewController: PopularView {
         }
     }
     
-    func updateWithAdditionalData() {
+    func updateWithAdditionalMovies() {
         let addIndexies = (moviesCount ..< presenter.moviesCount).map({ IndexPath(row: $0, section: 0) })
         moviesCount = presenter.moviesCount
         DispatchQueue.main.async {
@@ -111,16 +138,14 @@ extension PopularViewController: UICollectionViewDelegateFlowLayout {
         let insets = collectionView.contentInset
         let availableWidth = collectionView.bounds.width - insets.left - insets.right
         if (indexPath.row + 1) % 3 == 0 {
-            return CGSize(width: availableWidth, height: availableWidth)
+            return CGSize(width: availableWidth, height: availableWidth * 1.5)
         } else {
-            return CGSize(width: (availableWidth - spacing) / 2, height: (availableWidth - spacing) / 2)
+            return CGSize(width: (availableWidth - spacing) / 2, height: (availableWidth - spacing) / 2 * 1.5)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         presenter.showDetails(ofMovieWithIndex: indexPath.row)
-        let controller = UIStoryboard(name: "MovieDetailsStoryboard", bundle: nil).instantiateInitialViewController()!
-        self.navigationController?.pushViewController(controller, animated: true)
     }
     
 }

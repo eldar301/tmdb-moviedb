@@ -9,29 +9,8 @@
 import Foundation
 import ObjectMapper
 
-class TransformToDateFromYYYYMMDD: TransformType {
-    
-    typealias Object = Date
-    typealias JSON = String
-    
-    func transformFromJSON(_ value: Any?) -> Date? {
-        guard let stringDate = value as? String else {
-            return nil
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        return dateFormatter.date(from: stringDate)
-    }
-    
-    func transformToJSON(_ value: Date?) -> String? {
-        fatalError("Transform to JSON from Date not supported")
-    }
-    
-}
-
 struct MovieRS {
+    
     var id: Int!
     var title: String?
     var overview: String?
@@ -53,7 +32,9 @@ struct MovieRS {
     
 }
 
-extension MovieRS: Mappable {
+extension MovieRS: EntityRS {
+    
+    typealias Entity = Movie
     
     mutating func mapping(map: Map) {
         id              <- map["id"]
@@ -69,12 +50,8 @@ extension MovieRS: Mappable {
         voteAverage     <- map["vote_average"]
         voteCount       <- map["vote_count"]
     }
-    
-}
 
-extension MovieRS {
-
-    var movie: Movie {
+    var entity: Movie {
         let convertedGenres = self.genres?.compactMap({ $0["id"] as? Int }).compactMap({ APIHelper.genre(forID: $0) })
 
         let posterURL = APIHelper.url(forPath: self.posterPath, withSize: APIHelper.PosterSize.w500)

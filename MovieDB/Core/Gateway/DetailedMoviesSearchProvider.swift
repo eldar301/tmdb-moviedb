@@ -8,13 +8,17 @@
 
 import Foundation
 
-enum SortBy: String {
-    case popularityAscending  = "popularity.asc"
-    case popularityDescending = "popularity.desc"
-    case ratingAscending      = "vote_average.asc"
-    case ratingDescending     = "vote_average.desc"
-    case yearAscending        = "release_date.asc"
-    case yearDescending       = "release_date.desc"
+enum SortBy: String, CaseIterable {
+    case popularityAscending    = "Popularity ascending"
+    case popularityDescending   = "Popularity descending"
+    case ratingAscending        = "Rating ascending"
+    case ratingDescending       = "Rating descending"
+    case yearAscending          = "Year ascending"
+    case yearDescending         = "Year descending"
+    
+    var localizedString: String {
+        return NSLocalizedString(self.rawValue, comment: "DetailedMoviesSearchProvider.SortBy")
+    }
 }
 
 protocol DetailedMoviesSearchProvider {

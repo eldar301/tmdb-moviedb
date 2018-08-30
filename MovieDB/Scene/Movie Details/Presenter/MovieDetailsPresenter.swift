@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol MovieDetailsParentPresenter {
+protocol MovieDetailsPresenterInput {
     var selectedMovie: Movie? { get }
 }
 
@@ -27,11 +27,11 @@ struct DetailsConfigurator {
     var posterURL: URL?
     var backdropURL: URL?
     var trailerURL: URL?
-    var budget: Int?
+    var budget: String?
     var voteAverage: Double?
     var voteCount: Int?
     
-    fileprivate init(movie: Movie, dateFormatter: DateFormatter, timeFormatter: DateComponentsFormatter) {
+    fileprivate init(movie: Movie, dateFormatter: DateFormatter, timeFormatter: DateComponentsFormatter, budgetFormatter: NumberFormatter) {
         var formattedRuntime: String?
         if let originalRuntime = movie.runtime, originalRuntime > 0 {
             formattedRuntime = timeFormatter.string(from: Double(originalRuntime * 60))
@@ -47,6 +47,11 @@ struct DetailsConfigurator {
             formattedGenres = originalGenres.map({ $0.localizedString })
         }
         
+        var formattedBudget: String?
+        if let originalBudget = movie.budget {
+            formattedBudget = "$\(budgetFormatter.string(from: NSNumber(value: originalBudget)) ?? "")"
+        }
+        
         self.title = movie.title
         self.overview = movie.overview
         self.runtime = formattedRuntime
@@ -55,7 +60,7 @@ struct DetailsConfigurator {
         self.posterURL = movie.posterURL ?? movie.backdropURL
         self.backdropURL = movie.backdropURL ?? movie.posterURL
         self.trailerURL = movie.trailerURL
-        self.budget = movie.budget
+        self.budget = formattedBudget
         self.voteAverage = movie.voteAverage
         self.voteCount = movie.voteCount
     }
@@ -121,13 +126,24 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
         return timeFormatter
     }()
     
-    fileprivate let movieDetailsProvider: MovieDetailsProvider
+    fileprivate let budgetFormatter: NumberFormatter = {
+        let budgetFormatter = NumberFormatter()
+        budgetFormatter.groupingSeparator = "."
+        budgetFormatter.numberStyle = .decimal
+        return budgetFormatter
+    }()
+    
+    fileprivate let provider: MovieDetailsProvider
     
     fileprivate var movie: Movie
     
-    init(movie: Movie, movieDetailsProvider: MovieDetailsProvider) {
+    init?(input: MovieDetailsPresenterInput, provider: MovieDetailsProvider) {
+        guard let movie = input.selectedMovie else {
+            return nil
+        }
+        
         self.movie = movie
-        self.movieDetailsProvider = movieDetailsProvider
+        self.provider = provider
     }
     
     weak var view: MovieDetailsView?
@@ -142,7 +158,7 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     
     func request() {
         view?.update()
-        movieDetailsProvider.details(forMovieID: movie.id) { [weak self] result in
+        provider.details(forMovieID: movie.id) { [weak self] result in
             switch result {
             case .success(let movie):
                 self?.movie = movie
@@ -155,7 +171,7 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     }
     
     func detailsConfigurator() -> DetailsConfigurator {
-        return DetailsConfigurator(movie: movie, dateFormatter: dateFormatter, timeFormatter: timeFormatter)
+        return DetailsConfigurator(movie: movie, dateFormatter: dateFormatter, timeFormatter: timeFormatter, budgetFormatter: budgetFormatter)
     }
     
     func castConfigurator(forIndex index: Int) -> CastCellConfigurator {
@@ -171,7 +187,7 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     }
     
     func watchTrailer() {
-        
+        print("ToDo")
     }
     
     

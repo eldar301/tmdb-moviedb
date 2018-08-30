@@ -29,7 +29,7 @@ class RemoteDetailedMoviesSearchProvider: DetailedMoviesSearchProvider, PagedDel
             return nil
         }
         
-        return MovieSearchAPI.detailedSearch(genres: genres, ratingRange: rlt ... rgt, yearRange: fromYear ... toYear, sortBy: sortBy, page: pagedProvider.nextPage).urlRequest
+        return MovieSearchAPI.detailedSearch(genres: genres, ratingRange: rgt ... rlt, yearRange: fromYear ... toYear, sortBy: sortBy, page: pagedProvider.nextPage).urlRequest
     }
     
     fileprivate var genres: [Genre]?
@@ -38,11 +38,11 @@ class RemoteDetailedMoviesSearchProvider: DetailedMoviesSearchProvider, PagedDel
     fileprivate var fromYear: Int?
     fileprivate var toYear: Int?
     fileprivate var sortBy: SortBy?
-    
+
     func fetchMovies(withGenres genres: [Genre], ratingGreaterThan rgt: Double, ratingLowerThan rlt: Double, fromYear: Int, toYear: Int, sortBy: SortBy, completition: @escaping (Result<[Movie]>) -> ()) {
         self.genres = genres
-        self.rgt = rgt
-        self.rlt = rlt
+        self.rgt = rgt * 2
+        self.rlt = rlt * 2
         self.fromYear = fromYear
         self.toYear = toYear
         self.sortBy = sortBy
@@ -60,7 +60,7 @@ class RemoteDetailedMoviesSearchProvider: DetailedMoviesSearchProvider, PagedDel
         pagedProvider.fetchNext { result in
             switch result {
             case .success(let movies):
-                completition(.success(movies.compactMap({ $0.movie })))
+                completition(.success(movies.compactMap({ $0.entity })))
                 
             case .error(let description):
                 completition(.error(description))

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovieDetailsViewController: UIViewController {
+class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var scrollView: UIScrollView!
     
@@ -44,7 +44,7 @@ class MovieDetailsViewController: UIViewController {
     
     @IBOutlet weak var budgetLabel: UILabel!
     
-    fileprivate let presenter = MovieDetailsPresenterDefault(movie: PopularPresenterDefault.movie, movieDetailsProvider: RemoteMovieDetailsProvider(networkHelper: NetworkHelperDefault()))
+    var presenter: MovieDetailsPresenter!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,8 +60,6 @@ class MovieDetailsViewController: UIViewController {
         backdropImageView.contentMode = .scaleAspectFill
         
         self.extendedLayoutIncludesOpaqueBars = true
-        
-        self.navigationItem.largeTitleDisplayMode = .never
         
         watchTrailerButton.layer.cornerRadius = 12.0
         
@@ -95,17 +93,24 @@ class MovieDetailsViewController: UIViewController {
         gradientLayer.colors = [color.withAlphaComponent(0.5).cgColor,
                                 color.cgColor]
         gradientLayer.locations = [0.0, 0.8]
-        gradientLayer.frame = backdropImageView.bounds
-        headerBlurView.addLayer(layer: gradientLayer)
+        gradientLayer.frame = headerBlurView.bounds
+        headerBlurView.layer.addSublayer(gradientLayer)
+                
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        self.transitionCoordinator?.animate(alongsideTransition: { _ in
-            self.navigationController?.navigationBar.alpha = 1.0
-        })
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .defaultPrompt)
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .compact)
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .compactPrompt)
+//    }
     
     var centerAlignedIndex = 0
     
@@ -128,8 +133,13 @@ class MovieDetailsViewController: UIViewController {
 extension MovieDetailsViewController: MovieDetailsView {
     
     func update() {
+        DispatchQueue.main.async {
+            self.updateData()
+        }
+    }
+    
+    fileprivate func updateData() {
         let details = presenter.detailsConfigurator()
-        print(details)
         
         backdropImageView.sd_setImage(with: details.backdropURL)
         posterImageView.sd_setImage(with: details.posterURL)
@@ -150,9 +160,9 @@ extension MovieDetailsViewController: MovieDetailsView {
         
         runtimeLabel.text = details.runtime ?? "-"
         
-        genresLabel.text = details.genres?.joined(separator: "\r") ?? ""
+        genresLabel.text = details.genres?.joined(separator: "\r") ?? "-"
         
-        budgetLabel.text = "$\(details.budget ?? 0)"
+        budgetLabel.text = details.budget ?? "-"
         
         if presenter.reviewsCount != 0 {
             reviewsCollectionView.reloadData()
@@ -226,11 +236,11 @@ extension MovieDetailsViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView === self.scrollView {
-            let offset = -scrollView.contentOffset.y + 25
-            if offset > 0 {
-                backdropHeightConstraint.constant = 340 + offset
+            let offset = -scrollView.contentOffset.y + 30.0
+            if offset > 50 {
+                backdropHeightConstraint.constant = 310 + offset
             } else {
-                backdropHeightConstraint.constant = 340
+                backdropHeightConstraint.constant = 360
             }
         }
     }
