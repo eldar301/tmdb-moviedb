@@ -21,7 +21,7 @@ class PopularViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        presenter = PopularPresenterDefault(router: Router(viewController: self), popularMoviesProvider: RemotePopularMoviesProvider(pagedProvider: PagedProvider(networkHelper: NetworkHelperDefault())))
+        presenter = PopularPresenterDefault(router: Router(viewController: self), moviesProvider: RemoteMoviesProvider(networkHelper: NetworkHelperDefault()))
         
         presenter.view = self
         presenter.refresh()
@@ -83,19 +83,15 @@ extension PopularViewController: UIGestureRecognizerDelegate {
 extension PopularViewController: PopularView {
     
     func updateWithNewMovies() {
-        DispatchQueue.main.async {
-            self.collectionView.refreshControl?.endRefreshing()
-            self.collectionView.reloadData()
-            self.moviesCount = self.presenter.moviesCount
-        }
+        self.collectionView.refreshControl?.endRefreshing()
+        self.collectionView.reloadData()
+        self.moviesCount = self.presenter.moviesCount
     }
     
     func updateWithAdditionalMovies() {
-        let addIndexies = (moviesCount ..< presenter.moviesCount).map({ IndexPath(row: $0, section: 0) })
-        moviesCount = presenter.moviesCount
-        DispatchQueue.main.async {
-            self.collectionView.insertItems(at: addIndexies)
-        }
+        let addIndexies = (self.moviesCount ..< self.presenter.moviesCount).map({ IndexPath(row: $0, section: 0) })
+        self.moviesCount = self.presenter.moviesCount
+        self.collectionView.insertItems(at: addIndexies)
     }
     
     func showError(description: String) {

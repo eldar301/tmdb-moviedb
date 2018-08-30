@@ -10,10 +10,10 @@ import Foundation
 
 class RemoteRandomMovieProvider: RandomMovieProvider {
     
-    fileprivate let detailedMoviesSearchProvider: DetailedMoviesSearchProvider
+    fileprivate let moviesProvider: MoviesProvider
     
-    init(detailedMoviesSearchProvider: DetailedMoviesSearchProvider) {
-        self.detailedMoviesSearchProvider = detailedMoviesSearchProvider
+    init(moviesProvider: MoviesProvider) {
+        self.moviesProvider = moviesProvider
     }
     
     func fetch(completition: @escaping (Result<Movie>) -> ()) {
@@ -24,7 +24,7 @@ class RemoteRandomMovieProvider: RandomMovieProvider {
         let toYear = fromYear + Int.random(in: 0 ... 50)
         let sortBy = SortBy.allCases.randomElement()!
         
-        detailedMoviesSearchProvider
+        moviesProvider
             .fetchMovies(withGenres: [genre],
                          ratingGreaterThan: rgt,
                          ratingLowerThan: rlt,

@@ -10,39 +10,24 @@ import Foundation
 import ObjectMapper
 import SwiftyJSON
 
-protocol PagedDelegate: class {
-    var nextRequest: URLRequest? { get }
-}
-
-class PagedProvider<T: Mappable> {
+class PagedProvider<T: EntityRS> {
     
     fileprivate let networkHelper: NetworkHelper
     
-    init(networkHelper: NetworkHelper) {
+    fileprivate let apiEndpoint: PaginationSearchAPI
+    
+    init(apiEndpoint: PaginationSearchAPI, networkHelper: NetworkHelper) {
+        self.apiEndpoint = apiEndpoint
         self.networkHelper = networkHelper
     }
-
-    var nextPage: Int {
-        return currentPage + 1
-    }
-    
-    weak var delegate: PagedDelegate?
     
     fileprivate var currentPage: Int = 0
     fileprivate var requestedPage: Int?
     fileprivate var totalPages: Int?
     
-    func reset() {
-        currentPage = 0
-        requestedPage = nil
-        totalPages = nil
-    }
+    fileprivate var results: [T.Entity] = []
     
-    func fetchNext(completition: @escaping (Result<[T]>) -> ()) {
-        guard let nextRequest = delegate?.nextRequest else {
-            return
-        }
-        
+    func fetchNext(completition: @escaping (Result<[T.Entity]>) -> ()) {
         if let requestedPage = self.requestedPage {
             guard currentPage == requestedPage else {
                 print("Attempt to get next page, when previous one is not loaded yet")
@@ -59,15 +44,24 @@ class PagedProvider<T: Mappable> {
         
         requestedPage = currentPage + 1
         
+        let nextRequest = apiEndpoint.urlRequest(page: requestedPage!)
+        
         networkHelper.jsonTask(request: nextRequest) { [weak self] result in
+            guard self != nil else {
+                return
+            }
+            
             switch result {
             case .success(let json):
                 self?.update(withJSON: json)
                 
-                let values = Mapper<T>()
+                let newValues = Mapper<T>()
                     .mapArray(JSONObject: json["results"].rawValue)!
+                    .compactMap({ $0.entity })
                 
-                completition(.success(values))
+                self?.results += newValues
+                
+                completition(.success(self!.results))
                 
             case .error(let description):
                 self?.resetRequest()

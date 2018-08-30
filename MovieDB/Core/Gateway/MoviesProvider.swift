@@ -8,10 +8,23 @@
 
 import Foundation
 
-typealias TopRatedMoviesProvider = MoviesProvider
-typealias PopularMoviesProvider = MoviesProvider
+enum SortBy: String, CaseIterable {
+    case popularityAscending    = "Popularity ascending"
+    case popularityDescending   = "Popularity descending"
+    case ratingAscending        = "Rating ascending"
+    case ratingDescending       = "Rating descending"
+    case yearAscending          = "Year ascending"
+    case yearDescending         = "Year descending"
+    
+    var localizedString: String {
+        return NSLocalizedString(self.rawValue, comment: "DetailedMoviesSearchProvider.SortBy")
+    }
+}
 
 protocol MoviesProvider {
-    func fetchMovies(completition: @escaping (Result<[Movie]>) -> ())
+    func fetchMovies(withGenres: [Genre], ratingGreaterThan: Double, ratingLowerThan: Double, fromYear: Int, toYear: Int, sortBy: SortBy, completition: @escaping (Result<[Movie]>) -> ())
+    func fetchMovies(withTitle: String, completition: @escaping (Result<[Movie]>) -> ())
+    func fetchTopRatedMovies(completition: @escaping (Result<[Movie]>) -> ())
+    func fetchPopularMovies(completition: @escaping (Result<[Movie]>) -> ())
     func fetchNext(completition: @escaping (Result<[Movie]>) -> ())
 }

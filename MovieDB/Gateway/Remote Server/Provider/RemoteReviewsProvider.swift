@@ -8,39 +8,24 @@
 
 import Foundation
 
-class RemoteReviewsProvider: ReviewsProvider, PagedDelegate {
+class RemoteReviewsProvider: ReviewsProvider {
 
-    fileprivate let pagedProvider: PagedProvider<ReviewRS>
+    fileprivate let networkHelper: NetworkHelper
     
-    init(pagedProvider: PagedProvider<ReviewRS>) {
-        self.pagedProvider = pagedProvider
-        pagedProvider.delegate = self
+    init(networkHelper: NetworkHelper) {
+        self.networkHelper = networkHelper
     }
     
-    var nextRequest: URLRequest? {
-        return MovieSearchAPI.topRated(page: pagedProvider.nextPage).urlRequest
-    }
+    fileprivate var pagedProvider: PagedProvider<ReviewRS>?
     
-    func fetchReviews(forMovieID: Int, completition: @escaping (Result<[Review]>) -> ()) {
-        pagedProvider.reset()
-        
-        fetch(completition: completition)
+    func fetchReviews(forMovieID movieID: Int, completition: @escaping (Result<[Review]>) -> ()) {
+        let request = PaginationSearchAPI.reviews(movieID: movieID)
+        pagedProvider = PagedProvider(apiEndpoint: request, networkHelper: networkHelper)
+        pagedProvider?.fetchNext(completition: completition)
     }
     
     func fetchNext(completition: @escaping (Result<[Review]>) -> ()) {
-        fetch(completition: completition)
-    }
-    
-    fileprivate func fetch(completition: @escaping (Result<[Review]>) -> ()) {
-        pagedProvider.fetchNext { result in
-            switch result {
-            case .success(let movies):
-                completition(.success(movies.compactMap({ $0.entity })))
-                
-            case .error(let description):
-                completition(.error(description))
-            }
-        }
+        pagedProvider?.fetchNext(completition: completition)
     }
     
 }

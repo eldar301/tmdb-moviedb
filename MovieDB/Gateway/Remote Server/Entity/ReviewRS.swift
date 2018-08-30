@@ -21,7 +21,7 @@ struct ReviewRS {
     }
 }
 
-extension ReviewRS: Mappable {
+extension ReviewRS: EntityRS {
     
     typealias Entity = Review
     

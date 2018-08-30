@@ -21,10 +21,8 @@ struct GenreExplorerConfigurator {
 }
 
 protocol GenreExplorerPresenter {
-    
     func configurator() -> GenreExplorerConfigurator
     func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: Int)
-    
 }
 
 class GenreExplorerPresenterDefault: GenreExplorerPresenter {

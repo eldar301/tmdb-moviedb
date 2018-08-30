@@ -26,8 +26,7 @@ class BrowseViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        presenter = BrowsePresenterDefault(router: Router(viewController: self), randomMovieProvider: RemoteRandomMovieProvider(detailedMoviesSearchProvider: RemoteDetailedMoviesSearchProvider(pagedProvider: PagedProvider(networkHelper: NetworkHelperDefault()))))
+        presenter = BrowsePresenterDefault(router: Router(viewController: self), randomMovieProvider: RemoteRandomMovieProvider(moviesProvider: RemoteMoviesProvider(networkHelper: NetworkHelperDefault())))
         
         presenter.view = self
         presenter.refresh()

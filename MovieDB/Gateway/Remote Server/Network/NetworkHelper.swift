@@ -24,7 +24,7 @@ class NetworkHelperDefault: NetworkHelper {
         Alamofire
             .request(request)
             .validate()
-            .responseJSON { response in
+            .responseJSON(queue: DispatchQueue.main, options: [], completionHandler: { response in
                 switch response.result {
                 case .success(let value):
                     completition(.success(JSON(value)))
@@ -32,7 +32,8 @@ class NetworkHelperDefault: NetworkHelper {
                 case .failure(let error):
                     completition(.error(error.localizedDescription))
                 }
-        }
+            })
+        
 //        URLSession.shared.dataTask(with: request) { data, response, error in
 //            if let error = error {
 //                completition(.error(error.localizedDescription))
