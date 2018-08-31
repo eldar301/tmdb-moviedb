@@ -80,7 +80,6 @@ import UIKit
     override var intrinsicContentSize: CGSize {
         let height = self.bounds.height
         let starWidth = height
-
         let width = (starWidth * 5) + (starSpacing * 4) + votesLabelSpacing + votesLabel.bounds.width
     
         return CGSize(width: width, height: height)
@@ -98,13 +97,13 @@ import UIKit
         setup()
     }
 
-    fileprivate func setup() {
-        let view = UINib(nibName: "RatingView", bundle: Bundle(for: RatingView.self)).instantiate(withOwner: self).first as! UIView
-
-        view.frame = self.bounds
-        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
-        self.addSubview(view)
-    }
+//    fileprivate func setup() {
+//        let view = UINib(nibName: "RatingView", bundle: Bundle(for: RatingView.self)).instantiate(withOwner: self).first as! UIView
+//
+//        view.frame = self.bounds
+//        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//
+//        self.addSubview(view)
+//    }
 
 }
