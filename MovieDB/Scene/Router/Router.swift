@@ -17,6 +17,39 @@ class Router {
         self.currentViewController = viewController
     }
     
+    class func popularViewController() -> UIViewController {
+        let navVC = UIStoryboard(name: "PopularStoryboard", bundle: nil).instantiateInitialViewController() as! UINavigationController
+        
+        let popularVC = navVC.viewControllers[0] as! PopularViewController
+        
+        let router = Router(viewController: popularVC)
+
+        let networkHelper = NetworkHelperDefault()
+        let moviesProvider = RemoteMoviesProvider(networkHelper: networkHelper)
+        let presenter = PopularPresenterDefault(router: router, moviesProvider: moviesProvider)
+
+        popularVC.presenter = presenter
+
+        return navVC
+    }
+    
+    class func browseViewController() -> UIViewController {
+        let navVC = UIStoryboard(name: "BrowseStoryboard", bundle: nil).instantiateInitialViewController() as! UINavigationController
+        
+        let browseVC = navVC.viewControllers[0] as! BrowseViewController
+        
+        let router = Router(viewController: browseVC)
+        
+        let networkHelper = NetworkHelperDefault()
+        let moviesProvider = RemoteMoviesProvider(networkHelper: networkHelper)
+        let randomMovieProvider = RemoteRandomMovieProvider(moviesProvider: moviesProvider)
+        let presenter = BrowsePresenterDefault(router: router, randomMovieProvider: randomMovieProvider)
+        
+        browseVC.presenter = presenter
+        
+        return navVC
+    }
+    
     func showMovieDetailsScene(fromMovieDetailsPresenterInput input: MovieDetailsPresenterInput) {
         let networkHelper = NetworkHelperDefault()
         let movieDetailsProvider = RemoteMovieDetailsProvider(networkHelper: networkHelper)
@@ -32,14 +65,21 @@ class Router {
         present(childVC: movieDetailsVC)
     }
     
-    func showGenreExplorer(output: GenreExplorerPresenterOutput) {
-        let presenter = GenreExplorerPresenterDefault(output: output)
+    func showGenreExplorer(input: DetailedSearchSettingsPresenterInput, output: DetailedSearchSettingsPresenterOutput) {
+        let presenter = DetailedSearchSettingsPresenterDefault(input: input, output: output)
         
-        let genreExplorerVC = UIStoryboard(name: "GenreExplorerStoryboard", bundle: nil).instantiateInitialViewController() as! GenreExplorerViewController
-        
-        genreExplorerVC.presenter = presenter
-        
-        present(childVC: genreExplorerVC)
+//        let genreExplorerVC = UIStoryboard(name: "GenreExplorerStoryboard", bundle: nil).instantiateInitialViewController() as! GenreExplorerViewController
+//
+//        genreExplorerVC.presenter = presenter
+//
+//        present(childVC: genreExplorerVC)
+    }
+    
+    func showDeailedSearchSettings() -> UIViewController {
+        let detailedSearchSettingsVC = DetailedSearchSettingsViewController()
+        detailedSearchSettingsVC.modalPresentationStyle = .popover
+//        currentViewController?.present(detailedSearchSettingsVC, animated: true)
+        return detailedSearchSettingsVC
     }
     
     fileprivate func present(childVC: UIViewController) {

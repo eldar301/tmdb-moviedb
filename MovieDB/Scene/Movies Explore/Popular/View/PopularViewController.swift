@@ -10,9 +10,9 @@ import UIKit
 
 class PopularViewController: UIViewController {
     
-    @IBOutlet weak var collectionView: UICollectionView!
-    
     var presenter: PopularPresenter!
+    
+    @IBOutlet weak var collectionView: UICollectionView!
     
     fileprivate var moviesCount: Int = 0
     
@@ -20,9 +20,7 @@ class PopularViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        presenter = PopularPresenterDefault(router: Router(viewController: self), moviesProvider: RemoteMoviesProvider(networkHelper: NetworkHelperDefault()))
-        
+         
         presenter.view = self
         presenter.refresh()
         

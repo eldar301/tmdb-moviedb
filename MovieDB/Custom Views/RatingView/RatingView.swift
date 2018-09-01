@@ -8,7 +8,7 @@
 
 import UIKit
 
-@IBDesignable class RatingView: UIView {
+@IBDesignable class RatingView: UIViewNibInitiazlied {
 
     @IBInspectable var rating: CGFloat = 0 {
         didSet {
@@ -24,7 +24,7 @@ import UIKit
                     mask.frame = star.bounds
                 } else if CGFloat(index) ... CGFloat(index + 1) ~= rating {
                     let height = star.bounds.height
-                    let width = 20 * (rating - CGFloat(index))
+                    let width = height * (rating - CGFloat(index))
                     mask.frame = CGRect(origin: .zero, size: CGSize(width: width, height: height))
                 } else {
                     mask.frame = star.bounds
@@ -84,26 +84,5 @@ import UIKit
     
         return CGSize(width: width, height: height)
     }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        setup()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
-        setup()
-    }
-
-//    fileprivate func setup() {
-//        let view = UINib(nibName: "RatingView", bundle: Bundle(for: RatingView.self)).instantiate(withOwner: self).first as! UIView
-//
-//        view.frame = self.bounds
-//        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//
-//        self.addSubview(view)
-//    }
 
 }

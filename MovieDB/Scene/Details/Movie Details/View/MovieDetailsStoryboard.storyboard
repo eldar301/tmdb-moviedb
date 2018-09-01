@@ -28,12 +28,17 @@
                                             <constraint firstAttribute="height" constant="280" id="1dA-zP-a5F"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qc0-ri-NQ9">
-                                        <rect key="frame" x="0.0" y="280" width="375" height="22"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qc0-ri-NQ9" customClass="RatingView" customModule="MovieDB" customModuleProvider="target">
+                                        <rect key="frame" x="94.5" y="280" width="186.5" height="22"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="22" id="tU0-tW-SBB"/>
                                         </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="votesLabelFontSize">
+                                                <real key="value" value="18"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wmD-hL-QWR">
                                         <rect key="frame" x="62.5" y="318" width="250" height="44"/>
@@ -173,16 +178,15 @@ Adventure</string>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="9RI-yX-0Ru" secondAttribute="trailing" id="1Wd-hB-2Ar"/>
+                                    <constraint firstItem="Qc0-ri-NQ9" firstAttribute="centerX" secondItem="PUk-qJ-Pch" secondAttribute="centerX" id="2Q2-of-6is"/>
                                     <constraint firstItem="Y6b-qL-iKg" firstAttribute="top" secondItem="5rH-Ar-9EW" secondAttribute="bottom" constant="16" id="2vR-FZ-Bad"/>
                                     <constraint firstItem="xtS-9w-IWJ" firstAttribute="trailing" secondItem="BOv-IU-cAE" secondAttribute="trailing" id="3M4-pS-p71"/>
                                     <constraint firstItem="FOM-gZ-Vp7" firstAttribute="leading" secondItem="VJq-2t-XdU" secondAttribute="leading" id="3ub-dU-3HS"/>
-                                    <constraint firstAttribute="trailing" secondItem="Qc0-ri-NQ9" secondAttribute="trailing" id="46D-co-TIP"/>
                                     <constraint firstAttribute="trailing" secondItem="sRn-J5-yR4" secondAttribute="trailing" constant="8" id="4ZF-oX-gAV"/>
                                     <constraint firstItem="5rH-Ar-9EW" firstAttribute="leading" secondItem="PUk-qJ-Pch" secondAttribute="leading" constant="8" id="5Vz-0c-sdW"/>
                                     <constraint firstItem="Qc0-ri-NQ9" firstAttribute="top" secondItem="9RI-yX-0Ru" secondAttribute="bottom" id="63M-zf-Dvg"/>
                                     <constraint firstItem="hLN-ha-D9h" firstAttribute="top" secondItem="FOM-gZ-Vp7" secondAttribute="bottom" constant="4" id="8Zg-ON-06J"/>
                                     <constraint firstItem="Y6b-qL-iKg" firstAttribute="leading" secondItem="PUk-qJ-Pch" secondAttribute="leading" constant="8" id="BKw-Wc-CPt"/>
-                                    <constraint firstItem="Qc0-ri-NQ9" firstAttribute="leading" secondItem="PUk-qJ-Pch" secondAttribute="leading" id="BT5-p5-Vei"/>
                                     <constraint firstItem="VJq-2t-XdU" firstAttribute="leading" secondItem="BOv-IU-cAE" secondAttribute="trailing" constant="8" id="CrH-xu-emZ"/>
                                     <constraint firstItem="wmD-hL-QWR" firstAttribute="centerX" secondItem="PUk-qJ-Pch" secondAttribute="centerX" id="D0b-83-dRr"/>
                                     <constraint firstItem="5wA-Qa-EcT" firstAttribute="leading" secondItem="PUk-qJ-Pch" secondAttribute="leading" constant="8" id="DgT-pd-xQS"/>

@@ -10,7 +10,7 @@ import UIKit
 
 class BrowseViewController: UITableViewController {
     
-    fileprivate var presenter: BrowsePresenter!
+    var presenter: BrowsePresenter!
     
     //    fileprivate var requestedRandomMovieImageURL: URL?
     
