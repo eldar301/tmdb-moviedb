@@ -25,13 +25,15 @@ struct DetailedSearchSettingsConfigurator {
     let minChosenRating: Double
     let maxRating: Double
     let maxChosenRating: Double
-    let selectedSortOption: String
+    let selectedSortOptionIndex: Int
     let sortOptions: [String]
+    let selectedGenreIndex: Int
+    let genreOptions: [String]
 }
 
 protocol DetailedSearchSettingsPresenter {
     func configurator() -> DetailedSearchSettingsConfigurator
-    func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: Int)
+    func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: Int, genreOptionsIndexes: [Int])
 }
 
 class DetailedSearchSettingsPresenterDefault: DetailedSearchSettingsPresenter {
@@ -41,6 +43,8 @@ class DetailedSearchSettingsPresenterDefault: DetailedSearchSettingsPresenter {
     fileprivate let preselectedGenre: Genre
     
     fileprivate lazy var supportedSortOptions = SortBy.allCases
+    
+    fileprivate lazy var supportGenreOptions = Genre.allCases
     
     init?(input: DetailedSearchSettingsPresenterInput, output: DetailedSearchSettingsPresenterOutput) {
         guard let preselectedGenre = input.selectedGenre else {
@@ -60,11 +64,13 @@ class DetailedSearchSettingsPresenterDefault: DetailedSearchSettingsPresenter {
                                                   minChosenRating: 3.0,
                                                   maxRating: 5.0,
                                                   maxChosenRating: 4.5,
-                                                  selectedSortOption: SortBy.popularityAscending.localizedString,
-                                                  sortOptions: SortBy.allCases.map({ $0.localizedString }))
+                                                  selectedSortOptionIndex: supportedSortOptions.firstIndex(of: .popularityAscending)!,
+                                                  sortOptions: supportedSortOptions.map({ $0.localizedString }),
+                                                  selectedGenreIndex: supportGenreOptions.firstIndex(of: preselectedGenre)!,
+                                                  genreOptions: supportGenreOptions.map({ $0.localizedString }))
     }
     
-    func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: Int) {
+    func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: Int, genreOptionsIndexes: [Int]) {
         output?.setup(fromYear: fromYear,
                       toYear: toYear,
                       fromRating: fromRating,

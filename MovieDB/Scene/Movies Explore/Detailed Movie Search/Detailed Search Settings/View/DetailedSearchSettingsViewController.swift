@@ -10,30 +10,40 @@ import UIKit
 
 class DetailedSearchSettingsViewController: UITableViewController {
     
-    var presenter: DetailedSearchSettingsPresenter!
+    var presenter: DetailedSearchSettingsPresenter! {
+        didSet {
+            configurator = presenter.configurator()
+        }
+    }
     
     fileprivate weak var yearPicker: TwoThumbsSliderView!
     fileprivate weak var ratingPicker: TwoThumbsSliderView!
     
+    fileprivate var configurator: DetailedSearchSettingsConfigurator!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.tableView.register(SelectableTableViewCell.self, forCellReuseIdentifier: "reuseCell")
+        self.tableView.allowsMultipleSelection = true
+        
+        self.tableView.selectRow(at: IndexPath(row: configurator.selectedSortOptionIndex + 1, section: 0), animated: false, scrollPosition: .none)
+        
+        self.tableView.selectRow(at: IndexPath(row: configurator.selectedGenreIndex, section: 1), animated: false, scrollPosition: .none)
+        
         updateHeader()
         
-//        let configurator = presenter.configurator()
-        
-        yearPicker.minValue = 1900
-        yearPicker.maxValue = 2018
-        yearPicker.upperValue = 1980
-        yearPicker.lowerValue = 1950
+        yearPicker.minValue = Double(configurator.minYear)
+        yearPicker.maxValue = Double(configurator.maxYear)
+        yearPicker.upperValue = Double(configurator.maxChosenYear)
+        yearPicker.lowerValue = Double(configurator.minChosenYear)
         yearPicker.highlightMode = .integer
         
-        ratingPicker.minValue = 0.0
-        ratingPicker.maxValue = 5.0
-        ratingPicker.upperValue = 3.0
-        ratingPicker.lowerValue = 2.0
+        ratingPicker.minValue = configurator.minRating
+        ratingPicker.maxValue = configurator.maxRating
+        ratingPicker.upperValue = configurator.maxChosenRating
+        ratingPicker.lowerValue = configurator.minChosenRating
         ratingPicker.highlightMode = .fractional
-        
     }
     
     override func loadView() {
@@ -43,16 +53,20 @@ class DetailedSearchSettingsViewController: UITableViewController {
     
     fileprivate func loadTableView() {
         self.tableView = UITableView()
-        self.tableView.backgroundColor = .blue
+        self.tableView.backgroundColor = UIColor(red: 9.0 / 255.0,
+                                                 green: 18.0 / 250.0,
+                                                 blue: 27.0 / 255.0,
+                                                 alpha: 1.0)
         self.tableView.separatorColor = .black
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "sortCell")
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "genreCell")
+        self.tableView.bounces = false
     }
     
     fileprivate func loadHeaderTableView() {
         let header = UIView()
         
         let selectYearRangeLabel = UILabel()
+        selectYearRangeLabel.font = UIFont.boldSystemFont(ofSize: 17.0)
+        selectYearRangeLabel.textColor = .white
         selectYearRangeLabel.text = "Select the year range"
         selectYearRangeLabel.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(selectYearRangeLabel)
@@ -64,6 +78,8 @@ class DetailedSearchSettingsViewController: UITableViewController {
         self.yearPicker = yearPicker
         
         let selectRatingLabel = UILabel()
+        selectRatingLabel.font = UIFont.boldSystemFont(ofSize: 17.0)
+        selectRatingLabel.textColor = .white
         selectRatingLabel.text = "Select the rating"
         selectRatingLabel.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(selectRatingLabel)
@@ -78,7 +94,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         
         selectYearRangeLabel.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
         selectYearRangeLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
-
+        
         yearPicker.heightAnchor.constraint(equalToConstant: 64.0).isActive = true
         yearPicker.topAnchor.constraint(equalTo: selectYearRangeLabel.bottomAnchor, constant: 30.0).isActive = true
         yearPicker.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 20.0).isActive = true
@@ -108,5 +124,72 @@ class DetailedSearchSettingsViewController: UITableViewController {
         
         self.tableView.tableHeaderView = header
     }
+    
+}
 
+extension DetailedSearchSettingsViewController {
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return section == 0 ? configurator.sortOptions.count + 2 : configurator.genreOptions.count
+    }
+    
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard indexPath.section == 0 else {
+            return indexPath
+        }
+        
+        guard indexPath.row != 0 && indexPath.row != configurator.sortOptions.count + 1 else {
+            return nil
+        }
+        
+        return indexPath
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt selectedIndexPath: IndexPath) {
+        if selectedIndexPath.section == 0, let selectedIndexPaths = self.tableView.indexPathsForSelectedRows {
+            for indexPath in selectedIndexPaths where indexPath.section == 0 && indexPath != selectedIndexPath {
+                self.tableView.deselectRow(at: indexPath, animated: false)
+            }
+        }
+    }
+    
+}
+
+extension DetailedSearchSettingsViewController {
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseCell", for: indexPath)
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 17.0)
+        cell.textLabel?.textColor = .white
+        cell.tintColor = .white
+        cell.backgroundColor = .clear
+        cell.selectionStyle = .none
+        
+        let index = indexPath.row
+        let section = indexPath.section
+        
+        if section == 0 {
+            var text: String
+            if index == 0 {
+                text = "Sort by"
+                cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 19.0)
+            } else if index < configurator.sortOptions.count + 1 {
+                text = configurator.sortOptions[index - 1]
+            } else {
+                text = "Genres"
+                cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 19.0)
+            }
+            
+            cell.textLabel?.text = text
+        } else {
+            cell.textLabel?.text = configurator.genreOptions[index]
+        }
+        
+        return cell
+    }
+    
 }

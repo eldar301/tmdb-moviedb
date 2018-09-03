@@ -233,9 +233,6 @@ class TwoThumbsSliderView: UIControl {
     fileprivate func setupHighlight(lowerHighlight: Bool) -> UILabel {
         let highlight = UILabel()
         highlight.textColor = .white
-        highlight.layer.cornerRadius = 5.0
-        highlight.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.6).cgColor
-        highlight.layer.borderWidth = 0.5
         highlight.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(highlight)
         
@@ -267,6 +264,7 @@ class TwoThumbsSliderView: UIControl {
     
     fileprivate func setupPanGestureRecognizer() {
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleDragging(gestureRecognizer:)))
+        panGestureRecognizer.delegate = self
         panGestureRecognizer.maximumNumberOfTouches = 1
         self.addGestureRecognizer(panGestureRecognizer)
     }
@@ -279,33 +277,12 @@ class TwoThumbsSliderView: UIControl {
         
         switch gestureRecognizer.state {
         case .began:
-            let touchPosition = gestureRecognizer.location(in: slidingStroke).x
-            
-            let lowerThumbPosition = lowerThumb.frame.origin.x
-            let upperThumbPosition = upperThumb.frame.origin.x
-            
-            let distanceToLowerThumb = abs(touchPosition - lowerThumbPosition)
-            let distanceToUpperThumb = abs(touchPosition - upperThumbPosition)
-            
-            if distanceToLowerThumb < distanceToUpperThumb {
-                draggedThumb = lowerThumb
-            } else {
-                draggedThumb = upperThumb
-            }
-            
-            thumbTouchPosition = gestureRecognizer.location(in: draggedThumb).x
-            if draggedThumb === lowerThumb {
-                touchOffset = thumbSize - thumbTouchPosition
-            } else {
-                touchOffset = -thumbTouchPosition
-            }
-            
             hapticFeeback.prepare()
             
         case .ended:
             hapticFeeback.selectionChanged()
             
-        default:
+        case .changed:
             let sliderTouchPosition = gestureRecognizer.location(in: slidingStroke).x
             let newPosition = sliderTouchPosition + touchOffset
             let newValue = minValue + Double(newPosition) / widthRange * (maxValue - minValue)
@@ -316,7 +293,42 @@ class TwoThumbsSliderView: UIControl {
             }
             
             print("\(lowerValue):\(upperValue)")
+            
+        default:
+            return
         }
+    }
+    
+}
+
+extension TwoThumbsSliderView: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        let touchPosition = touch.location(in: self).x
+        
+        let lowerThumbPosition = lowerThumb.frame.midX
+        let upperThumbPosition = upperThumb.frame.midX
+        
+        let distanceToLowerThumb = abs(touchPosition - lowerThumbPosition)
+        let distanceToUpperThumb = abs(touchPosition - upperThumbPosition)
+        
+        if distanceToLowerThumb < distanceToUpperThumb && distanceToLowerThumb < 30.0 {
+            draggedThumb = lowerThumb
+        } else if distanceToLowerThumb > distanceToUpperThumb && distanceToUpperThumb < 30.0 {
+            draggedThumb = upperThumb
+        } else {
+            draggedThumb = nil
+            return false
+        }
+        
+        thumbTouchPosition = touch.location(in: draggedThumb).x
+        if draggedThumb === lowerThumb {
+            touchOffset = thumbSize - thumbTouchPosition
+        } else {
+            touchOffset = -thumbTouchPosition
+        }
+        
+        return true
     }
     
 }

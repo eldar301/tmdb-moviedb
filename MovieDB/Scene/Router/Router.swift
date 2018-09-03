@@ -78,6 +78,11 @@ class Router {
     func showDeailedSearchSettings() -> UIViewController {
         let detailedSearchSettingsVC = DetailedSearchSettingsViewController()
         detailedSearchSettingsVC.modalPresentationStyle = .popover
+        
+        let presenter = DetailedSearchSettingsPresenterDefault(input: self, output: self)
+        
+        detailedSearchSettingsVC.presenter = presenter
+        
 //        currentViewController?.present(detailedSearchSettingsVC, animated: true)
         return detailedSearchSettingsVC
     }
@@ -89,5 +94,22 @@ class Router {
             currentViewController?.present(childVC, animated: true)
         }
     }
+    
+}
+
+extension Router: DetailedSearchSettingsPresenterInput {
+    
+    var selectedGenre: Genre? {
+        return .western
+    }
+    
+    
+}
+
+extension Router: DetailedSearchSettingsPresenterOutput {
+    func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: SortBy) {
+        
+    }
+    
     
 }
