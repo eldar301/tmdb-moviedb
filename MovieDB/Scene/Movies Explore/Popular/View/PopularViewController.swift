@@ -14,7 +14,7 @@ class PopularViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    fileprivate var moviesCount: Int = 0
+    fileprivate var movies: [Movie] = []
     
     fileprivate let spacing: CGFloat = 10
     
@@ -22,7 +22,7 @@ class PopularViewController: UIViewController {
         super.viewDidLoad()
          
         presenter.view = self
-        presenter.refresh()
+        presenter.request()
         
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -37,8 +37,6 @@ class PopularViewController: UIViewController {
         self.extendedLayoutIncludesOpaqueBars = true
         
         collectionView.register(UINib(nibName: "PopularCell", bundle: nil), forCellWithReuseIdentifier: "popularCell")
-        
-//        navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -48,7 +46,11 @@ class PopularViewController: UIViewController {
     }
     
     @objc func refresh() {
-        presenter.refresh()
+        presenter.request()
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
 //    override func viewWillAppear(_ animated: Bool) {
@@ -70,26 +72,18 @@ class PopularViewController: UIViewController {
     
 }
 
-extension PopularViewController: UIGestureRecognizerDelegate {
+extension PopularViewController: MoviesExploreView {
     
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return (navigationController?.viewControllers.count ?? 0) > 1
-    }
-    
-}
-
-extension PopularViewController: PopularView {
-    
-    func updateWithNewMovies() {
+    func updateWithNewMovies(movies: [Movie]) {
+        self.movies = movies
         self.collectionView.refreshControl?.endRefreshing()
         self.collectionView.reloadData()
-        self.moviesCount = self.presenter.moviesCount
     }
     
-    func updateWithAdditionalMovies() {
-        let addIndexies = (self.moviesCount ..< self.presenter.moviesCount).map({ IndexPath(row: $0, section: 0) })
-        self.moviesCount = self.presenter.moviesCount
-        self.collectionView.insertItems(at: addIndexies)
+    func updateWithAdditionalMovies(movies: [Movie]) {
+        let addIndices = (self.movies.count ..< movies.count).map({ IndexPath(row: $0, section: 0) })
+        self.movies = movies
+        self.collectionView.insertItems(at: addIndices)
     }
     
     func showError(description: String) {
@@ -101,15 +95,15 @@ extension PopularViewController: PopularView {
 extension PopularViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return moviesCount
+        return movies.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "popularCell", for: indexPath) as! PopularCell
         
-        let configurator = presenter.configurator(forIndex: indexPath.row)
+        let movie = movies[indexPath.row]
         
-        cell.configure(withConfigurator: configurator)
+        cell.configure(withMovie: movie)
         
         return cell
     }
@@ -119,7 +113,7 @@ extension PopularViewController: UICollectionViewDataSource {
 extension PopularViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row + 10 >= presenter.moviesCount {
+        if indexPath.row + 10 >= movies.count {
             presenter.requestNext()
         }
     }
@@ -139,7 +133,7 @@ extension PopularViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presenter.showDetails(ofMovieWithIndex: indexPath.row)
+        presenter.showDetails(movie: movies[indexPath.row])
     }
     
 }

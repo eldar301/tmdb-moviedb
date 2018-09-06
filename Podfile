@@ -10,7 +10,6 @@ target 'MovieDB' do
   pod 'SwiftyJSON', '~> 4.1.0'
   pod 'Alamofire', '~> 4.7.3'
   pod 'SDWebImage', '~> 4.4.2'
-  pod 'SnapKit', '~> 4.0.0'  
 
   target 'MovieDBTests' do
     inherit! :search_paths

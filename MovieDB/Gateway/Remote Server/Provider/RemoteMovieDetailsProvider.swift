@@ -18,7 +18,7 @@ class RemoteMovieDetailsProvider: MovieDetailsProvider {
         self.networkHelper = networkHelper
     }
     
-    func details(forMovieID movieID: Int, completition: @escaping (Result<Movie>) -> ()) {
+    func details(forMovieID movieID: Int, completition: @escaping (Result<MovieDetails>) -> ()) {
         let request = MovieAPI.fullData(movieID: movieID).urlRequest
         
         networkHelper.jsonTask(request: request) { [weak self] result in
@@ -26,10 +26,10 @@ class RemoteMovieDetailsProvider: MovieDetailsProvider {
         }
     }
     
-    fileprivate func handle(result: Result<JSON>, completition: @escaping (Result<Movie>) -> ()) {
+    fileprivate func handle(result: Result<JSON>, completition: @escaping (Result<MovieDetails>) -> ()) {
         switch result {
         case .success(let json):
-            var movie = Mapper<MovieRS>()
+            let movie = Mapper<MovieRS>()
                 .map(JSONObject: json.rawValue)!
                 .entity
             
@@ -41,10 +41,7 @@ class RemoteMovieDetailsProvider: MovieDetailsProvider {
                 .mapArray(JSONObject: json["credits"]["cast"].rawValue)!
                 .compactMap({ $0.entity })
             
-            movie.reviews = reviews
-            movie.persons = persons
-            
-            completition(.success(movie))
+            completition(.success((movie: movie, casts: persons, reviews: reviews)))
         case .error(let description):
             completition(.error(description))
         }

@@ -9,42 +9,48 @@
 import Foundation
 
 protocol MoviesExploreView: class {
-    func updateWithNewMovies()
-    func updateWithAdditionalMovies()
+    func updateWithNewMovies(movies: [Movie])
+    func updateWithAdditionalMovies(movies: [Movie])
     func showError(description: String)
 }
 
-protocol MoviesExplorePresenter: class {
-    
+protocol MoviesExplorePresenter {
     var view: MoviesExploreView? { get set }
     
-    var moviesCount: Int { get }
-    
-    func refresh()
-    func requestNext()
-    func showDetails(ofMovieWithIndex: Int)
-    
+    func showDetails(movie: Movie)
 }
 
-extension MoviesExplorePresenter {
+class MoviesExplorePresenterDefault: MoviesExplorePresenter, MovieDetailsPresenterInput {
+
+    fileprivate let router: Router
     
-    func handleRequestResult(moviesOut: inout [Movie], result: Result<[Movie]>, refreshed: Bool) {
+    init(router: Router) {
+        self.router = router
+    }
+    
+    private(set) var selectedMovie: Movie?
+    
+    weak var view: MoviesExploreView?
+
+    func showDetails(movie: Movie) {
+        selectedMovie = movie
+        router.showMovieDetailsScene(fromMovieDetailsPresenterInput: self)
+    }
+    
+    func handleRequestResult(result: Result<[Movie]>, refreshed: Bool) {
         switch result {
         case .success(let movies):
-            moviesOut = movies
-            DispatchQueue.main.async {
-                if refreshed {
-                    self.view?.updateWithNewMovies()
-                } else {
-                    self.view?.updateWithAdditionalMovies()
-                }
+            if refreshed {
+                self.view?.updateWithNewMovies(movies: movies)
+            } else {
+                self.view?.updateWithAdditionalMovies(movies: movies)
             }
             
         case .error(let description):
-            DispatchQueue.main.async {
-                self.view?.showError(description: description)
-            }
+            self.view?.showError(description: description)
         }
     }
     
 }
+
+

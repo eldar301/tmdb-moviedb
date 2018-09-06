@@ -62,8 +62,8 @@ enum PaginationSearchAPI {
         case .detailedSearch(let genres, let ratingRange, let yearRange, let sortBy):
             let convertedGenres = genres.map({ "\(APIHelper.id(forGenre: $0))" }).joined(separator: ",")
             
-            let fromRating = ratingRange.lowerBound
-            let toRating = ratingRange.upperBound
+            let fromRating = ratingRange.lowerBound * 2.0
+            let toRating = ratingRange.upperBound * 2.0
             
             let fromYear = yearRange.lowerBound
             let toYear = yearRange.upperBound
@@ -75,7 +75,7 @@ enum PaginationSearchAPI {
                                     "vote_average.gte": "\(fromRating)",
                                     "vote_average.lte": "\(toRating)",
                                     "release_date.gte": "\(fromYear)",
-                                    "release_date.lte": "\(toYear)",
+                                    "release_date.lte": "\(toYear + 1)",
                                     "sort_by": APIHelper.sortDescription(forSort: sortBy)])
             
         case .popular:

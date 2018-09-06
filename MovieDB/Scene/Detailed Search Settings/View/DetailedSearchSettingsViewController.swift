@@ -29,9 +29,9 @@ class DetailedSearchSettingsViewController: UITableViewController {
         
         self.tableView.selectRow(at: IndexPath(row: configurator.selectedSortOptionIndex + 1, section: 0), animated: false, scrollPosition: .none)
         
-        self.tableView.selectRow(at: IndexPath(row: configurator.selectedGenreIndex, section: 1), animated: false, scrollPosition: .none)
-        
-        updateHeader()
+        for index in configurator.selectedGenreIndices {
+            self.tableView.selectRow(at: IndexPath(row: index, section: 1), animated: false, scrollPosition: .none)
+        }
         
         yearPicker.minValue = Double(configurator.minYear)
         yearPicker.maxValue = Double(configurator.maxYear)
@@ -47,11 +47,12 @@ class DetailedSearchSettingsViewController: UITableViewController {
     }
     
     override func loadView() {
-        loadTableView()
+        setupTableView()
         loadHeaderTableView()
+        loadSearchButton()
     }
     
-    fileprivate func loadTableView() {
+    fileprivate func setupTableView() {
         self.tableView = UITableView()
         self.tableView.backgroundColor = UIColor(red: 9.0 / 255.0,
                                                  green: 18.0 / 250.0,
@@ -63,6 +64,16 @@ class DetailedSearchSettingsViewController: UITableViewController {
     
     fileprivate func loadHeaderTableView() {
         let header = UIView()
+        header.translatesAutoresizingMaskIntoConstraints = false
+        self.tableView.tableHeaderView = header
+
+        let cancelButton = UIButton()
+        cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 17.0)
+        cancelButton.setTitle("Cancel", for: .normal)
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(cancelButton)
+
+        cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         
         let selectYearRangeLabel = UILabel()
         selectYearRangeLabel.font = UIFont.boldSystemFont(ofSize: 17.0)
@@ -92,37 +103,99 @@ class DetailedSearchSettingsViewController: UITableViewController {
         
         let margins = header.layoutMarginsGuide
         
+        cancelButton.trailingAnchor.constraint(equalTo: margins.trailingAnchor).isActive = true
+        cancelButton.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
+        cancelButton.bottomAnchor.constraint(equalTo: selectYearRangeLabel.bottomAnchor).isActive = true
+        
         selectYearRangeLabel.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
         selectYearRangeLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
         
         yearPicker.heightAnchor.constraint(equalToConstant: 64.0).isActive = true
-        yearPicker.topAnchor.constraint(equalTo: selectYearRangeLabel.bottomAnchor, constant: 30.0).isActive = true
+        yearPicker.topAnchor.constraint(equalTo: selectYearRangeLabel.bottomAnchor, constant: 45.0).isActive = true
         yearPicker.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 20.0).isActive = true
         yearPicker.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: -20.0).isActive = true
-        
         
         selectRatingLabel.topAnchor.constraint(equalTo: yearPicker.bottomAnchor, constant: 8.0).isActive = true
         selectRatingLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
         
-        
         ratingPicker.heightAnchor.constraint(equalToConstant: 64.0).isActive = true
-        ratingPicker.topAnchor.constraint(equalTo: selectRatingLabel.bottomAnchor, constant: 30.0).isActive = true
+        ratingPicker.topAnchor.constraint(equalTo: selectRatingLabel.bottomAnchor, constant: 45.0).isActive = true
         ratingPicker.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 20.0).isActive = true
         ratingPicker.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: -20.0).isActive = true
         ratingPicker.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
+    }
+    
+    fileprivate func loadSearchButton() {
+        let footerView = UIView()
+        footerView.frame = CGRect(origin: .zero, size: CGSize(width: self.tableView.bounds.width, height: 100.0))
         
-        self.tableView.tableHeaderView = header
+        let searchButton = UIButton()
+        searchButton.setTitle("Search", for: .normal)
+        searchButton.titleLabel?.textAlignment = .center
+        searchButton.layer.cornerRadius = 10.0
+        searchButton.layer.borderColor = UIColor.white.cgColor
+        searchButton.layer.borderWidth = 0.5
+        searchButton.translatesAutoresizingMaskIntoConstraints = false
+        footerView.addSubview(searchButton)
+        
+        searchButton.widthAnchor.constraint(equalToConstant: 150.0).isActive = true
+        searchButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor).isActive = true
+        searchButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor).isActive = true
+        
+        searchButton.addTarget(self, action: #selector(doSearch), for: .touchUpInside)
+        
+        self.tableView.tableFooterView = footerView
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        updateHeader()
     }
     
     fileprivate func updateHeader() {
         let header = self.tableView.tableHeaderView!
-        let headerWidth = header.bounds.width
+        let headerWidth = self.tableView.bounds.width
         
+        let tempConstraint = header.widthAnchor.constraint(equalTo: self.tableView!.widthAnchor)
+        tempConstraint.isActive = true
+    
         let headerHeight = header.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        
-        header.frame = CGRect(origin: .zero, size: CGSize(width: headerWidth, height: headerHeight))
-        
+
+        header.frame = CGRect(origin: header.frame.origin, size: CGSize(width: headerWidth, height: headerHeight))
+
         self.tableView.tableHeaderView = header
+        
+        header.removeConstraint(tempConstraint)
+    }
+    
+}
+
+extension DetailedSearchSettingsViewController {
+    
+    @objc func doSearch() {
+        let selectedYearFrom = yearPicker.intLowerValue
+        let selectedYearTo = yearPicker.intUpperValue
+        
+        let selectedRatingFrom = ratingPicker.lowerValue
+        let selectedRatingTo = ratingPicker.upperValue
+        
+        let selectedTableRows = self.tableView.indexPathsForSelectedRows!
+        
+        let selectedSortIndex = selectedTableRows.first(where: { $0.section == 0 })!.row - 1
+        
+        let selectedGenresIndices = selectedTableRows.compactMap({ $0.section == 1 ? $0.row : nil })
+        
+        presenter.setup(fromYear: selectedYearFrom,
+                        toYear: selectedYearTo,
+                        fromRating: selectedRatingFrom,
+                        toRating: selectedRatingTo,
+                        sortOptionIndex: selectedSortIndex,
+                        genreOptionsIndices: selectedGenresIndices)
+    }
+    
+    @objc func cancel() {
+        presenter.cancel()
     }
     
 }
@@ -135,6 +208,14 @@ extension DetailedSearchSettingsViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return section == 0 ? configurator.sortOptions.count + 2 : configurator.genreOptions.count
+    }
+    
+    override func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
+        if indexPath.section != 0 {
+            return indexPath
+        } else {
+            return nil
+        }
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
@@ -168,6 +249,7 @@ extension DetailedSearchSettingsViewController {
         cell.tintColor = .white
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
+        cell.textLabel?.textAlignment = .natural
         
         let index = indexPath.row
         let section = indexPath.section
@@ -177,11 +259,13 @@ extension DetailedSearchSettingsViewController {
             if index == 0 {
                 text = "Sort by"
                 cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 19.0)
+                cell.textLabel?.textAlignment = .center
             } else if index < configurator.sortOptions.count + 1 {
                 text = configurator.sortOptions[index - 1]
             } else {
                 text = "Genres"
                 cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 19.0)
+                cell.textLabel?.textAlignment = .center
             }
             
             cell.textLabel?.text = text

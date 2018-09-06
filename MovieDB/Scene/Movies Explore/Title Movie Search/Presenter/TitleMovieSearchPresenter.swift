@@ -1,39 +1,41 @@
 //
-//  PopularPresenter.swift
+//  TitleMovieSearchPresenter.swift
 //  MovieDB
 //
-//  Created by Eldar Goloviznin on 22/08/2018.
+//  Created by Eldar Goloviznin on 05/09/2018.
 //  Copyright © 2018 Eldar Goloviznin. All rights reserved.
 //
 
 import Foundation
 
-protocol PopularPresenter {
+protocol TitleMovieSearchPresenter {
     
     var view: MoviesExploreView? { get set }
     
-    func request()
-    func requestNext()
+    func search(title: String)
+    func searchNext()
     
     func showDetails(movie: Movie)
 }
 
-class PopularPresenterDefault: MoviesExplorePresenterDefault, PopularPresenter {
+class TitleMovieSearchPresenterDefault: MoviesExplorePresenterDefault, TitleMovieSearchPresenter {
 
+    fileprivate let router: Router
     fileprivate let moviesProvider: MoviesProvider
-
+    
     init(router: Router, moviesProvider: MoviesProvider) {
+        self.router = router
         self.moviesProvider = moviesProvider
         super.init(router: router)
     }
     
-    func request() {
-        moviesProvider.fetchPopularMovies { [weak self] result in
+    func search(title: String) {
+        moviesProvider.fetchMovies(withTitle: title) { [weak self] result in
             self?.handleRequestResult(result: result, refreshed: true)
         }
     }
     
-    func requestNext() {
+    func searchNext() {
         moviesProvider.fetchNext { [weak self] result in
             self?.handleRequestResult(result: result, refreshed: false)
         }

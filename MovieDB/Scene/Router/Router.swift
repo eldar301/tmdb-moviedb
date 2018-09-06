@@ -65,29 +65,63 @@ class Router {
         present(childVC: movieDetailsVC)
     }
     
-    func showGenreExplorer(input: DetailedSearchSettingsPresenterInput, output: DetailedSearchSettingsPresenterOutput) {
-        let presenter = DetailedSearchSettingsPresenterDefault(input: input, output: output)
+    func showGenreExplorer(input: DetailedMovieSearchPresenterInput) {
+        let detailedMovieSearchVC = DetailedMovieSearchViewController()
         
-//        let genreExplorerVC = UIStoryboard(name: "GenreExplorerStoryboard", bundle: nil).instantiateInitialViewController() as! GenreExplorerViewController
-//
-//        genreExplorerVC.presenter = presenter
-//
-//        present(childVC: genreExplorerVC)
+        let router = Router(viewController: detailedMovieSearchVC)
+        
+        let networkHelper = NetworkHelperDefault()
+        let moviesProvider = RemoteMoviesProvider(networkHelper: networkHelper)
+        
+        let presenter = DetailedMovieSeachPresenterDefault(router: router, moviesProvider: moviesProvider, input: input)
+        
+        detailedMovieSearchVC.presenter = presenter
+        
+        present(childVC: detailedMovieSearchVC)
     }
     
-    func showDeailedSearchSettings() -> UIViewController {
+    func showDetailedSearchSettings(input: DetailedSearchSettingsPresenterInput, output: DetailedSearchSettingsPresenterOutput) {
         let detailedSearchSettingsVC = DetailedSearchSettingsViewController()
         detailedSearchSettingsVC.modalPresentationStyle = .popover
         
-        let presenter = DetailedSearchSettingsPresenterDefault(input: self, output: self)
+        let router = Router(viewController: detailedSearchSettingsVC)
+        
+        let presenter = DetailedSearchSettingsPresenterDefault(router: router, input: input, output: output)
         
         detailedSearchSettingsVC.presenter = presenter
         
-//        currentViewController?.present(detailedSearchSettingsVC, animated: true)
-        return detailedSearchSettingsVC
+        presentModally(childVC: detailedSearchSettingsVC)
     }
     
-    fileprivate func present(childVC: UIViewController) {
+    func loadSearchResultsScene() {
+        let titleMovieSearchVC = TitleMovieSearchViewController()
+        
+        let router = Router(viewController: titleMovieSearchVC)
+        
+        let networkHelper = NetworkHelperDefault()
+        let moviesProvider = RemoteMoviesProvider(networkHelper: networkHelper)
+        let presenter = TitleMovieSearchPresenterDefault(router: router, moviesProvider: moviesProvider)
+        
+        titleMovieSearchVC.presenter = presenter
+        
+        let searchController = UISearchController(searchResultsController: titleMovieSearchVC)
+        searchController.searchResultsUpdater = currentViewController as? UISearchResultsUpdating
+        searchController.searchBar.delegate = currentViewController as? UISearchBarDelegate
+        searchController.searchBar.barStyle = .black
+        searchController.searchBar.tintColor = .white
+        searchController.searchBar.placeholder = "Title"
+        currentViewController?.navigationItem.searchController = searchController
+    }
+    
+    func dismiss() {
+        if let navVC = currentViewController?.navigationController {
+            navVC.popViewController(animated: true)
+        } else {
+            currentViewController?.dismiss(animated: true)
+        }
+    }
+    
+    fileprivate func present(childVC: UIViewController, animated: Bool = true) {
         if let navVC = currentViewController?.navigationController {
             navVC.pushViewController(childVC, animated: true)
         } else {
@@ -95,21 +129,25 @@ class Router {
         }
     }
     
-}
-
-extension Router: DetailedSearchSettingsPresenterInput {
-    
-    var selectedGenre: Genre? {
-        return .western
+    fileprivate func presentModally(childVC: UIViewController) {
+        currentViewController?.present(childVC, animated: true)
     }
-    
     
 }
 
-extension Router: DetailedSearchSettingsPresenterOutput {
-    func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: SortBy) {
-        
-    }
-    
-    
-}
+//extension Router: DetailedSearchSettingsPresenterInput {
+//    
+//    var selectedGenre: Genre? {
+//        return .western
+//    }
+//    
+//    
+//}
+//
+//extension Router: DetailedSearchSettingsPresenterOutput {
+//    func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: SortBy) {
+//        
+//    }
+//    
+//    
+//}

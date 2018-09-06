@@ -117,14 +117,14 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
     @objc func swipeReviewRight() {
         if centerAlignedIndex > 0 {
             centerAlignedIndex -= 1
-            reviewsCollectionView.scrollToItem(at: IndexPath(row: centerAlignedIndex, section: 0), at: .centeredHorizontally, animated: true)
+            reviewsCollectionView.scrollToItem(at: IndexPath(row: centerAlignedIndex, section: 0), at: .left, animated: true)
         }
     }
     
     @objc func swipeReviewLeft() {
         if centerAlignedIndex < presenter.reviewsCount - 1 {
             centerAlignedIndex += 1
-            reviewsCollectionView.scrollToItem(at: IndexPath(row: centerAlignedIndex, section: 0), at: .centeredHorizontally, animated: true)
+            reviewsCollectionView.scrollToItem(at: IndexPath(row: centerAlignedIndex, section: 0), at: .left, animated: true)
         }
     }
     
@@ -166,8 +166,10 @@ extension MovieDetailsViewController: MovieDetailsView {
         
         if presenter.reviewsCount != 0 {
             reviewsCollectionView.reloadData()
-            reviewsSectionHeightConstraint.constant = 250
+            reviewsSectionHeightConstraint.constant = 279
+            reviewsCollectionView.clipsToBounds = false
         } else {
+            reviewsCollectionView.clipsToBounds = true
             reviewsSectionHeightConstraint.constant = 0
         }
         
@@ -220,7 +222,7 @@ extension MovieDetailsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView === reviewsCollectionView {
             let height = reviewsCollectionView.bounds.height - 16.0
-            let width = reviewsCollectionView.bounds.width - 18.0
+            let width = reviewsCollectionView.bounds.width - 16.0
             
             return CGSize(width: width, height: height)
         } else {

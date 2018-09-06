@@ -49,7 +49,7 @@ struct DetailsConfigurator {
         
         var formattedBudget: String?
         if let originalBudget = movie.budget {
-            formattedBudget = "$\(budgetFormatter.string(from: NSNumber(value: originalBudget)) ?? "")"
+            formattedBudget = "$\(budgetFormatter.string(from: NSNumber(value: originalBudget)) ?? "" )"
         }
         
         self.title = movie.title
@@ -137,6 +137,10 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     
     fileprivate var movie: Movie
     
+    fileprivate var casts: [Person] = []
+    
+    fileprivate var reviews: [Review] = []
+    
     init?(input: MovieDetailsPresenterInput, provider: MovieDetailsProvider) {
         guard let movie = input.selectedMovie else {
             return nil
@@ -149,19 +153,21 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     weak var view: MovieDetailsView?
     
     var reviewsCount: Int {
-        return movie.reviews?.count ?? 0
+        return reviews.count
     }
     
     var castsCount: Int {
-        return movie.persons?.count ?? 0
+        return casts.count
     }
     
     func request() {
         view?.update()
         provider.details(forMovieID: movie.id) { [weak self] result in
             switch result {
-            case .success(let movie):
-                self?.movie = movie
+            case .success(let details):
+                self?.movie = details.movie
+                self?.reviews = details.reviews
+                self?.casts = details.casts
                 self?.view?.update()
                 
             case .error(let description):
@@ -175,11 +181,11 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     }
     
     func castConfigurator(forIndex index: Int) -> CastCellConfigurator {
-        return CastCellConfigurator(person: movie.persons?[index])
+        return CastCellConfigurator(person: casts[index])
     }
     
     func reviewConfigurator(forIndex index: Int) -> ReviewCellConfigurator {
-        return ReviewCellConfigurator(review: movie.reviews?[index])
+        return ReviewCellConfigurator(review: reviews[index])
     }
     
     func showReviews() {

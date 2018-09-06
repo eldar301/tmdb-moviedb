@@ -16,7 +16,7 @@ class MainViewController: UITabBarController {
         let popularViewController = Router.popularViewController()
         let browseViewController = Router.browseViewController()
         
-        self.viewControllers = [popularViewController, browseViewController, Router(viewController: self).showDeailedSearchSettings()]
+        self.viewControllers = [popularViewController, browseViewController]
     }
 
 }

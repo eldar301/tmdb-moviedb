@@ -32,16 +32,18 @@ class PopularCell: UICollectionViewCell {
         
         posterImageView.sd_cancelCurrentImageLoad()
         posterImageView.image = nil
+        
+        titleLabel.text = nil
     }
     
-    func configure(withConfigurator configurator: PopularCellConfigurator) {
-        titleLabel.text = configurator.title
+    func configure(withMovie movie: Movie) {
+        titleLabel.text = movie.title
 //        titleLabel.te
         
 //        requestedPosterImageURL = configurator.posterURL
 
 //        posterImageView.sd_setImage(with: configurator.posterURL)
-        posterImageView.sd_setImage(with: configurator.posterURL, placeholderImage: nil, options: []) { image, error, cacheType, imageURL in
+        posterImageView.sd_setImage(with: movie.posterURL ?? movie.backdropURL, placeholderImage: nil, options: []) { image, error, cacheType, imageURL in
             self.titleLabel.text = nil
         }
 

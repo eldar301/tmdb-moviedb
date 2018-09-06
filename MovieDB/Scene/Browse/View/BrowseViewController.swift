@@ -46,39 +46,39 @@ class BrowseViewController: UITableViewController {
         self.extendedLayoutIncludesOpaqueBars = true
         self.edgesForExtendedLayout = .top
         
-        (tableView.tableHeaderView as? UIControl)?.addTarget(self, action: #selector(showDetails), for: .touchUpInside)
+        self.navigationItem.hidesSearchBarWhenScrolling = false
         
-        let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchBar.barStyle = .black
-        searchController.searchBar.tintColor = .white
-        searchController.searchBar.placeholder = "Title"
-        self.navigationItem.searchController = searchController
+        (tableView.tableHeaderView as? UIControl)?.addTarget(self, action: #selector(showRandomMovieDetails), for: .touchUpInside)
+        
+        presenter.loadSearchResultsScene()
+        
+        self.definesPresentationContext = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationItem.hidesSearchBarWhenScrolling = true
+        
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         
         // simple hack to remove search bar glitch when popping back from child view controller (for example movie details vc)
-        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
+        //        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     }
     
-//    override func viewDidDisappear(_ animated: Bool) {
-//        super.viewDidDisappear(animated)
-//
-//        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
-//    }
+    //    override func viewDidDisappear(_ animated: Bool) {
+    //        super.viewDidDisappear(animated)
+    //
+    //        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
+    //    }
     
-    @objc func showDetails() {
-        presenter.showDetails()
+    @objc func showRandomMovieDetails() {
+        presenter.showRandomMovieDetails()
     }
     
     fileprivate func updateHeader() {
-        guard let header = self.tableView.tableHeaderView else {
-            return
-        }
+        let header = self.tableView.tableHeaderView!
         
         let headerWidth = header.bounds.width
         
@@ -94,7 +94,7 @@ class BrowseViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.genresCount
+        return presenter.genres.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -104,39 +104,35 @@ class BrowseViewController: UITableViewController {
         
         cell.selectionStyle = .none
         cell.textLabel?.textColor = .white
-        cell.textLabel?.text = presenter.titleForGenre(atIndex: indexPath.row)
+        cell.textLabel?.text = presenter.genres[indexPath.row].localizedString
         cell.backgroundColor = .clear
         
         return cell        
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        presenter.selectGenre(withIndex: indexPath.row)
+        presenter.select(genre: presenter.genres[indexPath.row])
     }
     
 }
 
 extension BrowseViewController: BrowseView {
     
-    func update() {
-        DispatchQueue.main.async {
-            self.updateData()
-        }
-    }
-    
-    fileprivate func updateData() {
+    func update(withRandomMovie movie: Movie) {
         tableView.refreshControl?.endRefreshing()
         
         randomMovieImageView.sd_cancelCurrentImageLoad()
         
-        let configurator = presenter.randomMovieConfigurator()
+        randomMovieImageView.sd_setImage(with: movie.backdropURL ?? movie.posterURL)
+        randomMovieTitle.text = movie.title
+        randomMovieOverview.text = movie.overview
         
-        randomMovieImageView.sd_setImage(with: configurator.backdropURL)
-        randomMovieTitle.text = configurator.title
-        randomMovieOverview.text = configurator.overview
-        randomMovieYearLabel.text = "\(configurator.year ?? 0)"
+        if let releaseDate = movie.releaseDate {
+            let year = Calendar.current.component(.year, from: releaseDate)
+            randomMovieYearLabel.text = "\(year)"
+        }
         
-        if let voteAverage = configurator.voteAverage, let voteCount = configurator.voteCount {
+        if let voteAverage = movie.voteAverage, let voteCount = movie.voteCount {
             randomMovieRatingView.rating = CGFloat(voteAverage)
             randomMovieRatingView.votesCount = voteCount
         }
@@ -151,10 +147,22 @@ extension BrowseViewController: BrowseView {
     
 }
 
+extension BrowseViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let title = searchBar.text!
+        (self.navigationItem.searchController?.searchResultsController as? TitleMovieSearchViewController)?.search(title: title)
+    }
+    
+}
+
 extension BrowseViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
-        
+        let title = searchController.searchBar.text!
+        if title.last == " " {
+            (self.navigationItem.searchController?.searchResultsController as? TitleMovieSearchViewController)?.search(title: title)
+        }
     }
     
 }
