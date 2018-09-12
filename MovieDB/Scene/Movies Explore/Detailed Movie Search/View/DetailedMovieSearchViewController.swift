@@ -25,7 +25,7 @@ class DetailedMovieSearchViewController: UICollectionViewController {
         self.navigationItem.largeTitleDisplayMode = .never
         
         self.extendedLayoutIncludesOpaqueBars = true
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
 //        self.navigationController?.navigationBar.prefersLargeTitles = true
         
         let specifyButton = UIBarButtonItem()

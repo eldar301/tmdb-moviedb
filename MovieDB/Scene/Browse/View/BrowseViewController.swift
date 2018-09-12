@@ -60,10 +60,10 @@ class BrowseViewController: UITableViewController {
         
         self.navigationItem.hidesSearchBarWhenScrolling = true
         
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         
         // simple hack to remove search bar glitch when popping back from child view controller (for example movie details vc)
-//        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
+        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
         //        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     }
     

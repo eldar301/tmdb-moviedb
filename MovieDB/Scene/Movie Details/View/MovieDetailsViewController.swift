@@ -55,11 +55,15 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         titleLabel.adjustsFontSizeToFitWidth = true
         
         posterImageView.contentMode = .scaleAspectFill
+        posterImageView.clipsToBounds = true
         posterImageView.layer.cornerRadius = 8.0
         
         backdropImageView.contentMode = .scaleAspectFill
         
         self.extendedLayoutIncludesOpaqueBars = true
+        
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.largeTitleDisplayMode = .always
         
         watchTrailerButton.layer.cornerRadius = 12.0
         
@@ -153,7 +157,7 @@ extension MovieDetailsViewController: MovieDetailsView {
         if details.trailerURL == nil {
             watchTrailerSectionHeightConstraint.constant = 0
         } else {
-            watchTrailerSectionHeightConstraint.constant = 56
+            watchTrailerSectionHeightConstraint.constant = 52
         }
         
         releasedLabel.text = details.releaseDate ?? "-"
@@ -167,9 +171,7 @@ extension MovieDetailsViewController: MovieDetailsView {
         if presenter.reviewsCount != 0 {
             reviewsCollectionView.reloadData()
             reviewsSectionHeightConstraint.constant = 279
-            reviewsCollectionView.clipsToBounds = false
         } else {
-            reviewsCollectionView.clipsToBounds = true
             reviewsSectionHeightConstraint.constant = 0
         }
         
@@ -238,11 +240,11 @@ extension MovieDetailsViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView === self.scrollView {
-            let offset = -scrollView.contentOffset.y + 30.0
+            let offset = -scrollView.contentOffset.y + 50.0
             if offset > 50 {
-                backdropHeightConstraint.constant = 310 + offset
+                backdropHeightConstraint.constant = 230 + offset
             } else {
-                backdropHeightConstraint.constant = 360
+                backdropHeightConstraint.constant = 280
             }
         }
     }

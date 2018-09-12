@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		780124B421390A5A007599EF /* UIViewNibInitiazlied.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780124B321390A5A007599EF /* UIViewNibInitiazlied.swift */; };
+		780199DE214949E3009F7F90 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C971A621345F3400CE1105 /* Router.swift */; };
 		7813222C212EB8C700060AB4 /* ReviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7813222A212EB8C700060AB4 /* ReviewCell.swift */; };
 		7813222D212EB8C700060AB4 /* ReviewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7813222B212EB8C700060AB4 /* ReviewCell.xib */; };
 		78132231212F04B500060AB4 /* MovieDetailsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78132230212F04B500060AB4 /* MovieDetailsPresenter.swift */; };
@@ -325,7 +326,6 @@
 			children = (
 				78C971A92134886F00CE1105 /* AdvancedBlurView */,
 				78C971A82134885A00CE1105 /* RatingView */,
-				781A018921390857004A4257 /* TwoThumbsSliderView */,
 				780124B321390A5A007599EF /* UIViewNibInitiazlied.swift */,
 			);
 			path = "Custom Views";
@@ -516,6 +516,7 @@
 			children = (
 				7831C9832132D00C00BCC902 /* RatingView.xib */,
 				7831C9852132D5A800BCC902 /* RatingView.swift */,
+				781A018921390857004A4257 /* TwoThumbsSliderView */,
 			);
 			path = RatingView;
 			sourceTree = "<group>";
@@ -924,6 +925,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				780199DE214949E3009F7F90 /* Router.swift in Sources */,
 				78CFD355212873C000519038 /* MovieDBUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
