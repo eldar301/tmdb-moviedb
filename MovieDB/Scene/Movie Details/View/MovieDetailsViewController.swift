@@ -100,21 +100,21 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         gradientLayer.frame = headerBlurView.bounds
         headerBlurView.layer.addSublayer(gradientLayer)
                 
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        
+        let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(close))
+        closeButton.tintColor = .white
+        self.navigationItem.rightBarButtonItem = closeButton
+    }
+    
+    @objc func close() {
+        presenter.dismiss()
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .defaultPrompt)
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .compact)
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .compactPrompt)
-//    }
     
     var centerAlignedIndex = 0
     

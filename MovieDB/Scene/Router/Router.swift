@@ -54,15 +54,21 @@ class Router {
         let networkHelper = NetworkHelperDefault()
         let movieDetailsProvider = RemoteMovieDetailsProvider(networkHelper: networkHelper)
         
-        guard let presenter = MovieDetailsPresenterDefault(input: input, provider: movieDetailsProvider) else {
+        let movieDetailsVC = UIStoryboard(name: "MovieDetailsStoryboard", bundle: nil).instantiateInitialViewController() as! MovieDetailsViewController
+        
+        let router = Router(viewController: movieDetailsVC)
+        
+        guard let presenter = MovieDetailsPresenterDefault(router: router, input: input, provider: movieDetailsProvider) else {
             return
         }
         
-        let movieDetailsVC = UIStoryboard(name: "MovieDetailsStoryboard", bundle: nil).instantiateInitialViewController() as! MovieDetailsViewController
         
         movieDetailsVC.presenter = presenter
         
-        present(childVC: movieDetailsVC)
+        let navVC = UINavigationController(rootViewController: movieDetailsVC)
+        
+        presentModally(childVC: navVC)
+//        present(childVC: movieDetailsVC)
     }
     
     func showGenreExplorer(input: DetailedMovieSearchPresenterInput) {
@@ -114,7 +120,7 @@ class Router {
     }
     
     func dismiss() {
-        if let navVC = currentViewController?.navigationController {
+        if let navVC = currentViewController?.navigationController, navVC.viewControllers[0] != currentViewController {
             navVC.popViewController(animated: true)
         } else {
             currentViewController?.dismiss(animated: true)

@@ -8,31 +8,34 @@
 
 import UIKit
 
-class TitleMovieSearchViewController: UICollectionViewController {
+class TitleMovieSearchViewController: UITableViewController {
     
     var presenter: TitleMovieSearchPresenter!
     
     fileprivate var movies: [Movie] = []
     
+    fileprivate var cachedCellHeights: [IndexPath: CGFloat] = [:]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         presenter.view = self
-
-//        self.extendedLayoutIncludesOpaqueBars = true
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-//        self.navigationController?.navigationBar.prefersLargeTitles = true
-//
-        self.collectionView.register(MovieCell.self, forCellWithReuseIdentifier: "MovieCell")
+        presenter.searchNext()
+        
+        self.navigationItem.largeTitleDisplayMode = .never
+        
+        self.extendedLayoutIncludesOpaqueBars = false
+        
+        self.tableView.register(MovieCell.self, forCellReuseIdentifier: "MovieCell")
     }
     
     override func loadView() {
-        let layout = UICollectionViewFlowLayout()
-        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        self.collectionView.backgroundColor = UIColor(red: 18.0 / 255.0,
-                                                      green: 27.0 / 250.0,
-                                                      blue: 36.0 / 255.0,
-                                                      alpha: 1.0)
+        self.tableView = UITableView()
+        self.tableView.separatorColor = .clear
+        self.tableView.backgroundColor = UIColor(red: 18.0 / 255.0,
+                                                 green: 27.0 / 255.0,
+                                                 blue: 36.0 / 255.0,
+                                                 alpha: 1.0)
     }
     
     func search(title: String) {
@@ -44,19 +47,21 @@ class TitleMovieSearchViewController: UICollectionViewController {
 extension TitleMovieSearchViewController: MoviesExploreView {
     
     func updateWithNewMovies(movies: [Movie]) {
+        self.cachedCellHeights.removeAll()
         self.movies = movies
+        self.tableView.reloadData()
+        
         if !movies.isEmpty {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-            }
+            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         }
-        self.collectionView.reloadData()
     }
     
     func updateWithAdditionalMovies(movies: [Movie]) {
-        let addIndices = (self.movies.count ..< movies.count).map({ IndexPath(row: $0, section: 0) })
+        let addRange = (self.movies.count ..< movies.count)
         self.movies = movies
-        self.collectionView.insertItems(at: addIndices)
+        self.tableView.beginUpdates()
+        self.tableView.insertSections(IndexSet(integersIn: addRange), with: .none)
+        self.tableView.endUpdates()
     }
     
     func showError(description: String) {
@@ -67,14 +72,20 @@ extension TitleMovieSearchViewController: MoviesExploreView {
 
 extension TitleMovieSearchViewController {
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return movies.count
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCell", for: indexPath) as! MovieCell
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
         
-        let movie = movies[indexPath.row]
+        let movie = movies[indexPath.section]
+        
+        cell.selectionStyle = .none
         
         cell.configure(withMovie: movie)
         
@@ -85,21 +96,33 @@ extension TitleMovieSearchViewController {
 
 extension TitleMovieSearchViewController {
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presenter.showDetails(movie: movies[indexPath.row])
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
     }
     
-    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row + 4 >= movies.count {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 20.0
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return cachedCellHeights[indexPath] ?? 200.0
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presenter.showDetails(movie: movies[indexPath.section])
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cachedCellHeights[indexPath] = cell.bounds.height
+        if indexPath.section + 4 >= movies.count {
             presenter.searchNext()
         }
     }
     
-}
-
-extension TitleMovieSearchViewController: UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 650.0)
-    }
 }

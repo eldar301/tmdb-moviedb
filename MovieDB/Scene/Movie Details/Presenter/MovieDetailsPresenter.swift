@@ -104,6 +104,7 @@ protocol MovieDetailsPresenter {
     func reviewConfigurator(forIndex: Int) -> ReviewCellConfigurator
     func showReviews()
     func watchTrailer()
+    func dismiss()
     
 }
 
@@ -141,11 +142,14 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     
     fileprivate var reviews: [Review] = []
     
-    init?(input: MovieDetailsPresenterInput, provider: MovieDetailsProvider) {
+    fileprivate let router: Router
+    
+    init?(router: Router, input: MovieDetailsPresenterInput, provider: MovieDetailsProvider) {
         guard let movie = input.selectedMovie else {
             return nil
         }
         
+        self.router = router
         self.movie = movie
         self.provider = provider
     }
@@ -194,6 +198,10 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     
     func watchTrailer() {
         print("ToDo")
+    }
+    
+    func dismiss() {
+        router.dismiss()
     }
     
     

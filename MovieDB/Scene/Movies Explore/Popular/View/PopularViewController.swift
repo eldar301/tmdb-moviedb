@@ -42,7 +42,7 @@ class PopularViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
     }
     
     @objc func refresh() {
@@ -52,23 +52,6 @@ class PopularViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(true)
-//        self.navigationController?.setNavigationBarHidden(false, animated: true)
-//    }
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(true)
-//        self.navigationController?.setNavigationBarHidden(true, animated: true)
-//    }
-    
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//
-//        self.transitionCoordinator?.animate(alongsideTransition: { _ in
-//            self.navigationController?.navigationBar.alpha = 0.0
-//        })
-//    }
     
 }
 
@@ -134,6 +117,19 @@ extension PopularViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         presenter.showDetails(movie: movies[indexPath.row])
+    }
+    
+}
+
+extension PopularViewController {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let switchView = self.switchView else {
+            return
+        }
+        let v: CGFloat = 70.0
+        let height = self.navigationController!.navigationBar.bounds.height
+        switchView.alpha = (height - v) / (96 - v)
     }
     
 }

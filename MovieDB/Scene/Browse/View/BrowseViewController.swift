@@ -12,8 +12,6 @@ class BrowseViewController: UITableViewController {
     
     var presenter: BrowsePresenter!
     
-    //    fileprivate var requestedRandomMovieImageURL: URL?
-    
     @IBOutlet weak var randomMovieImageView: UIImageView!
     
     @IBOutlet weak var randomMovieTitle: UILabel!
@@ -26,7 +24,8 @@ class BrowseViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter = BrowsePresenterDefault(router: Router(viewController: self), randomMovieProvider: RemoteRandomMovieProvider(moviesProvider: RemoteMoviesProvider(networkHelper: NetworkHelperDefault())))
+        
+        self.tabBarItem.image = 
         
         presenter.view = self
         presenter.refresh()
@@ -46,8 +45,6 @@ class BrowseViewController: UITableViewController {
         self.extendedLayoutIncludesOpaqueBars = true
         self.edgesForExtendedLayout = .top
         
-        self.navigationItem.hidesSearchBarWhenScrolling = false
-        
         (tableView.tableHeaderView as? UIControl)?.addTarget(self, action: #selector(showRandomMovieDetails), for: .touchUpInside)
         
         presenter.loadSearchResultsScene()
@@ -58,20 +55,8 @@ class BrowseViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.navigationItem.hidesSearchBarWhenScrolling = true
-        
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        
-        // simple hack to remove search bar glitch when popping back from child view controller (for example movie details vc)
         self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
-        //        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     }
-    
-    //    override func viewDidDisappear(_ animated: Bool) {
-    //        super.viewDidDisappear(animated)
-    //
-    //        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
-    //    }
     
     @objc func showRandomMovieDetails() {
         presenter.showRandomMovieDetails()
@@ -160,6 +145,8 @@ extension BrowseViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         let title = searchController.searchBar.text!
+        // workaround to remove shadow image from searchbar
+        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = title.count == 0
         if title.last == " " {
             (self.navigationItem.searchController?.searchResultsController as? TitleMovieSearchViewController)?.search(title: title)
         }
