@@ -45,9 +45,9 @@ class DetailedMovieSearchViewController: UITableViewController {
         self.tableView = UITableView()
         self.tableView.separatorColor = .clear
         self.tableView.backgroundColor = UIColor(red: 18.0 / 255.0,
-                                                      green: 27.0 / 255.0,
-                                                      blue: 36.0 / 255.0,
-                                                      alpha: 1.0)
+                                                 green: 27.0 / 255.0,
+                                                 blue: 36.0 / 255.0,
+                                                 alpha: 1.0)
     }
     
     @objc func showDetailedSearchSettings() {

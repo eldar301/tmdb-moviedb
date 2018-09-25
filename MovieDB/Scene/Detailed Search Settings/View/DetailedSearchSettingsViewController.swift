@@ -66,6 +66,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         let header = UIView()
         header.translatesAutoresizingMaskIntoConstraints = false
         self.tableView.tableHeaderView = header
+        header.topAnchor.constraint(equalTo: self.tableView.topAnchor).isActive = true
 
         let cancelButton = UIButton()
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 17.0)
@@ -157,7 +158,10 @@ class DetailedSearchSettingsViewController: UITableViewController {
         let header = self.tableView.tableHeaderView!
         let headerWidth = self.tableView.bounds.width
         
-        let tempConstraint = header.widthAnchor.constraint(equalTo: self.tableView!.widthAnchor)
+        let temp = header.leadingAnchor.constraint(equalTo: self.tableView.leadingAnchor)
+        temp.isActive = true
+
+        let tempConstraint = header.widthAnchor.constraint(equalTo: self.tableView.widthAnchor)
         tempConstraint.isActive = true
     
         let headerHeight = header.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
@@ -167,6 +171,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         self.tableView.tableHeaderView = header
         
         header.removeConstraint(tempConstraint)
+        header.removeConstraint(temp)
     }
     
 }

@@ -22,10 +22,10 @@ class BrowseViewController: UITableViewController {
     
     @IBOutlet weak var randomMovieOverview: UILabel!
     
+    fileprivate var appearingAfterLoading = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.tabBarItem.image = 
         
         presenter.view = self
         presenter.refresh()
@@ -55,7 +55,10 @@ class BrowseViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
+        if appearingAfterLoading {
+            self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = true
+            appearingAfterLoading = false
+        }
     }
     
     @objc func showRandomMovieDetails() {

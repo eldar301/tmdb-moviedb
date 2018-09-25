@@ -120,16 +120,3 @@ extension PopularViewController: UICollectionViewDelegateFlowLayout {
     }
     
 }
-
-extension PopularViewController {
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let switchView = self.switchView else {
-            return
-        }
-        let v: CGFloat = 70.0
-        let height = self.navigationController!.navigationBar.bounds.height
-        switchView.alpha = (height - v) / (96 - v)
-    }
-    
-}

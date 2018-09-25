@@ -27,5 +27,13 @@ class MainViewController: UITabBarController {
         
         self.viewControllers = [popularViewController, browseViewController]
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.viewControllers![1].tabBarItem.title = ""
+        self.viewControllers![1].tabBarItem.image = #imageLiteral(resourceName: "Browse Icon Regular")
+        self.viewControllers![1].tabBarItem.imageInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: -10.0, right: 0.0)
+    }
 
 }
