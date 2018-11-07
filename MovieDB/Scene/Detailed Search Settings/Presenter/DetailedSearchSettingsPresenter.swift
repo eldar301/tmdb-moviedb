@@ -44,16 +44,16 @@ protocol DetailedSearchSettingsPresenter {
 
 class DetailedSearchSettingsPresenterDefault: DetailedSearchSettingsPresenter {
     
-    fileprivate let router: Router
+    private let router: Router
     
-    fileprivate weak var output: DetailedSearchSettingsPresenterOutput?
+    private weak var output: DetailedSearchSettingsPresenterOutput?
     
-    fileprivate let selectedGenres: [Genre]
-    fileprivate let selectedSortOption: SortBy
-    fileprivate let selectedYearFrom: Int
-    fileprivate let selectedYearTo: Int
-    fileprivate let selectedRatingFrom: Double
-    fileprivate let selectedRatingTo: Double
+    private let selectedGenres: [Genre]
+    private let selectedSortOption: SortBy
+    private let selectedYearFrom: Int
+    private let selectedYearTo: Int
+    private let selectedRatingFrom: Double
+    private let selectedRatingTo: Double
     
     init(router: Router, input: DetailedSearchSettingsPresenterInput, output: DetailedSearchSettingsPresenterOutput) {
         self.router = router
@@ -68,9 +68,9 @@ class DetailedSearchSettingsPresenterDefault: DetailedSearchSettingsPresenter {
         self.output = output
     }
     
-    fileprivate lazy var supportedSortOptions = SortBy.allCases
+    private lazy var supportedSortOptions = SortBy.allCases
     
-    fileprivate lazy var supportGenreOptions = Genre.allCases
+    private lazy var supportGenreOptions = Genre.allCases
     
     func configurator() -> DetailedSearchSettingsConfigurator {
         return DetailedSearchSettingsConfigurator(minYear: 1900,

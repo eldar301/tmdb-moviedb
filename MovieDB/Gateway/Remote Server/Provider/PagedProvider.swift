@@ -12,22 +12,22 @@ import SwiftyJSON
 
 class PagedProvider<T: EntityRS> {
     
-    fileprivate let networkHelper: NetworkHelper
+    private let networkHelper: NetworkHelper
     
-    fileprivate let apiEndpoint: PaginationSearchAPI
+    private let apiEndpoint: PaginationSearchAPI
     
     init(apiEndpoint: PaginationSearchAPI, networkHelper: NetworkHelper) {
         self.apiEndpoint = apiEndpoint
         self.networkHelper = networkHelper
     }
     
-    fileprivate var currentPage: Int = 0
-    fileprivate var requestedPage: Int?
-    fileprivate var totalPages: Int?
+    private var currentPage: Int = 0
+    private var requestedPage: Int?
+    private var totalPages: Int?
     
-    fileprivate var results: [T.Entity] = []
+    private var results: [T.Entity] = []
     
-    func fetchNext(completition: @escaping (Result<[T.Entity]>) -> ()) {
+    func fetchNext(completion: @escaping (Result<[T.Entity]>) -> ()) {
         if let requestedPage = self.requestedPage {
             guard currentPage == requestedPage else {
                 print("Attempt to get next page, when previous one is not loaded yet")
@@ -47,36 +47,36 @@ class PagedProvider<T: EntityRS> {
         let nextRequest = apiEndpoint.urlRequest(page: requestedPage!)
         
         networkHelper.jsonTask(request: nextRequest) { [weak self] result in
-            guard self != nil else {
+            guard let self = self else {
                 return
             }
             
             switch result {
             case .success(let json):
-                self?.update(withJSON: json)
+                self.update(withJSON: json)
                 
                 let newValues = Mapper<T>()
                     .mapArray(JSONObject: json["results"].rawValue)!
                     .compactMap({ $0.entity })
                 
-                self?.results += newValues
+                self.results += newValues
                 
-                completition(.success(self!.results))
+                completion(.success(self.results))
                 
             case .error(let description):
-                self?.resetRequest()
+                self.resetRequest()
                 
-                completition(.error(description))
+                completion(.error(description))
             }
         }
     }
     
-    fileprivate func resetRequest() {
+    private func resetRequest() {
         print("Resetting requested page to current page state")
         requestedPage = currentPage
     }
     
-    fileprivate func update(withJSON json: JSON) {
+    private func update(withJSON json: JSON) {
         print("Updating current page and total pages")
         currentPage = json["page"].int!
         totalPages = json["total_pages"].int!

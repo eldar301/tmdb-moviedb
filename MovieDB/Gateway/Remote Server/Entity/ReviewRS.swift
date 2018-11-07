@@ -9,12 +9,12 @@
 import Foundation
 import ObjectMapper
 
-struct ReviewRS {
+class ReviewRS {
     var id: String!
     var author: String?
     var content: String?
     
-    init?(map: Map) {
+    required init?(map: Map) {
         guard map.JSON["id"] != nil else {
             return nil
         }
@@ -25,7 +25,7 @@ extension ReviewRS: EntityRS {
     
     typealias Entity = Review
     
-    mutating func mapping(map: Map) {
+    func mapping(map: Map) {
         id      <- map["id"]
         author  <- map["author"]
         content <- map["content"]

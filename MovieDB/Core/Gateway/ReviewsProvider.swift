@@ -9,6 +9,6 @@
 import Foundation
 
 protocol ReviewsProvider {
-    func fetchReviews(forMovieID: Int, completition: @escaping (Result<[Review]>) -> ())
+    func fetchReviews(forMovieID: Int, completion: @escaping (Result<[Review]>) -> ())
     func fetchNext(completition: @escaping (Result<[Review]>) -> ())
 }

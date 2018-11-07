@@ -33,30 +33,6 @@ class NetworkHelperDefault: NetworkHelper {
                     completition(.error(error.localizedDescription))
                 }
             })
-        
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            if let error = error {
-//                completition(.error(error.localizedDescription))
-//                return
-//            }
-//            
-//            guard let httpURLResponse = response as? HTTPURLResponse else {
-//                completition(.error(NetworkError.failedToParseResponse.localizedDescription))
-//                return
-//            }
-//            
-//            guard 200 ... 299 ~= httpURLResponse.statusCode else {
-//                completition(.error("Bad response"))
-//                return
-//            }
-//            
-//            do {
-//                let json = try JSON(data: data!)
-//                completition(.success(json))
-//            } catch let error {
-//                completition(.error(error.localizedDescription))
-//            }
-//        }.resume()
     }
     
 }

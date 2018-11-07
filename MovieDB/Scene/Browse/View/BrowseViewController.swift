@@ -22,7 +22,7 @@ class BrowseViewController: UITableViewController {
     
     @IBOutlet weak var randomMovieOverview: UILabel!
     
-    fileprivate var appearingAfterLoading = true
+    private var appearingAfterLoading = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +49,8 @@ class BrowseViewController: UITableViewController {
         
         presenter.loadSearchResultsScene()
         
+        self.navigationItem.searchController?.searchBar.keyboardAppearance = .dark
+        
         self.definesPresentationContext = true
     }
     
@@ -65,7 +67,7 @@ class BrowseViewController: UITableViewController {
         presenter.showRandomMovieDetails()
     }
     
-    fileprivate func updateHeader() {
+    private func updateHeader() {
         let header = self.tableView.tableHeaderView!
         
         let headerWidth = header.bounds.width

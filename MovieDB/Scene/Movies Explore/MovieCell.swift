@@ -11,10 +11,10 @@ import SDWebImage
 
 class MovieCell: UITableViewCell {
     
-    fileprivate weak var titleLabel: UILabel!
-    fileprivate weak var posterImageView: UIImageView!
-    fileprivate weak var ratingView: RatingView!
-    fileprivate weak var overviewLabel: UILabel!
+    private weak var titleLabel: UILabel!
+    private weak var posterImageView: UIImageView!
+    private weak var ratingView: RatingView!
+    private weak var overviewLabel: UILabel!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -45,9 +45,11 @@ class MovieCell: UITableViewCell {
         ratingView.votesCount = movie.voteCount ?? 0
     
         overviewLabel.text = movie.overview
+        
+        self.setNeedsLayout()
     }
     
-    fileprivate func setup() {
+    private func setup() {
         self.backgroundColor = UIColor.darkGray.withAlphaComponent(0.1)
         self.layer.cornerRadius = 10.0
         self.clipsToBounds = true
@@ -96,6 +98,7 @@ class MovieCell: UITableViewCell {
         ratingView.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: 8.0).isActive = true
         ratingView.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor).isActive = true
         ratingView.heightAnchor.constraint(equalToConstant: 22.0).isActive = true
+        ratingView.height = 22.0
         
         overviewLabel.topAnchor.constraint(equalTo: ratingView.bottomAnchor, constant: 8.0).isActive = true
         overviewLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true

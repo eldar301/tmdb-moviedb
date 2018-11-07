@@ -13,8 +13,6 @@ class CastCell: UICollectionViewCell {
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     
-//    fileprivate var requestedProfileImageURL: URL?
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -29,22 +27,11 @@ class CastCell: UICollectionViewCell {
         profileImageView.image = nil
     }
     
-    func configure(withConfigurator configurator: CastCellConfigurator) {
+    func configure(cast: Person) {
         nameLabel.adjustsFontSizeToFitWidth = true
-        nameLabel.text = configurator.name
+        nameLabel.text = cast.name
         
-//        requestedProfileImageURL = configurator.profileImageURL
-        
-        profileImageView.sd_setImage(with: configurator.profileImageURL)
-//        profileImageView.sd_setImage(with: requestedProfileImageURL) { image, error, cacheType, url in
-//            DispatchQueue.main.async { [weak self] in
-//                guard url == self?.requestedProfileImageURL else {
-//                    return
-//                }
-//
-//                self?.profileImageView.image = image
-//            }
-//        }
+        profileImageView.sd_setImage(with: cast.profileImageURL)
     }
 
 }

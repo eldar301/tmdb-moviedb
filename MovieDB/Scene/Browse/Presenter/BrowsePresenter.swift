@@ -28,8 +28,8 @@ protocol BrowsePresenter {
 
 class BrowsePresenterDefault: BrowsePresenter, MovieDetailsPresenterInput, DetailedMovieSearchPresenterInput {
    
-    fileprivate let router: Router
-    fileprivate let randomMovieProvider: RandomMovieProvider
+    private let router: Router
+    private let randomMovieProvider: RandomMovieProvider
     
     init(router: Router, randomMovieProvider: RandomMovieProvider) {
         self.router = router

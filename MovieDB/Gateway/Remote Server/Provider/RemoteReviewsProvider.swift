@@ -10,22 +10,22 @@ import Foundation
 
 class RemoteReviewsProvider: ReviewsProvider {
 
-    fileprivate let networkHelper: NetworkHelper
+    private let networkHelper: NetworkHelper
     
     init(networkHelper: NetworkHelper) {
         self.networkHelper = networkHelper
     }
     
-    fileprivate var pagedProvider: PagedProvider<ReviewRS>?
+    private var pagedProvider: PagedProvider<ReviewRS>?
     
-    func fetchReviews(forMovieID movieID: Int, completition: @escaping (Result<[Review]>) -> ()) {
+    func fetchReviews(forMovieID movieID: Int, completion: @escaping (Result<[Review]>) -> ()) {
         let request = PaginationSearchAPI.reviews(movieID: movieID)
         pagedProvider = PagedProvider(apiEndpoint: request, networkHelper: networkHelper)
-        pagedProvider?.fetchNext(completition: completition)
+        pagedProvider?.fetchNext(completion: completion)
     }
     
     func fetchNext(completition: @escaping (Result<[Review]>) -> ()) {
-        pagedProvider?.fetchNext(completition: completition)
+        pagedProvider?.fetchNext(completion: completition)
     }
     
 }

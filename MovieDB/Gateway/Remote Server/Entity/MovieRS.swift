@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-struct MovieRS {
+class MovieRS {
     
     var id: Int!
     var title: String?
@@ -24,7 +24,7 @@ struct MovieRS {
     var voteAverage: Double?
     var voteCount: Int?
     
-    init?(map: Map) {
+    required init?(map: Map) {
         guard map.JSON["id"] != nil else {
             return nil
         }
@@ -36,7 +36,7 @@ extension MovieRS: EntityRS {
     
     typealias Entity = Movie
     
-    mutating func mapping(map: Map) {
+    func mapping(map: Map) {
         id              <- map["id"]
         title           <- map["title"]
         overview        <- map["overview"]
@@ -54,8 +54,8 @@ extension MovieRS: EntityRS {
     var entity: Movie {
         let convertedGenres = self.genres?.compactMap({ $0["id"] as? Int }).compactMap({ APIHelper.genre(forID: $0) })
 
-        let posterURL = APIHelper.url(forPath: self.posterPath, withSize: APIHelper.PosterSize.w500)
-        let backdropURL = APIHelper.url(forPath: self.backdropPath, withSize: APIHelper.BackdropSize.w780)
+        let posterURL = APIHelper.url(forPath: self.posterPath, withSize: APIHelper.PosterSize.w500.rawValue)
+        let backdropURL = APIHelper.url(forPath: self.backdropPath, withSize: APIHelper.BackdropSize.w780.rawValue)
         
         var trailerURL: URL?
         if let videos = self.videos {

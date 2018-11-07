@@ -10,28 +10,28 @@ import Foundation
 
 struct APIHelper {
     
-    struct BackdropSize {
-        static let w300 = "w300"
-        static let w780 = "w780"
-        static let w1280 = "w1280"
-        static let original = "original"
+    enum BackdropSize: String {
+        case w300
+        case w780
+        case w1280
+        case original
     }
     
-    struct PosterSize {
-        static let w92 = "w92"
-        static let w154 = "w154"
-        static let w185 = "w185"
-        static let w342 = "w342"
-        static let w500 = "w500"
-        static let w780 = "w780"
-        static let original = "original"
+    enum PosterSize: String {
+        case w92
+        case w154
+        case w185
+        case w342
+        case w500
+        case w780
+        case original
     }
     
-    struct ProfileSize {
-        static let w45 = "w45"
-        static let w185 = "w185"
-        static let h632 = "h632"
-        static let original = "original"
+    enum ProfileSize: String {
+        case w45
+        case w185
+        case h632
+        case original
     }
     
     static func id(forGenre genre: Genre) -> Int {
@@ -125,7 +125,6 @@ struct APIHelper {
         for query in queries {
             configurator.queryItems?.append(URLQueryItem(name: query.key, value: query.value))
         }
-        print(configurator.url!)
         
         return configurator.url!
     }
@@ -144,7 +143,6 @@ struct API {
     
     fileprivate static let apiKey = "c10c04cb3d4049b358a035c060a8502c"
     fileprivate static let baseURL = "https://api.themoviedb.org/3/"
-    
     fileprivate static let imageBaseURL = "https://image.tmdb.org/t/p"
     
 }

@@ -11,5 +11,5 @@ import Foundation
 typealias MovieDetails = (movie: Movie, casts: [Person], reviews: [Review])
 
 protocol MovieDetailsProvider {
-    func details(forMovieID: Int, completition: @escaping (Result<MovieDetails>) -> ())
+    func details(forMovieID: Int, completion: @escaping (Result<MovieDetails>) -> ())
 }

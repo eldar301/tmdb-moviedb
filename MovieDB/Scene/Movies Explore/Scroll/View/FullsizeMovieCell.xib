@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="" id="gTV-IL-0wX" customClass="FullsizeMovieCell" customModule="MovieDB" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="160" height="160"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="160" height="160"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HQU-ae-vb5">
+                        <rect key="frame" x="0.0" y="0.0" width="160" height="160"/>
+                    </imageView>
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mq0-30-Y3H">
+                        <rect key="frame" x="0.0" y="0.0" width="160" height="160"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.40000000000000002" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Very cool title for the movie: Volume 2. Live" lineBreakMode="wordWrap" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pex-Na-2NX">
+                        <rect key="frame" x="4" y="0.0" width="156" height="131.5"/>
+                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="24"/>
+                        <color key="textColor" red="0.92549019610000005" green="0.94117647059999998" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="mq0-30-Y3H" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="BNO-Br-uqF"/>
+                <constraint firstAttribute="trailing" secondItem="HQU-ae-vb5" secondAttribute="trailing" id="CIk-v9-h0k"/>
+                <constraint firstItem="mq0-30-Y3H" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="GNR-Gv-O4d"/>
+                <constraint firstAttribute="bottom" secondItem="mq0-30-Y3H" secondAttribute="bottom" id="I7Y-hJ-Nym"/>
+                <constraint firstAttribute="trailing" secondItem="mq0-30-Y3H" secondAttribute="trailing" id="T3d-uu-WtU"/>
+                <constraint firstItem="HQU-ae-vb5" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Xa3-zk-sVR"/>
+                <constraint firstAttribute="trailing" secondItem="Pex-Na-2NX" secondAttribute="trailing" id="Z73-Yc-OHh"/>
+                <constraint firstAttribute="bottom" secondItem="HQU-ae-vb5" secondAttribute="bottom" id="n0f-7A-EMF"/>
+                <constraint firstItem="Pex-Na-2NX" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="4" id="nF2-Gf-d9M"/>
+                <constraint firstItem="HQU-ae-vb5" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="rUE-4m-BKa"/>
+                <constraint firstItem="Pex-Na-2NX" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="udK-Zo-ERc"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <size key="customSize" width="168" height="165"/>
+            <connections>
+                <outlet property="posterImageView" destination="HQU-ae-vb5" id="vUz-jN-zUh"/>
+                <outlet property="titleLabel" destination="Pex-Na-2NX" id="D0x-2y-1M4"/>
+            </connections>
+            <point key="canvasLocation" x="131" y="117"/>
+        </collectionViewCell>
+    </objects>
+</document>

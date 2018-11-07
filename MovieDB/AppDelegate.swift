@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import SDWebImage
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        SDImageCache.shared().maxMemoryCountLimit = 50
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = MainViewController()
@@ -47,4 +49,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
-

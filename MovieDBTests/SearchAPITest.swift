@@ -11,8 +11,8 @@ import XCTest
 
 class SearchAPITest: XCTestCase {
     
-    fileprivate let apiKey = "c10c04cb3d4049b358a035c060a8502c"
-    fileprivate let baseURL = "https://api.themoviedb.org/3/"
+    private let apiKey = "c10c04cb3d4049b358a035c060a8502c"
+    private let baseURL = "https://api.themoviedb.org/3/"
     
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.

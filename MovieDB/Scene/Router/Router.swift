@@ -11,25 +11,41 @@ import UIKit
 
 class Router {
     
-    fileprivate weak var currentViewController: UIViewController?
+    private weak var currentViewController: UIViewController?
     
     init(viewController: UIViewController) {
         self.currentViewController = viewController
     }
     
     class func popularViewController() -> UIViewController {
-        let navVC = UIStoryboard(name: "PopularStoryboard", bundle: nil).instantiateInitialViewController() as! UINavigationController
+        let navVC = UIStoryboard(name: "MoviesScrollStoryboard", bundle: nil).instantiateInitialViewController() as! UINavigationController
         
-        let popularVC = navVC.viewControllers[0] as! PopularViewController
+        let popularVC = navVC.viewControllers[0] as! MoviesScrollViewController
         
         let router = Router(viewController: popularVC)
 
         let networkHelper = NetworkHelperDefault()
         let moviesProvider = RemoteMoviesProvider(networkHelper: networkHelper)
-        let presenter = PopularPresenterDefault(router: router, moviesProvider: moviesProvider)
+        let presenter = MoviesScrollPresenterDefault(router: router, moviesProvider: moviesProvider, category: .popular)
 
         popularVC.presenter = presenter
 
+        return navVC
+    }
+    
+    class func topRatedViewController() -> UIViewController {
+        let navVC = UIStoryboard(name: "MoviesScrollStoryboard", bundle: nil).instantiateInitialViewController() as! UINavigationController
+        
+        let popularVC = navVC.viewControllers[0] as! MoviesScrollViewController
+        
+        let router = Router(viewController: popularVC)
+        
+        let networkHelper = NetworkHelperDefault()
+        let moviesProvider = RemoteMoviesProvider(networkHelper: networkHelper)
+        let presenter = MoviesScrollPresenterDefault(router: router, moviesProvider: moviesProvider, category: .topRated)
+        
+        popularVC.presenter = presenter
+        
         return navVC
     }
     
@@ -62,13 +78,11 @@ class Router {
             return
         }
         
-        
         movieDetailsVC.presenter = presenter
         
         let navVC = UINavigationController(rootViewController: movieDetailsVC)
         
         presentModally(childVC: navVC)
-//        present(childVC: movieDetailsVC)
     }
     
     func showGenreExplorer(input: DetailedMovieSearchPresenterInput) {
@@ -127,7 +141,7 @@ class Router {
         }
     }
     
-    fileprivate func present(childVC: UIViewController, animated: Bool = true) {
+    private func present(childVC: UIViewController, animated: Bool = true) {
         if let navVC = currentViewController?.navigationController {
             navVC.pushViewController(childVC, animated: true)
         } else {
@@ -135,25 +149,8 @@ class Router {
         }
     }
     
-    fileprivate func presentModally(childVC: UIViewController) {
+    private func presentModally(childVC: UIViewController) {
         currentViewController?.present(childVC, animated: true)
     }
     
 }
-
-//extension Router: DetailedSearchSettingsPresenterInput {
-//    
-//    var selectedGenre: Genre? {
-//        return .western
-//    }
-//    
-//    
-//}
-//
-//extension Router: DetailedSearchSettingsPresenterOutput {
-//    func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: SortBy) {
-//        
-//    }
-//    
-//    
-//}

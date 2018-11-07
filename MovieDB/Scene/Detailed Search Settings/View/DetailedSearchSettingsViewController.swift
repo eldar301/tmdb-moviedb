@@ -9,17 +9,17 @@
 import UIKit
 
 class DetailedSearchSettingsViewController: UITableViewController {
-    
+
     var presenter: DetailedSearchSettingsPresenter! {
         didSet {
             configurator = presenter.configurator()
         }
     }
     
-    fileprivate weak var yearPicker: TwoThumbsSliderView!
-    fileprivate weak var ratingPicker: TwoThumbsSliderView!
+    private weak var yearPicker: TwoThumbsSliderView!
+    private weak var ratingPicker: TwoThumbsSliderView!
     
-    fileprivate var configurator: DetailedSearchSettingsConfigurator!
+    private var configurator: DetailedSearchSettingsConfigurator!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,7 +52,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         loadSearchButton()
     }
     
-    fileprivate func setupTableView() {
+    private func setupTableView() {
         self.tableView = UITableView()
         self.tableView.backgroundColor = UIColor(red: 18.0 / 255.0,
                                                  green: 27.0 / 255.0,
@@ -62,7 +62,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         self.tableView.bounces = false
     }
     
-    fileprivate func loadHeaderTableView() {
+    private func loadHeaderTableView() {
         let header = UIView()
         header.translatesAutoresizingMaskIntoConstraints = false
         self.tableView.tableHeaderView = header
@@ -126,7 +126,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         ratingPicker.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
     }
     
-    fileprivate func loadSearchButton() {
+    private func loadSearchButton() {
         let footerView = UIView()
         footerView.frame = CGRect(origin: .zero, size: CGSize(width: self.tableView.bounds.width, height: 100.0))
         
@@ -154,7 +154,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         updateHeader()
     }
     
-    fileprivate func updateHeader() {
+    private func updateHeader() {
         let header = self.tableView.tableHeaderView!
         let headerWidth = self.tableView.bounds.width
         

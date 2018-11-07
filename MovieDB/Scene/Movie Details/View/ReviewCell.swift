@@ -19,9 +19,9 @@ class ReviewCell: UICollectionViewCell {
         self.layer.cornerRadius = 5.0
     }
     
-    func configure(withConfigurator configurator: ReviewCellConfigurator) {
-        author.text = configurator.author
-        content.text = configurator.content
+    func configure(review: Review) {
+        author.text = review.author
+        content.text = review.content
     }
 
 }

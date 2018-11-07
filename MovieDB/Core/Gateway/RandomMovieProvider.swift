@@ -9,5 +9,5 @@
 import Foundation
 
 protocol RandomMovieProvider {
-    func fetch(completition: @escaping (Result<Movie>) -> ())
+    func fetch(completion: @escaping (Result<Movie>) -> ())
 }

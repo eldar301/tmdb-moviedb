@@ -10,13 +10,13 @@ import Foundation
 
 class RemoteRandomMovieProvider: RandomMovieProvider {
     
-    fileprivate let moviesProvider: MoviesProvider
+    private let moviesProvider: MoviesProvider
     
     init(moviesProvider: MoviesProvider) {
         self.moviesProvider = moviesProvider
     }
     
-    func fetch(completition: @escaping (Result<Movie>) -> ()) {
+    func fetch(completion: @escaping (Result<Movie>) -> ()) {
         let genre = Genre.allCases.randomElement()!
         let rgt = 3.0
         let rlt = 5.0
@@ -35,13 +35,13 @@ class RemoteRandomMovieProvider: RandomMovieProvider {
             switch result {
             case .success(let movies):
                 if let movie = movies.filter({ $0.overview != nil }).randomElement() ?? movies.first {
-                    completition(.success(movie))
+                    completion(.success(movie))
                 } else {
-                    completition(.error("Error, refresh the page"))
+                    completion(.error("Error, refresh the page"))
                 }
                 
             case .error(let description):
-                completition(.error(description))
+                completion(.error(description))
             }
         }
     }

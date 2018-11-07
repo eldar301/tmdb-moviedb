@@ -46,6 +46,9 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
     
     var presenter: MovieDetailsPresenter!
     
+    private var reviews: [Review] = []
+    private var casts: [Person] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -71,14 +74,7 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         
         reviewsCollectionView.delegate = self
         reviewsCollectionView.dataSource = self
-        reviewsCollectionView.isScrollEnabled = false
-        let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeReviewRight))
-        rightSwipeGestureRecognizer.direction = .right
-        reviewsCollectionView.addGestureRecognizer(rightSwipeGestureRecognizer)
-        
-        let leftSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeReviewLeft))
-        leftSwipeGestureRecognizer.direction = .left
-        reviewsCollectionView.addGestureRecognizer(leftSwipeGestureRecognizer)
+        reviewsCollectionView.decelerationRate = .fast
         
         castsCollectionView.delegate = self
         castsCollectionView.dataSource = self
@@ -92,90 +88,82 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         headerBlurView.frame = backdropImageView.bounds
         backdropImageView.addSubview(headerBlurView)
         
-        let gradientLayer = CAGradientLayer()
+        let gradientView = GradientView()
+        gradientView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        gradientView.frame = backdropImageView.bounds
+        backdropImageView.addSubview(gradientView)
+        
+        let gradientLayer = gradientView.gradientLayer
         let color = self.view.backgroundColor!
         gradientLayer.colors = [color.withAlphaComponent(0.5).cgColor,
                                 color.cgColor]
         gradientLayer.locations = [0.0, 0.8]
         gradientLayer.frame = headerBlurView.bounds
-        headerBlurView.layer.addSublayer(gradientLayer)
-                
+        
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         
-        let closeButton = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(close))
+        let closeButton = UIButton()
+        closeButton.setTitle("Close", for: .normal)
+        closeButton.addTarget(self, action: #selector(close), for: .touchUpInside)
         closeButton.tintColor = .white
-        self.navigationItem.rightBarButtonItem = closeButton
+        closeButton.sizeToFit()
+        closeButton.contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 10.0, bottom: 0.0, right: 10.0)
+        closeButton.layer.cornerRadius = closeButton.bounds.height / 2.0
+        closeButton.backgroundColor = UIColor.lightGray.withAlphaComponent(0.2)
+        
+        let closeBarButton = UIBarButtonItem(customView: closeButton)
+        self.navigationItem.rightBarButtonItem = closeBarButton
     }
     
     @objc func close() {
         presenter.dismiss()
     }
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-    var centerAlignedIndex = 0
-    
-    @objc func swipeReviewRight() {
-        if centerAlignedIndex > 0 {
-            centerAlignedIndex -= 1
-            reviewsCollectionView.scrollToItem(at: IndexPath(row: centerAlignedIndex, section: 0), at: .left, animated: true)
-        }
-    }
-    
-    @objc func swipeReviewLeft() {
-        if centerAlignedIndex < presenter.reviewsCount - 1 {
-            centerAlignedIndex += 1
-            reviewsCollectionView.scrollToItem(at: IndexPath(row: centerAlignedIndex, section: 0), at: .left, animated: true)
-        }
-    }
-    
 }
 
 extension MovieDetailsViewController: MovieDetailsView {
     
-    func update() {
+    func update(detailsConfigurator: DetailsConfigurator, reviews: [Review], casts: [Person]) {
         DispatchQueue.main.async {
-            self.updateData()
+            self.updateData(detailsConfigurator: detailsConfigurator, reviews: reviews, casts: casts)
         }
     }
     
-    fileprivate func updateData() {
-        let details = presenter.detailsConfigurator()
+    private func updateData(detailsConfigurator: DetailsConfigurator, reviews: [Review], casts: [Person]) {
+        backdropImageView.sd_setImage(with: detailsConfigurator.backdropURL)
+        posterImageView.sd_setImage(with: detailsConfigurator.posterURL)
         
-        backdropImageView.sd_setImage(with: details.backdropURL)
-        posterImageView.sd_setImage(with: details.posterURL)
+        titleLabel.text = detailsConfigurator.title
+        overviewLabel.text = detailsConfigurator.overview
         
-        titleLabel.text = details.title
-        overviewLabel.text = details.overview
+        ratingView.rating = CGFloat(detailsConfigurator.voteAverage ?? 0.0)
+        ratingView.votesCount = detailsConfigurator.voteCount ?? 0
         
-        ratingView.rating = CGFloat(details.voteAverage ?? 0.0)
-        ratingView.votesCount = details.voteCount ?? 0
-        
-        if details.trailerURL == nil {
+        if detailsConfigurator.trailerURL == nil {
             watchTrailerSectionHeightConstraint.constant = 0
         } else {
             watchTrailerSectionHeightConstraint.constant = 52
         }
         
-        releasedLabel.text = details.releaseDate ?? "-"
+        releasedLabel.text = detailsConfigurator.releaseDate ?? "-"
         
-        runtimeLabel.text = details.runtime ?? "-"
+        runtimeLabel.text = detailsConfigurator.runtime ?? "-"
         
-        genresLabel.text = details.genres?.joined(separator: "\r") ?? "-"
+        genresLabel.text = detailsConfigurator.genres?.joined(separator: "\r") ?? "-"
         
-        budgetLabel.text = details.budget ?? "-"
+        budgetLabel.text = detailsConfigurator.budget ?? "-"
         
-        if presenter.reviewsCount != 0 {
+        self.reviews = reviews
+        if reviews.count != 0 {
             reviewsCollectionView.reloadData()
             reviewsSectionHeightConstraint.constant = 279
         } else {
             reviewsSectionHeightConstraint.constant = 0
         }
         
-        if presenter.castsCount != 0 {
+        self.casts = casts
+        if casts.count != 0 {
             castsCollectionView.reloadData()
             castSectionHeightConstraint.constant = 170
         } else {
@@ -193,9 +181,9 @@ extension MovieDetailsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView === reviewsCollectionView {
-            return presenter.reviewsCount
+            return reviews.count
         } else {
-            return presenter.castsCount
+            return casts.count
         }
     }
     
@@ -203,15 +191,15 @@ extension MovieDetailsViewController: UICollectionViewDataSource {
         if collectionView === reviewsCollectionView {
             let cell = reviewsCollectionView.dequeueReusableCell(withReuseIdentifier: "reviewCell", for: indexPath) as! ReviewCell
             
-            let configurator = presenter.reviewConfigurator(forIndex: indexPath.row)
-            cell.configure(withConfigurator: configurator)
+            let review = reviews[indexPath.row]
+            cell.configure(review: review)
             
             return cell
         } else {
             let cell = castsCollectionView.dequeueReusableCell(withReuseIdentifier: "castCell", for: indexPath) as! CastCell
             
-            let configurator = presenter.castConfigurator(forIndex: indexPath.row)
-            cell.configure(withConfigurator: configurator)
+            let cast = casts[indexPath.row]
+            cell.configure(cast: cast)
             
             return cell
         }
@@ -238,14 +226,44 @@ extension MovieDetailsViewController: UICollectionViewDelegateFlowLayout {
 
 extension MovieDetailsViewController: UIScrollViewDelegate {
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView === self.scrollView {
-            let offset = -scrollView.contentOffset.y + 50.0
-            if offset > 50 {
-                backdropHeightConstraint.constant = 230 + offset
-            } else {
-                backdropHeightConstraint.constant = 280
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard scrollView === reviewsCollectionView else {
+            return
+        }
+        
+        let layout = reviewsCollectionView.collectionViewLayout
+        let bounds = reviewsCollectionView.bounds
+        
+        if abs(velocity.x) <= 0.3 {
+            let currentCenter = bounds.midX
+            let attributes = layout.layoutAttributesForElements(in: bounds)
+            if let nearestToCurrentCenter = attributes?.min(by: { abs($0.center.x - currentCenter) < abs($1.center.x - currentCenter) }) {
+                targetContentOffset.pointee.x = nearestToCurrentCenter.frame.origin.x
             }
+        } else if velocity.x > 0 {
+            let attributes = layout.layoutAttributesForElements(in: bounds.offsetBy(dx: bounds.width, dy: 0))
+            if let rightAttribute = attributes?.min(by: { $0.frame.origin.x < $1.frame.origin.x }) {
+                targetContentOffset.pointee.x = rightAttribute.frame.origin.x
+            }
+        } else {
+            let attributes = layout.layoutAttributesForElements(in: bounds.offsetBy(dx: -bounds.width, dy: 0))
+            if let leftAttribute = attributes?.max(by: { $0.frame.origin.x < $1.frame.origin.x }) {
+                targetContentOffset.pointee.x = leftAttribute.frame.origin.x
+            }
+        }
+        
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView === self.scrollView else {
+            return
+        }
+        
+        let offset = -scrollView.contentOffset.y + 50.0
+        if offset > 50 {
+            backdropHeightConstraint.constant = 230 + offset
+        } else {
+            backdropHeightConstraint.constant = 280
         }
     }
     

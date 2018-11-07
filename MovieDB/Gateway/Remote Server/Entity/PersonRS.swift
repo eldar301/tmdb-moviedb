@@ -9,7 +9,7 @@
 import Foundation
 import ObjectMapper
 
-struct PersonRS {
+class PersonRS {
     var id: Int!
     var name: String?
     var profilePath: String?
@@ -19,7 +19,7 @@ struct PersonRS {
     var birthday: Date?
     var deathday: Date?
     
-    init?(map: Map) {
+    required init?(map: Map) {
         guard map.JSON["id"] != nil else {
             return nil
         }
@@ -30,7 +30,7 @@ extension PersonRS: EntityRS {
     
     typealias Entity = Person
     
-    mutating func mapping(map: Map) {
+    func mapping(map: Map) {
         id               <- map["id"]
         name             <- map["name"]
         profilePath      <- map["profile_path"]
@@ -46,7 +46,7 @@ extension PersonRS: EntityRS {
         
         var person = Person(id: self.id)
         
-        let profileImageURL = APIHelper.url(forPath: self.profilePath, withSize: APIHelper.ProfileSize.w185)
+        let profileImageURL = APIHelper.url(forPath: self.profilePath, withSize: APIHelper.ProfileSize.w185.rawValue)
         
         person.name = self.name
         person.profileImageURL = profileImageURL

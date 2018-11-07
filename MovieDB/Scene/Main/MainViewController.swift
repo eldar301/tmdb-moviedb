@@ -23,17 +23,20 @@ class MainViewController: UITabBarController {
         self.tabBar.tintColor = #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1)
         
         let popularViewController = Router.popularViewController()
+        let topRatedViewController = Router.topRatedViewController()
         let browseViewController = Router.browseViewController()
         
-        self.viewControllers = [popularViewController, browseViewController]
+        self.viewControllers = [popularViewController, topRatedViewController, browseViewController]
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.viewControllers![1].tabBarItem.title = ""
-        self.viewControllers![1].tabBarItem.image = #imageLiteral(resourceName: "Browse Icon Regular")
-        self.viewControllers![1].tabBarItem.imageInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: -10.0, right: 0.0)
+        for (index, image) in [#imageLiteral(resourceName: "Popular Icon Regular"),#imageLiteral(resourceName: "Top Rated Icon Regular"),#imageLiteral(resourceName: "Browse Icon Regular")].enumerated() {
+            self.viewControllers![index].tabBarItem.title = ""
+            self.viewControllers![index].tabBarItem.image = image
+            self.viewControllers![index].tabBarItem.imageInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: -10.0, right: 0.0)
+        }
     }
 
 }

@@ -29,25 +29,19 @@ enum PaginationSearchAPI {
     case popular
     
     /*
-     https://developers.themoviedb.org/3/movies/get-upcoming
+     https://developers.themoviedb.org/3/movies/get-top-rated-movies
      */
     case topRated
+    
+    /*
+     https://developers.themoviedb.org/3/movies/get-upcoming
+     */
+    case upcoming
     
     /*
      https://developers.themoviedb.org/3/movies/get-movie-reviews
      */
     case reviews(movieID: Int)
-    
-    /*
-     https://developers.themoviedb.org/3/movies/get-top-rated-movies
-     */
-    
-    //    case upcoming(page: Int)
-    
-    //    func request(page: Int) -> URLRequest {
-    //
-    //    }
-    //
     
     func urlRequest(page: Int) -> URLRequest {
         var url: URL
@@ -84,11 +78,11 @@ enum PaginationSearchAPI {
         case .topRated:
             url = APIHelper.url(forEndpoint: "movie/top_rated", queries: ["page": "\(page)"])
             
+        case .upcoming:
+            url = APIHelper.url(forEndpoint: "movie/upcoming", queries: ["page": "\(page)"])
+            
         case .reviews(let movieID):
             url = APIHelper.url(forEndpoint: "movie/\(movieID)/reviews", queries: [:])
-            
-            //        case .upcoming(let page):
-            //            url = API.url(forEndpoint: "movie/upcoming", queries: ["page": "\(page)"])
         }
         
         return URLRequest(url: url)

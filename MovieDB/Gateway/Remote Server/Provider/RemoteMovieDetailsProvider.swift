@@ -12,21 +12,21 @@ import SwiftyJSON
 
 class RemoteMovieDetailsProvider: MovieDetailsProvider {
     
-    fileprivate var networkHelper: NetworkHelper
+    private var networkHelper: NetworkHelper
     
     init(networkHelper: NetworkHelper) {
         self.networkHelper = networkHelper
     }
     
-    func details(forMovieID movieID: Int, completition: @escaping (Result<MovieDetails>) -> ()) {
+    func details(forMovieID movieID: Int, completion: @escaping (Result<MovieDetails>) -> ()) {
         let request = MovieAPI.fullData(movieID: movieID).urlRequest
         
         networkHelper.jsonTask(request: request) { [weak self] result in
-            self?.handle(result: result, completition: completition)
+            self?.handle(result: result, completion: completion)
         }
     }
     
-    fileprivate func handle(result: Result<JSON>, completition: @escaping (Result<MovieDetails>) -> ()) {
+    private func handle(result: Result<JSON>, completion: @escaping (Result<MovieDetails>) -> ()) {
         switch result {
         case .success(let json):
             let movie = Mapper<MovieRS>()
@@ -41,9 +41,9 @@ class RemoteMovieDetailsProvider: MovieDetailsProvider {
                 .mapArray(JSONObject: json["credits"]["cast"].rawValue)!
                 .compactMap({ $0.entity })
             
-            completition(.success((movie: movie, casts: persons, reviews: reviews)))
+            completion(.success((movie: movie, casts: persons, reviews: reviews)))
         case .error(let description):
-            completition(.error(description))
+            completion(.error(description))
         }
     }
     

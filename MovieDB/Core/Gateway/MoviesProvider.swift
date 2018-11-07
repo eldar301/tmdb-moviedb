@@ -22,9 +22,10 @@ enum SortBy: String, CaseIterable {
 }
 
 protocol MoviesProvider {
-    func fetchMovies(withGenres: [Genre], ratingGreaterThan: Double, ratingLowerThan: Double, fromYear: Int, toYear: Int, sortBy: SortBy, completition: @escaping (Result<[Movie]>) -> ())
-    func fetchMovies(withTitle: String, completition: @escaping (Result<[Movie]>) -> ())
-    func fetchTopRatedMovies(completition: @escaping (Result<[Movie]>) -> ())
-    func fetchPopularMovies(completition: @escaping (Result<[Movie]>) -> ())
-    func fetchNext(completition: @escaping (Result<[Movie]>) -> ())
+    func fetchMovies(withGenres: [Genre], ratingGreaterThan: Double, ratingLowerThan: Double, fromYear: Int, toYear: Int, sortBy: SortBy, completion: @escaping (Result<[Movie]>) -> ())
+    func fetchMovies(withTitle: String, completion: @escaping (Result<[Movie]>) -> ())
+    func fetchTopRatedMovies(completion: @escaping (Result<[Movie]>) -> ())
+    func fetchPopularMovies(completion: @escaping (Result<[Movie]>) -> ())
+    func fetchUpcomingMovies(completion: @escaping (Result<[Movie]>) -> ())
+    func fetchNext(completion: @escaping (Result<[Movie]>) -> ())
 }

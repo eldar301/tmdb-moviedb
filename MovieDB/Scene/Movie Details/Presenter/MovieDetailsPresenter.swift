@@ -13,23 +13,23 @@ protocol MovieDetailsPresenterInput {
 }
 
 protocol MovieDetailsView: class {
-    func update()
+    func update(detailsConfigurator: DetailsConfigurator, reviews: [Review], casts: [Person])
     func showError(description: String)
 }
 
 struct DetailsConfigurator {
     
-    var title: String?
-    var overview: String?
-    var runtime: String?
-    var genres: [String]?
-    var releaseDate: String?
-    var posterURL: URL?
-    var backdropURL: URL?
-    var trailerURL: URL?
-    var budget: String?
-    var voteAverage: Double?
-    var voteCount: Int?
+    let title: String?
+    let overview: String?
+    let runtime: String?
+    let genres: [String]?
+    let releaseDate: String?
+    let posterURL: URL?
+    let backdropURL: URL?
+    let trailerURL: URL?
+    let budget: String?
+    let voteAverage: Double?
+    let voteCount: Int?
     
     fileprivate init(movie: Movie, dateFormatter: DateFormatter, timeFormatter: DateComponentsFormatter, budgetFormatter: NumberFormatter) {
         var formattedRuntime: String?
@@ -67,41 +67,11 @@ struct DetailsConfigurator {
     
 }
 
-struct CastCellConfigurator {
-    
-    let name: String?
-    let profileImageURL: URL?
-    
-    fileprivate init(person: Person?) {
-        self.name = person?.name
-        self.profileImageURL = person?.profileImageURL
-    }
-    
-}
-
-struct ReviewCellConfigurator {
-    
-    let author: String?
-    let content: String?
-    
-    fileprivate init(review: Review?) {
-        self.author = review?.author
-        self.content = review?.content
-    }
-    
-}
-
 protocol MovieDetailsPresenter {
     
     var view: MovieDetailsView? { get set }
     
-    var reviewsCount: Int { get }
-    var castsCount: Int { get }
-    
     func request()
-    func detailsConfigurator() -> DetailsConfigurator
-    func castConfigurator(forIndex: Int) -> CastCellConfigurator
-    func reviewConfigurator(forIndex: Int) -> ReviewCellConfigurator
     func showReviews()
     func watchTrailer()
     func dismiss()
@@ -110,7 +80,7 @@ protocol MovieDetailsPresenter {
 
 class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     
-    fileprivate let dateFormatter: DateFormatter = {
+    private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         
         dateFormatter.dateStyle = .medium
@@ -118,7 +88,7 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
         return dateFormatter
     }()
     
-    fileprivate let timeFormatter: DateComponentsFormatter = {
+    private let timeFormatter: DateComponentsFormatter = {
         let timeFormatter = DateComponentsFormatter()
         
         timeFormatter.allowedUnits = [.hour, .minute]
@@ -127,22 +97,22 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
         return timeFormatter
     }()
     
-    fileprivate let budgetFormatter: NumberFormatter = {
+    private let budgetFormatter: NumberFormatter = {
         let budgetFormatter = NumberFormatter()
         budgetFormatter.groupingSeparator = "."
         budgetFormatter.numberStyle = .decimal
         return budgetFormatter
     }()
     
-    fileprivate let provider: MovieDetailsProvider
+    private let provider: MovieDetailsProvider
     
-    fileprivate var movie: Movie
+    private var movie: Movie
     
-    fileprivate var casts: [Person] = []
+    private var casts: [Person] = []
     
-    fileprivate var reviews: [Review] = []
+    private var reviews: [Review] = []
     
-    fileprivate let router: Router
+    private let router: Router
     
     init?(router: Router, input: MovieDetailsPresenterInput, provider: MovieDetailsProvider) {
         guard let movie = input.selectedMovie else {
@@ -156,40 +126,28 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     
     weak var view: MovieDetailsView?
     
-    var reviewsCount: Int {
-        return reviews.count
-    }
-    
-    var castsCount: Int {
-        return casts.count
-    }
-    
     func request() {
-        view?.update()
+        view?.update(detailsConfigurator: detailsConfigurator(), reviews: [], casts: [])
         provider.details(forMovieID: movie.id) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            
             switch result {
             case .success(let details):
-                self?.movie = details.movie
-                self?.reviews = details.reviews
-                self?.casts = details.casts
-                self?.view?.update()
+                self.movie = details.movie
+                self.reviews = details.reviews
+                self.casts = details.casts
+                self.view?.update(detailsConfigurator: self.detailsConfigurator(), reviews: self.reviews, casts: self.casts)
                 
             case .error(let description):
-                self?.view?.showError(description: description)
+                self.view?.showError(description: description)
             }
         }
     }
     
-    func detailsConfigurator() -> DetailsConfigurator {
+    private func detailsConfigurator() -> DetailsConfigurator {
         return DetailsConfigurator(movie: movie, dateFormatter: dateFormatter, timeFormatter: timeFormatter, budgetFormatter: budgetFormatter)
-    }
-    
-    func castConfigurator(forIndex index: Int) -> CastCellConfigurator {
-        return CastCellConfigurator(person: casts[index])
-    }
-    
-    func reviewConfigurator(forIndex index: Int) -> ReviewCellConfigurator {
-        return ReviewCellConfigurator(review: reviews[index])
     }
     
     func showReviews() {

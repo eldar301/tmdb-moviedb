@@ -9,10 +9,16 @@
 import UIKit
 
 @IBDesignable class RatingView: UIViewNibInitiazlied {
+    
+    @IBInspectable var height: CGFloat = 50 {
+        didSet {
+            invalidateIntrinsicContentSize()
+        }
+    }
 
     @IBInspectable var rating: CGFloat = 0 {
         didSet {
-            
+            setNeedsLayout()
         }
     }
 
@@ -79,7 +85,6 @@ import UIKit
     }
     
     override var intrinsicContentSize: CGSize {
-        let height = self.bounds.height
         let starWidth = height
         let width = (starWidth * 5) + (starSpacing * 4) + votesLabelSpacing + votesLabel.bounds.width
         

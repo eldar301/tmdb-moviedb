@@ -12,21 +12,21 @@ import SwiftyJSON
 
 class RemotePersonDetailsProvider: PersonDetailsProvider {
     
-    fileprivate var networkHelper: NetworkHelper
+    private var networkHelper: NetworkHelper
     
     init(networkHelper: NetworkHelper) {
         self.networkHelper = networkHelper
     }
     
-    func details(forPersonID personID: Int, completition: @escaping (Result<PersonDetails>) -> ()) {
+    func details(forPersonID personID: Int, completion: @escaping (Result<PersonDetails>) -> ()) {
         let request = PersonAPI.fullData(personID: personID).urlRequest
         
         networkHelper.jsonTask(request: request) { [weak self] result in
-            self?.handle(result: result, completition: completition)
+            self?.handle(result: result, completion: completion)
         }
     }
     
-    fileprivate func handle(result: Result<JSON>, completition: @escaping (Result<PersonDetails>) -> ()) {
+    private func handle(result: Result<JSON>, completion: @escaping (Result<PersonDetails>) -> ()) {
         switch result {
         case .success(let json):
             let person = Mapper<PersonRS>()
@@ -37,9 +37,9 @@ class RemotePersonDetailsProvider: PersonDetailsProvider {
                 .mapArray(JSONObject: json["combined_credits"]["cast"].rawValue)!
                 .compactMap({ $0.entity })
             
-            completition(.success((person: person, movies: movies)))
+            completion(.success((person: person, movies: movies)))
         case .error(let description):
-            completition(.error(description))
+            completion(.error(description))
         }
     }
     

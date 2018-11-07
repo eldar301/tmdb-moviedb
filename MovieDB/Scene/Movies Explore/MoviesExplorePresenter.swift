@@ -22,7 +22,7 @@ protocol MoviesExplorePresenter {
 
 class MoviesExplorePresenterDefault: MoviesExplorePresenter, MovieDetailsPresenterInput {
 
-    fileprivate let router: Router
+    private let router: Router
     
     init(router: Router) {
         self.router = router

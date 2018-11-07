@@ -10,44 +10,49 @@ import Foundation
 
 class RemoteMoviesProvider: MoviesProvider {
     
-    fileprivate let networkHelper: NetworkHelper
+    private let networkHelper: NetworkHelper
     
     init(networkHelper: NetworkHelper) {
         self.networkHelper = networkHelper
     }
     
-    fileprivate var pagedProvider: PagedProvider<MovieRS>?
+    private var pagedProvider: PagedProvider<MovieRS>?
     
-    func fetchMovies(withGenres genres: [Genre], ratingGreaterThan: Double, ratingLowerThan: Double, fromYear: Int, toYear: Int, sortBy: SortBy, completition: @escaping (Result<[Movie]>) -> ()) {
+    func fetchMovies(withGenres genres: [Genre], ratingGreaterThan: Double, ratingLowerThan: Double, fromYear: Int, toYear: Int, sortBy: SortBy, completion: @escaping (Result<[Movie]>) -> ()) {
         let request = PaginationSearchAPI.detailedSearch(genres: genres,
                                                          ratingRange: ratingGreaterThan ... ratingLowerThan,
                                                          yearRange: fromYear ... toYear,
                                                          sortBy: sortBy)
-        fetch(request: request, completition: completition)
+        fetch(request: request, completion: completion)
     }
     
-    func fetchMovies(withTitle title: String, completition: @escaping (Result<[Movie]>) -> ()) {
+    func fetchMovies(withTitle title: String, completion: @escaping (Result<[Movie]>) -> ()) {
         let request = PaginationSearchAPI.search(title: title)
-        fetch(request: request, completition: completition)
+        fetch(request: request, completion: completion)
     }
     
-    func fetchTopRatedMovies(completition: @escaping (Result<[Movie]>) -> ()) {
+    func fetchTopRatedMovies(completion: @escaping (Result<[Movie]>) -> ()) {
         let request = PaginationSearchAPI.topRated
-        fetch(request: request, completition: completition)
+        fetch(request: request, completion: completion)
     }
     
-    func fetchPopularMovies(completition: @escaping (Result<[Movie]>) -> ()) {
+    func fetchPopularMovies(completion: @escaping (Result<[Movie]>) -> ()) {
         let request = PaginationSearchAPI.popular
-        fetch(request: request, completition: completition)
+        fetch(request: request, completion: completion)
     }
     
-    fileprivate func fetch(request: PaginationSearchAPI, completition: @escaping (Result<[Movie]>) -> ()) {
+    func fetchUpcomingMovies(completion: @escaping (Result<[Movie]>) -> ()) {
+        let request = PaginationSearchAPI.upcoming
+        fetch(request: request, completion: completion)
+    }
+    
+    private func fetch(request: PaginationSearchAPI, completion: @escaping (Result<[Movie]>) -> ()) {
         pagedProvider = PagedProvider(apiEndpoint: request, networkHelper: networkHelper)
-        pagedProvider?.fetchNext(completition: completition)
+        pagedProvider?.fetchNext(completion: completion)
     }
     
-    func fetchNext(completition: @escaping (Result<[Movie]>) -> ()) {
-        pagedProvider?.fetchNext(completition: completition)
+    func fetchNext(completion: @escaping (Result<[Movie]>) -> ()) {
+        pagedProvider?.fetchNext(completion: completion)
     }
     
 }
