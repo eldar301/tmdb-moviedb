@@ -30,15 +30,9 @@ class BrowseViewController: UITableViewController {
         presenter.view = self
         presenter.refresh()
         
-        randomMovieImageView.contentMode = .scaleAspectFill
-        randomMovieImageView.clipsToBounds = true
-        randomMovieImageView.layer.cornerRadius = 8.0
-        
-        randomMovieTitle.adjustsFontSizeToFitWidth = true
-        
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
-        tableView.refreshControl = refreshControl
+        configureRandomMovieImageView()
+        configureRefreshControl()
+        configureSearchBar()
         
         tableView.separatorColor = .black
         
@@ -46,11 +40,24 @@ class BrowseViewController: UITableViewController {
         self.edgesForExtendedLayout = .top
         
         (tableView.tableHeaderView as? UIControl)?.addTarget(self, action: #selector(showRandomMovieDetails), for: .touchUpInside)
-        
+    }
+    
+    func configureRandomMovieImageView() {
+        randomMovieImageView.contentMode = .scaleAspectFill
+        randomMovieImageView.clipsToBounds = true
+        randomMovieImageView.layer.cornerRadius = 8.0
+        randomMovieTitle.adjustsFontSizeToFitWidth = true
+    }
+    
+    func configureRefreshControl() {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+    }
+    
+    func configureSearchBar() {
         presenter.loadSearchResultsScene()
-        
         self.navigationItem.searchController?.searchBar.keyboardAppearance = .dark
-        
         self.definesPresentationContext = true
     }
     

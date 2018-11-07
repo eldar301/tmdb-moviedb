@@ -12,7 +12,10 @@ class DetailedSearchSettingsViewController: UITableViewController {
 
     var presenter: DetailedSearchSettingsPresenter! {
         didSet {
-            configurator = presenter.configurator()
+            if let configurator = presenter?.configurator() {
+                self.configurator = configurator
+                self.configure()
+            }
         }
     }
     
@@ -28,7 +31,9 @@ class DetailedSearchSettingsViewController: UITableViewController {
         self.tableView.allowsMultipleSelection = true
         
         self.tableView.selectRow(at: IndexPath(row: configurator.selectedSortOptionIndex + 1, section: 0), animated: false, scrollPosition: .none)
-        
+    }
+    
+    private func configure() {
         for index in configurator.selectedGenreIndices {
             self.tableView.selectRow(at: IndexPath(row: index, section: 1), animated: false, scrollPosition: .none)
         }
@@ -69,12 +74,11 @@ class DetailedSearchSettingsViewController: UITableViewController {
         header.topAnchor.constraint(equalTo: self.tableView.topAnchor).isActive = true
 
         let cancelButton = UIButton()
+        cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 17.0)
         cancelButton.setTitle("Cancel", for: .normal)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(cancelButton)
-
-        cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         
         let selectYearRangeLabel = UILabel()
         selectYearRangeLabel.font = UIFont.boldSystemFont(ofSize: 17.0)

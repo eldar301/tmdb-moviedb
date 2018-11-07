@@ -44,6 +44,8 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
     
     @IBOutlet weak var budgetLabel: UILabel!
     
+    weak var headerBlurView: AdvancedBlurView!
+    
     var presenter: MovieDetailsPresenter!
     
     private var reviews: [Review] = []
@@ -55,11 +57,14 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         presenter.view = self
         presenter.request()
         
-        titleLabel.adjustsFontSizeToFitWidth = true
+        configurePosterImageView()
+        configureReviewCollectionView()
+        configureCastsCollectionView()
+        configureHeaderBlurView()
+        configureGradientView()
+        configureCloseButton()
         
-        posterImageView.contentMode = .scaleAspectFill
-        posterImageView.clipsToBounds = true
-        posterImageView.layer.cornerRadius = 8.0
+        titleLabel.adjustsFontSizeToFitWidth = true
         
         backdropImageView.contentMode = .scaleAspectFill
         
@@ -72,37 +77,30 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         
         scrollView.delegate = self
         
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+    }
+    
+    private func configurePosterImageView() {
+        posterImageView.contentMode = .scaleAspectFill
+        posterImageView.clipsToBounds = true
+        posterImageView.layer.cornerRadius = 8.0
+    }
+    
+    private func configureReviewCollectionView() {
         reviewsCollectionView.delegate = self
         reviewsCollectionView.dataSource = self
         reviewsCollectionView.decelerationRate = .fast
-        
+        reviewsCollectionView.register(UINib(nibName: "ReviewCell", bundle: nil), forCellWithReuseIdentifier: "reviewCell")
+    }
+    
+    private func configureCastsCollectionView() {
         castsCollectionView.delegate = self
         castsCollectionView.dataSource = self
-        
-        reviewsCollectionView.register(UINib(nibName: "ReviewCell", bundle: nil), forCellWithReuseIdentifier: "reviewCell")
-        
         castsCollectionView.register(UINib(nibName: "CastCell", bundle: nil), forCellWithReuseIdentifier: "castCell")
-        
-        let headerBlurView = AdvancedBlurView(effect: UIBlurEffect(style: .light), intensity: 0.1)
-        headerBlurView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        headerBlurView.frame = backdropImageView.bounds
-        backdropImageView.addSubview(headerBlurView)
-        
-        let gradientView = GradientView()
-        gradientView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        gradientView.frame = backdropImageView.bounds
-        backdropImageView.addSubview(gradientView)
-        
-        let gradientLayer = gradientView.gradientLayer
-        let color = self.view.backgroundColor!
-        gradientLayer.colors = [color.withAlphaComponent(0.5).cgColor,
-                                color.cgColor]
-        gradientLayer.locations = [0.0, 0.8]
-        gradientLayer.frame = headerBlurView.bounds
-        
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        
+    }
+    
+    private func configureCloseButton() {
         let closeButton = UIButton()
         closeButton.setTitle("Close", for: .normal)
         closeButton.addTarget(self, action: #selector(close), for: .touchUpInside)
@@ -114,6 +112,28 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         
         let closeBarButton = UIBarButtonItem(customView: closeButton)
         self.navigationItem.rightBarButtonItem = closeBarButton
+    }
+    
+    func configureHeaderBlurView() {
+        let headerBlurView = AdvancedBlurView(effect: UIBlurEffect(style: .light), intensity: 0.1)
+        headerBlurView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        headerBlurView.frame = backdropImageView.bounds
+        backdropImageView.addSubview(headerBlurView)
+        self.headerBlurView = headerBlurView
+    }
+    
+    func configureGradientView() {
+        let gradientView = GradientView()
+        gradientView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        gradientView.frame = backdropImageView.bounds
+        backdropImageView.addSubview(gradientView)
+        
+        let gradientLayer = gradientView.gradientLayer
+        let color = self.view.backgroundColor!
+        gradientLayer.colors = [color.withAlphaComponent(0.5).cgColor,
+                                color.cgColor]
+        gradientLayer.locations = [0.0, 0.8]
+        gradientLayer.frame = headerBlurView.bounds
     }
     
     @objc func close() {
