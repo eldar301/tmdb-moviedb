@@ -137,6 +137,10 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         self.extendedLayoutIncludesOpaqueBars = true
     }
 
+    @IBAction func watchTrailer(_ sender: Any) {
+        UIApplication.shared.open(URL(string: "youtube://xLCn88bfW1o")!, options: [:])
+    }
+
     @objc func close() {
         presenter.dismiss()
     }
@@ -161,7 +165,7 @@ extension MovieDetailsViewController: MovieDetailsView {
         ratingView.rating = CGFloat(detailsConfigurator.voteAverage ?? 0.0)
         ratingView.votesCount = detailsConfigurator.voteCount ?? 0
 
-        if detailsConfigurator.trailerURL == nil {
+        if detailsConfigurator.trailerID == nil {
             watchTrailerSectionHeightConstraint.constant = 0
         } else {
             watchTrailerSectionHeightConstraint.constant = Constants.WatchTrailerSection.height

@@ -57,11 +57,11 @@ extension MovieRS: EntityRS {
         let posterURL = APIHelper.url(forPath: self.posterPath, withSize: APIHelper.PosterSize.w500.rawValue)
         let backdropURL = APIHelper.url(forPath: self.backdropPath, withSize: APIHelper.BackdropSize.w780.rawValue)
         
-        var trailerURL: URL?
+        var trailerID: String?
         if let videos = self.videos {
             for video in videos {
                 if let type = video["type"] as? String, type == "Trailer" {
-                    trailerURL = APIHelper.url(forYoutubeKey: video["key"] as? String)
+                    trailerID = video["key"] as? String
                 }
             }
         }
@@ -77,7 +77,7 @@ extension MovieRS: EntityRS {
         movie.releaseDate = self.releaseDate
         movie.posterURL = posterURL
         movie.backdropURL = backdropURL
-        movie.trailerURL = trailerURL
+        movie.trailerID = trailerID
         movie.budget = self.budget
         movie.voteAverage = voteAverage
         movie.voteCount = self.voteCount

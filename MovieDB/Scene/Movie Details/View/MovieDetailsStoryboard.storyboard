@@ -92,6 +92,9 @@
                                                 <state key="normal" title="Watch Trailer">
                                                     <color key="titleColor" red="0.070588235289999995" green="0.1058823529" blue="0.14117647059999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="watchTrailer:" destination="q5u-rn-9jP" eventType="touchUpInside" id="V8i-dY-zMR"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
