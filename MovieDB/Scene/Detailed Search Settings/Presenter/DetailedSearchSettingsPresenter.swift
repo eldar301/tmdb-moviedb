@@ -43,50 +43,50 @@ protocol DetailedSearchSettingsPresenter {
 }
 
 class DetailedSearchSettingsPresenterDefault: DetailedSearchSettingsPresenter {
-    
+
     private let router: Router
-    
+
     private weak var output: DetailedSearchSettingsPresenterOutput?
-    
+
     private let selectedGenres: [Genre]
     private let selectedSortOption: SortBy
     private let selectedYearFrom: Int
     private let selectedYearTo: Int
     private let selectedRatingFrom: Double
     private let selectedRatingTo: Double
-    
+
     init(router: Router, input: DetailedSearchSettingsPresenterInput, output: DetailedSearchSettingsPresenterOutput) {
         self.router = router
-        
+
         self.selectedSortOption = input.selectedSortOption
         self.selectedGenres = input.selectedGenres
         self.selectedYearFrom = input.selectedYearFrom
         self.selectedYearTo = input.selectedYearTo
         self.selectedRatingFrom = input.selectedRatingFrom
         self.selectedRatingTo = input.selectedRatingTo
-        
+
         self.output = output
     }
-    
+
     private lazy var supportedSortOptions = SortBy.allCases
-    
+
     private lazy var supportGenreOptions = Genre.allCases
-    
+
     func configurator() -> DetailedSearchSettingsConfigurator {
-        return DetailedSearchSettingsConfigurator(minYear: 1900,
+        return DetailedSearchSettingsConfigurator(minYear: Constants.YearRange.minYear,
                                                   minChosenYear: selectedYearFrom,
-                                                  maxYear: 2018,
+                                                  maxYear: Constants.YearRange.maxYear,
                                                   maxChosenYear: selectedYearTo,
-                                                  minRating: 0.0,
+                                                  minRating: Constants.RatingRange.minRating,
                                                   minChosenRating: selectedRatingFrom,
-                                                  maxRating: 5.0,
+                                                  maxRating: Constants.RatingRange.maxRating,
                                                   maxChosenRating: selectedRatingTo,
                                                   selectedSortOptionIndex: supportedSortOptions.firstIndex(of: self.selectedSortOption)!,
                                                   sortOptions: supportedSortOptions.map({ $0.localizedString }),
                                                   selectedGenreIndices: selectedGenres.map({ self.supportGenreOptions.firstIndex(of: $0)! }),
                                                   genreOptions: supportGenreOptions.map({ $0.localizedString }))
     }
-    
+
     func setup(fromYear: Int, toYear: Int, fromRating: Double, toRating: Double, sortOptionIndex: Int, genreOptionsIndices: [Int]) {
         output?.setup(fromYear: fromYear,
                       toYear: toYear,
@@ -97,9 +97,20 @@ class DetailedSearchSettingsPresenterDefault: DetailedSearchSettingsPresenter {
         )
         router.dismiss()
     }
-    
+
     func cancel() {
         router.dismiss()
     }
-    
+
+}
+
+fileprivate struct Constants {
+    struct YearRange {
+      static let minYear = 1900
+      static let maxYear = Calendar.current.dateComponents([.year], for: Date()).year
+    }
+    struct RatingRange {
+        static let minRating = 0.0
+        static let maxRating = 5.0
+    }
 }

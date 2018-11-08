@@ -12,16 +12,20 @@ class ReviewCell: UICollectionViewCell {
 
     @IBOutlet weak var author: UILabel!
     @IBOutlet weak var content: UILabel!
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        self.layer.cornerRadius = 5.0
+
+        self.layer.cornerRadius = Constants.cornerRadius
     }
-    
+
     func configure(review: Review) {
         author.text = review.author
         content.text = review.content
     }
 
+}
+
+fileprivate struct Constants {
+    static let cornerRadius: CGFloat = 5.0
 }
