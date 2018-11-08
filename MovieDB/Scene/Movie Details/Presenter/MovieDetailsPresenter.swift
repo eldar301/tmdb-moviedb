@@ -26,7 +26,7 @@ struct DetailsConfigurator {
     let releaseDate: String?
     let posterURL: URL?
     let backdropURL: URL?
-    let trailerURL: URL?
+    let trailerID: String?
     let budget: String?
     let voteAverage: Double?
     let voteCount: Int?
@@ -59,7 +59,7 @@ struct DetailsConfigurator {
         self.releaseDate = formattedReleaseDate
         self.posterURL = movie.posterURL ?? movie.backdropURL
         self.backdropURL = movie.backdropURL ?? movie.posterURL
-        self.trailerURL = movie.trailerURL
+        self.trailerID = movie.trailerID
         self.budget = formattedBudget
         self.voteAverage = movie.voteAverage
         self.voteCount = movie.voteCount
@@ -78,7 +78,7 @@ protocol MovieDetailsPresenter {
     
 }
 
-class MovieDetailsPresenterDefault: MovieDetailsPresenter {
+class MovieDetailsPresenterDefault: MovieDetailsPresenter, TrailerPlayerPresenterInput {
     
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -107,6 +107,8 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     private let provider: MovieDetailsProvider
     
     private var movie: Movie
+    
+    var selectedMovie: Movie?
     
     private var casts: [Person] = []
     
@@ -155,7 +157,8 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
     }
     
     func watchTrailer() {
-        print("ToDo")
+        selectedMovie = movie
+        router.showTrailerPlayerScene(input: self)
     }
     
     func dismiss() {

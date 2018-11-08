@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C11B7E52193BB4700F66D29 /* TrailerPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C11B7E42193BB4700F66D29 /* TrailerPlayerViewController.swift */; };
+		2C11B7E72193BC1600F66D29 /* TrailerPlayerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C11B7E62193BC1600F66D29 /* TrailerPlayerPresenter.swift */; };
 		2C1231C4219324ED005155E9 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1231C3219324ED005155E9 /* GradientView.swift */; };
 		780124B421390A5A007599EF /* UIViewNibInitiazlied.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780124B321390A5A007599EF /* UIViewNibInitiazlied.swift */; };
 		780199DE214949E3009F7F90 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C971A621345F3400CE1105 /* Router.swift */; };
@@ -99,6 +101,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2C11B7E42193BB4700F66D29 /* TrailerPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailerPlayerViewController.swift; sourceTree = "<group>"; };
+		2C11B7E62193BC1600F66D29 /* TrailerPlayerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailerPlayerPresenter.swift; sourceTree = "<group>"; };
 		2C1231C3219324ED005155E9 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		43150E8BF9686D06E9BA190A /* Pods-MovieDB.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieDB.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MovieDB/Pods-MovieDB.debug.xcconfig"; sourceTree = "<group>"; };
 		4524388A3B3CA88B1486FFBE /* Pods_MovieDBTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovieDBTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -223,6 +227,31 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2C11B7E12193BB1E00F66D29 /* Trailer Player */ = {
+			isa = PBXGroup;
+			children = (
+				2C11B7E32193BB2E00F66D29 /* Presenter */,
+				2C11B7E22193BB2900F66D29 /* View */,
+			);
+			path = "Trailer Player";
+			sourceTree = "<group>";
+		};
+		2C11B7E22193BB2900F66D29 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				2C11B7E42193BB4700F66D29 /* TrailerPlayerViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		2C11B7E32193BB2E00F66D29 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				2C11B7E62193BC1600F66D29 /* TrailerPlayerPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
 		2C1231BD219312F1005155E9 /* Search */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,12 +281,13 @@
 		78172150212C46980082A649 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
+				78C971A621345F3400CE1105 /* Router.swift */,
 				7817215C212C547D0082A649 /* Main */,
-				78C971A521345F1000CE1105 /* Router */,
 				78172153212C46DA0082A649 /* Browse */,
 				78172154212C46EB0082A649 /* Movie Details */,
 				78172155212C46F60082A649 /* Detailed Search Settings */,
 				78B5090F21388504001DEC76 /* Movies Explore */,
+				2C11B7E12193BB1E00F66D29 /* Trailer Player */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -521,14 +551,6 @@
 				78C9719F2134027800CE1105 /* BrowsePresenter.swift */,
 			);
 			path = Presenter;
-			sourceTree = "<group>";
-		};
-		78C971A521345F1000CE1105 /* Router */ = {
-			isa = PBXGroup;
-			children = (
-				78C971A621345F3400CE1105 /* Router.swift */,
-			);
-			path = Router;
 			sourceTree = "<group>";
 		};
 		78C971A82134885A00CE1105 /* RatingView */ = {
@@ -801,6 +823,7 @@
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/XCDYouTubeKit/XCDYouTubeKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -808,6 +831,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCDYouTubeKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -884,6 +908,7 @@
 				7856BB682129B04B0057A193 /* MoviesProvider.swift in Sources */,
 				785BD589213ADA8200788912 /* DetailedSearchSettingsViewController.swift in Sources */,
 				7856BB662129B02A0057A193 /* ReviewsProvider.swift in Sources */,
+				2C11B7E72193BC1600F66D29 /* TrailerPlayerPresenter.swift in Sources */,
 				7856BB6E2129B0990057A193 /* RemotePersonDetailsProvider.swift in Sources */,
 				2C1231C4219324ED005155E9 /* GradientView.swift in Sources */,
 				785BD58B213AE3D000788912 /* MainViewController.swift in Sources */,
@@ -925,6 +950,7 @@
 				7856BB4021299F0C0057A193 /* PersonDetailsProvider.swift in Sources */,
 				781B7338212C8B9E00B2F772 /* MoviesScrollViewController.swift in Sources */,
 				781AE76B212FC2F10015DE82 /* CastCell.swift in Sources */,
+				2C11B7E52193BB4700F66D29 /* TrailerPlayerViewController.swift in Sources */,
 				785762752135E55F00EC3028 /* DetailedSearchSettingsPresenter.swift in Sources */,
 				78F440062140411900F209D0 /* TitleMovieSearchViewController.swift in Sources */,
 			);

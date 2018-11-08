@@ -17,7 +17,7 @@ struct Movie {
     var releaseDate: Date?
     var posterURL: URL?
     var backdropURL: URL?
-    var trailerURL: URL?
+    var trailerID: String?
     var budget: Int?
     var voteAverage: Double?
     var voteCount: Int?

@@ -53,6 +53,7 @@ enum MovieAPI {
             
         case .fullData(let movieID):
             url = APIHelper.url(forEndpoint: "movie/\(movieID)", queries: ["append_to_response": "credits,videos,reviews"])
+            print(url)
         }
         
         return URLRequest(url: url)

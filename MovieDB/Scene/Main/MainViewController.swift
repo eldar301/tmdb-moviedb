@@ -33,18 +33,20 @@ class MainViewController: UITabBarController {
         let browseViewController = Router.browseViewController()
         
         self.viewControllers = [topRatedViewController, popularViewController, browseViewController]
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        selectedIndex = 1
         
         for (index, image) in [#imageLiteral(resourceName: "Top Rated Icon Regular"),#imageLiteral(resourceName: "Popular Icon Regular"),#imageLiteral(resourceName: "Browse Icon Regular")].enumerated() {
             self.viewControllers![index].tabBarItem.title = ""
             self.viewControllers![index].tabBarItem.image = image
             self.viewControllers![index].tabBarItem.imageInsets = Constants.fixingInsetsForEmptyTitleOfTabBarItem
         }
+        
+        selectedIndex = 1
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+
     }
 
 }

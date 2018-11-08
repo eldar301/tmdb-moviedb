@@ -10,6 +10,7 @@ target 'MovieDB' do
   pod 'SwiftyJSON', '~> 4.1.0'
   pod 'Alamofire', '~> 4.7.3'
   pod 'SDWebImage', '~> 4.4.2'
+  pod "XCDYouTubeKit", "~> 2.6.1"
 
   target 'MovieDBTests' do
     inherit! :search_paths

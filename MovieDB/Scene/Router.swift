@@ -128,6 +128,18 @@ class Router {
         currentViewController?.navigationItem.searchController = searchController
     }
     
+    func showTrailerPlayerScene(input: TrailerPlayerPresenterInput) {
+        let trailerPlayerVC = TrailerPlayerViewController()
+        
+        guard let presenter = TrailerPlayerPresenterDefault(input: input) else {
+            return
+        }
+        
+        trailerPlayerVC.presenter = presenter
+        
+        presentModally(childVC: trailerPlayerVC)
+    }
+    
     func dismiss() {
         if let navVC = currentViewController?.navigationController, navVC.viewControllers.first != currentViewController {
             navVC.popViewController(animated: true)

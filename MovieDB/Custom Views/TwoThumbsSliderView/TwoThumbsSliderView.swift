@@ -268,8 +268,6 @@ class TwoThumbsSliderView: UIControl {
                 upperValue = newValue
             }
             
-            print("\(lowerValue):\(upperValue)")
-            
         default:
             return
         }
