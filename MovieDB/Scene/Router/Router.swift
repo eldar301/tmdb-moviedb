@@ -9,6 +9,14 @@
 import Foundation
 import UIKit
 
+fileprivate struct Constants {
+    struct Storyboards {
+        static let moviesScrollStoryBoard = UIStoryboard(name: "MoviesScrollStoryboard", bundle: nil)
+        static let browseStoryBoard = UIStoryboard(name: "BrowseStoryboard", bundle: nil)
+        static let movieDetailsStoryBoard = UIStoryboard(name: "MovieDetailsStoryboard", bundle: nil)
+    }
+}
+
 class Router {
     
     private weak var currentViewController: UIViewController?
@@ -18,31 +26,23 @@ class Router {
     }
     
     class func popularViewController() -> UIViewController {
-        let navVC = UIStoryboard(name: "MoviesScrollStoryboard", bundle: nil).instantiateInitialViewController() as! UINavigationController
-        
-        let popularVC = navVC.viewControllers[0] as! MoviesScrollViewController
-        
-        let router = Router(viewController: popularVC)
-
-        let networkHelper = NetworkHelperDefault()
-        let moviesProvider = RemoteMoviesProvider(networkHelper: networkHelper)
-        let presenter = MoviesScrollPresenterDefault(router: router, moviesProvider: moviesProvider, category: .popular)
-
-        popularVC.presenter = presenter
-
-        return navVC
+        return scrollViewController(forCategory: .popular)
     }
     
     class func topRatedViewController() -> UIViewController {
-        let navVC = UIStoryboard(name: "MoviesScrollStoryboard", bundle: nil).instantiateInitialViewController() as! UINavigationController
+        return scrollViewController(forCategory: .topRated)
+    }
+    
+    private class func scrollViewController(forCategory category: Category) -> UIViewController {
+        let navVC = Constants.Storyboards.moviesScrollStoryBoard.instantiateInitialViewController() as! UINavigationController
         
-        let popularVC = navVC.viewControllers[0] as! MoviesScrollViewController
+        let popularVC = navVC.viewControllers.first as! MoviesScrollViewController
         
         let router = Router(viewController: popularVC)
         
         let networkHelper = NetworkHelperDefault()
         let moviesProvider = RemoteMoviesProvider(networkHelper: networkHelper)
-        let presenter = MoviesScrollPresenterDefault(router: router, moviesProvider: moviesProvider, category: .topRated)
+        let presenter = MoviesScrollPresenterDefault(router: router, moviesProvider: moviesProvider, category: category)
         
         popularVC.presenter = presenter
         
@@ -50,9 +50,9 @@ class Router {
     }
     
     class func browseViewController() -> UIViewController {
-        let navVC = UIStoryboard(name: "BrowseStoryboard", bundle: nil).instantiateInitialViewController() as! UINavigationController
+        let navVC = Constants.Storyboards.browseStoryBoard.instantiateInitialViewController() as! UINavigationController
         
-        let browseVC = navVC.viewControllers[0] as! BrowseViewController
+        let browseVC = navVC.viewControllers.first as! BrowseViewController
         
         let router = Router(viewController: browseVC)
         
@@ -70,7 +70,7 @@ class Router {
         let networkHelper = NetworkHelperDefault()
         let movieDetailsProvider = RemoteMovieDetailsProvider(networkHelper: networkHelper)
         
-        let movieDetailsVC = UIStoryboard(name: "MovieDetailsStoryboard", bundle: nil).instantiateInitialViewController() as! MovieDetailsViewController
+        let movieDetailsVC = Constants.Storyboards.movieDetailsStoryBoard.instantiateInitialViewController() as! MovieDetailsViewController
         
         let router = Router(viewController: movieDetailsVC)
         
@@ -125,16 +125,11 @@ class Router {
         titleMovieSearchVC.presenter = presenter
         
         let searchController = UISearchController(searchResultsController: titleMovieSearchVC)
-        searchController.searchResultsUpdater = currentViewController as? UISearchResultsUpdating
-        searchController.searchBar.delegate = currentViewController as? UISearchBarDelegate
-        searchController.searchBar.barStyle = .black
-        searchController.searchBar.tintColor = .white
-        searchController.searchBar.placeholder = "Title"
         currentViewController?.navigationItem.searchController = searchController
     }
     
     func dismiss() {
-        if let navVC = currentViewController?.navigationController, navVC.viewControllers[0] != currentViewController {
+        if let navVC = currentViewController?.navigationController, navVC.viewControllers.first != currentViewController {
             navVC.popViewController(animated: true)
         } else {
             currentViewController?.dismiss(animated: true)

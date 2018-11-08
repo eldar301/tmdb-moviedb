@@ -17,7 +17,7 @@ class CastCell: UICollectionViewCell {
         super.layoutSubviews()
         
         profileImageView.contentMode = .scaleAspectFill
-        profileImageView.layer.cornerRadius = profileImageView.bounds.width / 2
+        profileImageView.layer.cornerRadius = profileImageView.bounds.width / 2.0
     }
     
     override func prepareForReuse() {

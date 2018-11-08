@@ -57,7 +57,13 @@ class BrowseViewController: UITableViewController {
     
     func configureSearchBar() {
         presenter.loadSearchResultsScene()
-        self.navigationItem.searchController?.searchBar.keyboardAppearance = .dark
+        let searchController = self.navigationItem.searchController!
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.searchBar.barStyle = .black
+        searchController.searchBar.tintColor = .white
+        searchController.searchBar.placeholder = "Title"
+        searchController.searchBar.keyboardAppearance = .dark
         self.definesPresentationContext = true
     }
     
@@ -157,7 +163,7 @@ extension BrowseViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         let title = searchController.searchBar.text!
-        // workaround to remove shadow image from searchbar
+        // Workaround to remove shadow image from searchbar
         self.navigationItem.searchController?.searchBar.superview?.subviews.first?.isHidden = title.count == 0
         if title.last == " " {
             (self.navigationItem.searchController?.searchResultsController as? TitleMovieSearchViewController)?.search(title: title)
