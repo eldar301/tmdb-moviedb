@@ -12,6 +12,14 @@ class ReviewCell: UICollectionViewCell {
 
     @IBOutlet weak var author: UILabel!
     @IBOutlet weak var content: UILabel!
+    
+    private let cornerRadius: CGFloat = 5.0
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        self.layer.cornerRadius = cornerRadius
+    }
 
     func configure(review: Review) {
         author.text = review.author

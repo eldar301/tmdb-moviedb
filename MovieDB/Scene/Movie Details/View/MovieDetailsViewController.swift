@@ -85,6 +85,7 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         reviewsCollectionView.dataSource = self
         reviewsCollectionView.decelerationRate = .fast
         reviewsCollectionView.register(Constants.UINibs.reviewCellNib, forCellWithReuseIdentifier: Constants.Strings.reviewCellReuseIdentifier)
+        reviewsCollectionView.contentInset = Constants.Reviews.contentInset
     }
 
     private func configureCastsCollectionView() {
@@ -139,7 +140,7 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
     }
 
     @IBAction func watchTrailer(_ sender: Any) {
-        UIApplication.shared.open(URL(string: "youtube://\(youtubeTrailerID!)")!, options: [:])
+        (UIApplication.shared.delegate as! AppDelegate).openYoutube(id: youtubeTrailerID!)
     }
 
     @objc func close() {
@@ -238,8 +239,9 @@ extension MovieDetailsViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView === reviewsCollectionView {
-            let height = reviewsCollectionView.bounds.height - Constants.Reviews.cellOffset.y
-            let width = reviewsCollectionView.bounds.width - Constants.Reviews.cellOffset.x
+            let offset = Constants.Reviews.contentInset
+            let height = reviewsCollectionView.bounds.height
+            let width = reviewsCollectionView.bounds.width - 2 * (offset.left + offset.right)
 
             return CGSize(width: width, height: height)
         } else {
@@ -252,6 +254,10 @@ extension MovieDetailsViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension MovieDetailsViewController: UIScrollViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return Constants.Reviews.spacing
+    }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         guard scrollView === reviewsCollectionView else {
@@ -260,7 +266,7 @@ extension MovieDetailsViewController: UIScrollViewDelegate {
 
         let layout = reviewsCollectionView.collectionViewLayout
         let bounds = reviewsCollectionView.bounds
-
+        
         if abs(velocity.x) <= Constants.Reviews.swipeSpeedToSnapNextReviewThreshold {
             let currentCenter = bounds.midX
             let attributes = layout.layoutAttributesForElements(in: bounds)
@@ -278,7 +284,9 @@ extension MovieDetailsViewController: UIScrollViewDelegate {
                 targetContentOffset.pointee.x = leftAttribute.frame.origin.x
             }
         }
-
+        
+        let xOffset = Constants.Reviews.contentInset.left
+        targetContentOffset.pointee.x -= xOffset * 2
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -325,8 +333,9 @@ fileprivate struct Constants {
     }
     struct Reviews {
         static let sectionHeight: CGFloat = 279.0
-        static let cellOffset = CGPoint(x: 16.0, y: 16.0)
+        static let contentInset = UIEdgeInsets(top: 0.0, left: 8.0, bottom: 0.0, right: 8.0)
         static let swipeSpeedToSnapNextReviewThreshold: CGFloat = 0.3
+        static let spacing: CGFloat = 4.0
     }
     struct Casts {
         static let sectionHeight: CGFloat = 170.0
