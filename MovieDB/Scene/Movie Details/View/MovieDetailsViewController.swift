@@ -50,10 +50,11 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
 
     private var reviews: [Review] = []
     private var casts: [Person] = []
+    private var youtubeTrailerID: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         presenter.view = self
         presenter.request()
 
@@ -67,7 +68,7 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
 
         titleLabel.adjustsFontSizeToFitWidth = true
 
-        watchTrailerButton.layer.cornerRadius = 12.0
+        watchTrailerButton.layer.cornerRadius = Constants.WatchTrailer.cornerRadius
 
         scrollView.delegate = self
     }
@@ -130,7 +131,7 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
 
     private func configureNavigationBar() {
         let navigationBar = self.navigationController?.navigationBar
-        navigationBar?.prefersLargeTitles = true
+        navigationBar?.prefersLargeTitles = false
         navigationBar?.setBackgroundImage(UIImage(), for: .default)
         navigationBar?.shadowImage = UIImage()
         self.navigationItem.largeTitleDisplayMode = .always
@@ -138,7 +139,7 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
     }
 
     @IBAction func watchTrailer(_ sender: Any) {
-        UIApplication.shared.open(URL(string: "youtube://xLCn88bfW1o")!, options: [:])
+        UIApplication.shared.open(URL(string: "youtube://\(youtubeTrailerID!)")!, options: [:])
     }
 
     @objc func close() {
@@ -156,8 +157,8 @@ extension MovieDetailsViewController: MovieDetailsView {
     }
 
     private func updateData(detailsConfigurator: DetailsConfigurator, reviews: [Review], casts: [Person]) {
-        backdropImageView.sd_setImage(with: detailsConfigurator.backdropURL)
         posterImageView.sd_setImage(with: detailsConfigurator.posterURL)
+        backdropImageView.sd_setImage(with: detailsConfigurator.backdropURL)
 
         titleLabel.text = detailsConfigurator.title
         overviewLabel.text = detailsConfigurator.overview
@@ -165,10 +166,11 @@ extension MovieDetailsViewController: MovieDetailsView {
         ratingView.rating = CGFloat(detailsConfigurator.voteAverage ?? 0.0)
         ratingView.votesCount = detailsConfigurator.voteCount ?? 0
 
-        if detailsConfigurator.trailerID == nil {
-            watchTrailerSectionHeightConstraint.constant = 0
+        if let trailerID = detailsConfigurator.trailerID {
+            youtubeTrailerID = trailerID
+            watchTrailerSectionHeightConstraint.constant = Constants.WatchTrailer.sectionHeight
         } else {
-            watchTrailerSectionHeightConstraint.constant = Constants.WatchTrailerSection.height
+            watchTrailerSectionHeightConstraint.constant = 0
         }
 
         releasedLabel.text = detailsConfigurator.releaseDate ?? "-"
@@ -182,7 +184,7 @@ extension MovieDetailsViewController: MovieDetailsView {
         self.reviews = reviews
         if reviews.count != 0 {
             reviewsCollectionView.reloadData()
-            reviewsSectionHeightConstraint.constant = Constants.Reviews.height
+            reviewsSectionHeightConstraint.constant = Constants.Reviews.sectionHeight
         } else {
             reviewsSectionHeightConstraint.constant = 0
         }
@@ -190,7 +192,7 @@ extension MovieDetailsViewController: MovieDetailsView {
         self.casts = casts
         if casts.count != 0 {
             castsCollectionView.reloadData()
-            castSectionHeightConstraint.constant = Constants.Casts.height
+            castSectionHeightConstraint.constant = Constants.Casts.sectionHeight
         } else {
             castSectionHeightConstraint.constant = 0
         }
@@ -284,12 +286,8 @@ extension MovieDetailsViewController: UIScrollViewDelegate {
             return
         }
 
-        let offset = -scrollView.contentOffset.y + 50.0
-        if offset > 50 {
-            backdropHeightConstraint.constant = 230 + offset
-        } else {
-            backdropHeightConstraint.constant = 280
-        }
+        let offset = -scrollView.contentOffset.y
+        backdropHeightConstraint.constant = Constants.BackdropImageView.backdropMinSize + max(0.0, offset)
     }
 
 }
@@ -301,15 +299,18 @@ fileprivate struct Constants {
         static let close = NSLocalizedString("Close", comment: #file)
     }
     struct UINibs {
-        static let reviewCellNib: UINib {
+        static var reviewCellNib: UINib {
             return UINib(nibName: "ReviewCell", bundle: nil)
         }
-        static let castCellNib: UINib {
+        static var castCellNib: UINib {
             return UINib(nibName: "CastCell", bundle: nil)
         }
     }
     struct PosterImageView {
         static let cornerRadius: CGFloat = 8.0
+    }
+    struct BackdropImageView {
+        static let backdropMinSize: CGFloat = 280.0
     }
     struct CloseButton {
         static let contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 10.0, bottom: 0.0, right: 10.0)
@@ -318,15 +319,16 @@ fileprivate struct Constants {
     struct HeaderBlurView {
         static let blurIntensity: CGFloat = 0.1
     }
-    struct WatchTrailerSection {
-        static let height: CGFloat = 52.0
+    struct WatchTrailer {
+        static let sectionHeight: CGFloat = 52.0
+        static let cornerRadius: CGFloat = 12.0
     }
     struct Reviews {
-        static let height: CGFloat = 279.0
+        static let sectionHeight: CGFloat = 279.0
         static let cellOffset = CGPoint(x: 16.0, y: 16.0)
-        static let swipeSpeedToSnapNextReviewThreshold = 0.3
+        static let swipeSpeedToSnapNextReviewThreshold: CGFloat = 0.3
     }
     struct Casts {
-        static let height: CGFloat = 170.0
+        static let sectionHeight: CGFloat = 170.0
     }
 }

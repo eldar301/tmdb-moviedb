@@ -160,6 +160,6 @@ class MovieDetailsPresenterDefault: MovieDetailsPresenter {
 
 fileprivate struct Constants {
     struct Time {
-        static let runtimeRatioMinutesToHour
+        static let runtimeRatioMinutesToHour = 60
     }
 }

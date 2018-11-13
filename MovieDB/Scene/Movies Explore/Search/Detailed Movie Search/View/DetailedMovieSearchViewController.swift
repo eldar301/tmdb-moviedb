@@ -9,7 +9,7 @@
 import UIKit
 
 class DetailedMovieSearchViewController: UITableViewController {
-
+    
     var presenter: DetailedMovieSeachPresenter!
     
     private var movies: [Movie] = []
@@ -27,12 +27,12 @@ class DetailedMovieSearchViewController: UITableViewController {
         self.extendedLayoutIncludesOpaqueBars = false
         
         let specifyButton = UIBarButtonItem()
-        specifyButton.title = "Specify"
+        specifyButton.title = Constants.SpecifyButton.title
         specifyButton.target = self
         specifyButton.action = #selector(showDetailedSearchSettings)
         self.navigationItem.rightBarButtonItem = specifyButton
         
-        self.tableView.register(MovieCell.self, forCellReuseIdentifier: "MovieCell")
+        self.tableView.register(MovieCell.self, forCellReuseIdentifier: String(describing: MovieCell.self))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,10 +44,7 @@ class DetailedMovieSearchViewController: UITableViewController {
     override func loadView() {
         self.tableView = UITableView()
         self.tableView.separatorColor = .clear
-        self.tableView.backgroundColor = UIColor(red: 18.0 / 255.0,
-                                                 green: 27.0 / 255.0,
-                                                 blue: 36.0 / 255.0,
-                                                 alpha: 1.0)
+        self.tableView.backgroundColor = Constants.TableView.backgroundColor
     }
     
     @objc func showDetailedSearchSettings() {
@@ -93,12 +90,11 @@ extension DetailedMovieSearchViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: MovieCell.self), for: indexPath) as! MovieCell
         
         let movie = movies[indexPath.section]
         
         cell.selectionStyle = .none
-        
         cell.configure(withMovie: movie)
         
         return cell
@@ -115,7 +111,7 @@ extension DetailedMovieSearchViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 20.0
+        return Constants.TableView.footerHeight
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -136,9 +132,23 @@ extension DetailedMovieSearchViewController {
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cachedCellHeights[indexPath] = cell.bounds.height
-        if indexPath.section + 4 >= movies.count {
+        if indexPath.section + Constants.TableView.requestNewWhenCellsRemains >= movies.count {
             presenter.requestNext()
         }
     }
     
+}
+
+fileprivate struct Constants {
+    struct TableView {
+        static let requestNewWhenCellsRemains = 4
+        static let backgroundColor = UIColor(red: 18.0 / 255.0,
+                                             green: 27.0 / 255.0,
+                                             blue: 36.0 / 255.0,
+                                             alpha: 1.0)
+        static let footerHeight: CGFloat = 20.0
+    }
+    struct SpecifyButton {
+        static let title = NSLocalizedString("Specify", comment: #file)
+    }
 }

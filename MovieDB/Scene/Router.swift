@@ -144,13 +144,13 @@ class Router {
 
 fileprivate struct Constants {
     struct Storyboards {
-        static let moviesScrollStoryBoard: UIStoryboard {
+        static var moviesScrollStoryBoard: UIStoryboard {
             return UIStoryboard(name: "MoviesScrollStoryboard", bundle: nil)
         }
-        static let browseStoryBoard: UIStoryboard {
+        static var browseStoryBoard: UIStoryboard {
             return UIStoryboard(name: "BrowseStoryboard", bundle: nil)
         }
-        static let movieDetailsStoryBoard: UIStoryboard {
+        static var movieDetailsStoryBoard: UIStoryboard {
             return UIStoryboard(name: "MovieDetailsStoryboard", bundle: nil)
         }
     }

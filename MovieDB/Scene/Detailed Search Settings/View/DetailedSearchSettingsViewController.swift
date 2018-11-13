@@ -80,6 +80,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         let selectYearRangeLabel = UILabel()
         selectYearRangeLabel.font = Constants.Fonts.boldFont
         selectYearRangeLabel.textColor = .white
+        selectYearRangeLabel.backgroundColor = Constants.Colors.backgroundColor
         selectYearRangeLabel.text = Constants.Strings.selectTheYearRange
         selectYearRangeLabel.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(selectYearRangeLabel)
@@ -93,6 +94,7 @@ class DetailedSearchSettingsViewController: UITableViewController {
         let selectRatingLabel = UILabel()
         selectRatingLabel.font = Constants.Fonts.boldFont
         selectRatingLabel.textColor = .white
+        selectRatingLabel.backgroundColor = Constants.Colors.backgroundColor
         selectRatingLabel.text = Constants.Strings.selectTheRating
         selectRatingLabel.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(selectRatingLabel)
@@ -112,35 +114,35 @@ class DetailedSearchSettingsViewController: UITableViewController {
         selectYearRangeLabel.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
         selectYearRangeLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
         
-        yearPicker.heightAnchor.constraint(equalToConstant: Constants.Sizes.Picker.height).isActive = true
-        yearPicker.topAnchor.constraint(equalTo: selectYearRangeLabel.bottomAnchor, constant: Constants.Sizes.Picker.topAnchorConstant).isActive = true
-        yearPicker.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: Constants.Sizes.Picker.leadingAnchorConstant).isActive = true
-        yearPicker.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: Constants.Sizes.Picker.trailingAnchorConstant).isActive = true
+        yearPicker.heightAnchor.constraint(equalToConstant: Constants.Picker.height).isActive = true
+        yearPicker.topAnchor.constraint(equalTo: selectYearRangeLabel.bottomAnchor, constant: Constants.Picker.topAnchorConstant).isActive = true
+        yearPicker.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: Constants.Picker.leadingAnchorConstant).isActive = true
+        yearPicker.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: Constants.Picker.trailingAnchorConstant).isActive = true
         
-        selectRatingLabel.topAnchor.constraint(equalTo: yearPicker.bottomAnchor, constant: Constants.Sizes.RatingLabel.topAnchorConstant).isActive = true
+        selectRatingLabel.topAnchor.constraint(equalTo: yearPicker.bottomAnchor, constant: Constants.RatingLabel.topAnchorConstant).isActive = true
         selectRatingLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
         
-        ratingPicker.heightAnchor.constraint(equalToConstant: Constants.Sizes.Picker.height).isActive = true
-        ratingPicker.topAnchor.constraint(equalTo: selectRatingLabel.bottomAnchor, constant: Constants.Sizes.Picker.topAnchorConstant).isActive = true
-        ratingPicker.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: Constants.Sizes.Picker.leadingAnchorConstant).isActive = true
-        ratingPicker.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: Constants.Sizes.Picker.trailingAnchorConstant).isActive = true
+        ratingPicker.heightAnchor.constraint(equalToConstant: Constants.Picker.height).isActive = true
+        ratingPicker.topAnchor.constraint(equalTo: selectRatingLabel.bottomAnchor, constant: Constants.Picker.topAnchorConstant).isActive = true
+        ratingPicker.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: Constants.Picker.leadingAnchorConstant).isActive = true
+        ratingPicker.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: Constants.Picker.trailingAnchorConstant).isActive = true
         ratingPicker.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
     }
     
     private func loadSearchButton() {
         let footerView = UIView()
-        footerView.frame = CGRect(origin: .zero, size: CGSize(width: self.tableView.bounds.width, height: Constants.Sizes.FooterView.height))
+        footerView.frame = CGRect(origin: .zero, size: CGSize(width: self.tableView.bounds.width, height: Constants.FooterView.height))
         
         let searchButton = UIButton()
         searchButton.setTitle(Constants.Strings.search, for: .normal)
         searchButton.titleLabel?.textAlignment = .center
         searchButton.layer.borderColor = UIColor.white.cgColor
-        searchButton.layer.cornerRadius = Constants.Sizes.SearchButton.cornerRadius
-        searchButton.layer.borderWidth = Constants.Sizes.SearchButton.borderWidth
+        searchButton.layer.cornerRadius = Constants.SearchButton.cornerRadius
+        searchButton.layer.borderWidth = Constants.SearchButton.borderWidth
         searchButton.translatesAutoresizingMaskIntoConstraints = false
         footerView.addSubview(searchButton)
         
-        searchButton.widthAnchor.constraint(equalToConstant: Constants.Sizes.SearchButton.width).isActive = true
+        searchButton.widthAnchor.constraint(equalToConstant: Constants.SearchButton.width).isActive = true
         searchButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor).isActive = true
         searchButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor).isActive = true
         
@@ -253,7 +255,8 @@ extension DetailedSearchSettingsViewController {
         cell.textLabel?.font = Constants.Fonts.regularFont
         cell.textLabel?.textColor = .white
         cell.tintColor = .white
-        cell.backgroundColor = .clear
+        cell.textLabel?.backgroundColor = Constants.Colors.backgroundColor
+        cell.backgroundColor = Constants.Colors.backgroundColor
         cell.selectionStyle = .none
         cell.textLabel?.textAlignment = .natural
         
@@ -294,24 +297,22 @@ fileprivate struct Constants {
         static let sortBy = NSLocalizedString("Sort by", comment: #file)
         static let genres = NSLocalizedString("Genres", comment: #file)
     }
-    struct Sizes {
-        struct Picker {
-            static let height: CGFloat = 64.0
-            static let topAnchorConstant: CGFloat = 45.0
-            static let leadingAnchorConstant: CGFloat = 20.0
-            static let trailingAnchorConstant: CGFloat = -20.0
-        }
-        struct RatingLabel {
-            static let topAnchorConstant: CGFloat = 8.0
-        }
-        struct FooterView {
-            static let height: CGFloat = 100.0
-        }
-        struct SearchButton {
-            static let cornerRadius: CGFloat = 12.0
-            static let borderWidth: CGFloat = 0.5
-            static let width: CGFloat = 150.0
-        }
+    struct Picker {
+        static let height: CGFloat = 64.0
+        static let topAnchorConstant: CGFloat = 45.0
+        static let leadingAnchorConstant: CGFloat = 20.0
+        static let trailingAnchorConstant: CGFloat = -20.0
+    }
+    struct RatingLabel {
+        static let topAnchorConstant: CGFloat = 8.0
+    }
+    struct FooterView {
+        static let height: CGFloat = 100.0
+    }
+    struct SearchButton {
+        static let cornerRadius: CGFloat = 12.0
+        static let borderWidth: CGFloat = 0.5
+        static let width: CGFloat = 150.0
     }
     struct Colors {
         static let backgroundColor: UIColor = UIColor(red: 18.0 / 255.0,

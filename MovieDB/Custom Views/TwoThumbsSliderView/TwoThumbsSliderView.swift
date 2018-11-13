@@ -74,6 +74,9 @@ class TwoThumbsSliderView: UIControl {
     private weak var upperHighlight: UILabel!
     
     private let thumbSize: CGFloat = 20.0
+    private let thumbPositionConstraintIdentifier = "position"
+    private let slidingStrokeHeight: CGFloat = 2.0
+    private let touchReactOffset: CGFloat = 30.0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -82,13 +85,13 @@ class TwoThumbsSliderView: UIControl {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let cornerRadius = thumbSize / CGFloat(2)
+        let cornerRadius = thumbSize / 2.0
         self.lowerThumb.layer.cornerRadius = cornerRadius
         self.upperThumb.layer.cornerRadius = cornerRadius
         
@@ -144,7 +147,7 @@ class TwoThumbsSliderView: UIControl {
         
         slidingStroke.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -thumbSize).isActive = true
         
-        slidingStroke.heightAnchor.constraint(equalToConstant: 2.0).isActive = true
+        slidingStroke.heightAnchor.constraint(equalToConstant: slidingStrokeHeight).isActive = true
         
         slidingStroke.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
@@ -157,11 +160,11 @@ class TwoThumbsSliderView: UIControl {
         backgroundStroke.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(backgroundStroke)
         
-        backgroundStroke.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: thumbSize / CGFloat(2)).isActive = true
+        backgroundStroke.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: thumbSize / 2).isActive = true
         
-        backgroundStroke.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -thumbSize / CGFloat(2)).isActive = true
+        backgroundStroke.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -thumbSize / 2).isActive = true
         
-        backgroundStroke.heightAnchor.constraint(equalToConstant: 2.0).isActive = true
+        backgroundStroke.heightAnchor.constraint(equalToConstant: slidingStrokeHeight).isActive = true
         
         backgroundStroke.centerYAnchor.constraint(equalTo: slidingStroke.centerYAnchor).isActive = true
         
@@ -176,8 +179,6 @@ class TwoThumbsSliderView: UIControl {
     private func setupThumb(lowerThumb: Bool) -> UIView {
         let thumb = UIView()
         thumb.backgroundColor = .white
-        thumb.layer.borderWidth = 0.4
-        thumb.layer.borderColor = UIColor.gray.cgColor
         thumb.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(thumb)
         
@@ -189,7 +190,7 @@ class TwoThumbsSliderView: UIControl {
             positionConstraint = thumb.leadingAnchor.constraint(equalTo: slidingStroke.leadingAnchor)
             upperThumbPositionConstraint = positionConstraint
         }
-        positionConstraint.identifier = "position"
+        positionConstraint.identifier = thumbPositionConstraintIdentifier
         positionConstraint.isActive = true
         
         thumb.centerYAnchor.constraint(equalTo: slidingStroke.centerYAnchor).isActive = true
@@ -213,11 +214,11 @@ class TwoThumbsSliderView: UIControl {
         self.addSubview(highlight)
         
         if lowerHighlight {
-            highlight.trailingAnchor.constraint(equalTo: lowerThumb.trailingAnchor, constant: -5.0).isActive = true
-            highlight.bottomAnchor.constraint(equalTo: lowerThumb.topAnchor, constant: -10.0).isActive = true
+            highlight.trailingAnchor.constraint(equalTo: lowerThumb.trailingAnchor, constant: -thumbSize / 4).isActive = true
+            highlight.bottomAnchor.constraint(equalTo: lowerThumb.topAnchor, constant: -thumbSize / 2).isActive = true
         } else {
-            highlight.leadingAnchor.constraint(equalTo: upperThumb.leadingAnchor, constant: 5.0).isActive = true
-            highlight.bottomAnchor.constraint(equalTo: upperThumb.topAnchor, constant: -10.0).isActive = true
+            highlight.leadingAnchor.constraint(equalTo: upperThumb.leadingAnchor, constant: -thumbSize / 4).isActive = true
+            highlight.bottomAnchor.constraint(equalTo: upperThumb.topAnchor, constant: -thumbSize / 2).isActive = true
         }
         
         return highlight
@@ -286,9 +287,9 @@ extension TwoThumbsSliderView: UIGestureRecognizerDelegate {
         let distanceToLowerThumb = abs(touchPosition - lowerThumbPosition)
         let distanceToUpperThumb = abs(touchPosition - upperThumbPosition)
         
-        if distanceToLowerThumb < distanceToUpperThumb && distanceToLowerThumb < 30.0 {
+        if distanceToLowerThumb < distanceToUpperThumb && distanceToLowerThumb < touchReactOffset {
             draggedThumb = lowerThumb
-        } else if distanceToLowerThumb > distanceToUpperThumb && distanceToUpperThumb < 30.0 {
+        } else if distanceToLowerThumb > distanceToUpperThumb && distanceToUpperThumb < touchReactOffset {
             draggedThumb = upperThumb
         } else {
             draggedThumb = nil

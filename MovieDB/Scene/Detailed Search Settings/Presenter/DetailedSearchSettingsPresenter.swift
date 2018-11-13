@@ -107,7 +107,7 @@ class DetailedSearchSettingsPresenterDefault: DetailedSearchSettingsPresenter {
 fileprivate struct Constants {
     struct YearRange {
       static let minYear = 1900
-      static let maxYear = Calendar.current.dateComponents([.year], for: Date()).year
+      static let maxYear = Calendar.current.dateComponents([.year], from: Date()).year!
     }
     struct RatingRange {
         static let minRating = 0.0

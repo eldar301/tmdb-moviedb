@@ -50,13 +50,13 @@ class MovieCell: UITableViewCell {
     }
     
     private func setup() {
-        self.backgroundColor = UIColor.darkGray.withAlphaComponent(0.1)
-        self.layer.cornerRadius = 10.0
-        self.clipsToBounds = true
+        self.backgroundColor = Constants.View.backgroundColor
+        self.layer.cornerRadius = Constants.View.cornerRadius
         
         let titleLabel = UILabel()
-        titleLabel.font = UIFont(name: "AvenirNext-DemiBold", size: 23.0)
+        titleLabel.font = Constants.TitleLabel.font
         titleLabel.textColor = .white
+        titleLabel.backgroundColor = Constants.View.backgroundColor
         titleLabel.adjustsFontSizeToFitWidth = true
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(titleLabel)
@@ -69,14 +69,16 @@ class MovieCell: UITableViewCell {
         self.posterImageView = posterImageView
         
         let ratingView = RatingView()
-        ratingView.votesLabelFontSize = 18.0
+        ratingView.backgroundColor = Constants.View.backgroundColor
+        ratingView.votesLabelFontSize = Constants.RatingView.fontSize
         ratingView.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(ratingView)
         self.ratingView = ratingView
         
         let overviewLabel = UILabel()
-        overviewLabel.font = UIFont(name: "AvenirNext-Regular", size: 15.0)
+        overviewLabel.font = Constants.OverviewLabel.font
         overviewLabel.textColor = .white
+        overviewLabel.backgroundColor = Constants.View.backgroundColor
         overviewLabel.textAlignment = .justified
         overviewLabel.numberOfLines = 0
         overviewLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -88,22 +90,43 @@ class MovieCell: UITableViewCell {
         titleLabel.topAnchor.constraint(equalTo: margins.topAnchor).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: margins.trailingAnchor).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 55.0).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: Constants.TitleLabel.height).isActive = true
         
         posterImageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
         posterImageView.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
         posterImageView.trailingAnchor.constraint(equalTo: margins.trailingAnchor).isActive = true
-        posterImageView.heightAnchor.constraint(equalTo: posterImageView.widthAnchor, multiplier: 1.0).isActive = true
+        posterImageView.heightAnchor.constraint(equalTo: posterImageView.widthAnchor).isActive = true
         
-        ratingView.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: 8.0).isActive = true
+        ratingView.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: Constants.Margins.default).isActive = true
         ratingView.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor).isActive = true
-        ratingView.heightAnchor.constraint(equalToConstant: 22.0).isActive = true
-        ratingView.height = 22.0
+        ratingView.heightAnchor.constraint(equalToConstant: Constants.RatingView.height).isActive = true
+        ratingView.height = Constants.RatingView.height
         
-        overviewLabel.topAnchor.constraint(equalTo: ratingView.bottomAnchor, constant: 8.0).isActive = true
+        overviewLabel.topAnchor.constraint(equalTo: ratingView.bottomAnchor, constant: Constants.Margins.default).isActive = true
         overviewLabel.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
         overviewLabel.trailingAnchor.constraint(equalTo: margins.trailingAnchor).isActive = true
         overviewLabel.bottomAnchor.constraint(equalTo: margins.bottomAnchor).isActive = true
     }
     
+}
+
+fileprivate struct Constants {
+    struct View {
+        static let backgroundColor = UIColor(red: 0.11, green: 0.12, blue: 0.16, alpha: 1.0)
+        static let cornerRadius: CGFloat = 10.0
+    }
+    struct Margins {
+        static let `default`: CGFloat = 8.0
+    }
+    struct TitleLabel {
+        static let font = UIFont(name: "AvenirNext-DemiBold", size: 23.0)
+        static let height: CGFloat = 55.0
+    }
+    struct RatingView {
+        static let fontSize: CGFloat = 18.0
+        static let height: CGFloat = 22.0
+    }
+    struct OverviewLabel {
+        static let font = UIFont(name: "AvenirNext-Regular", size: 15.0)
+    }
 }

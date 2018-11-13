@@ -16,26 +16,24 @@ class MoviesScrollViewController: UIViewController {
     
     private var movies: [Movie] = []
     
-    private let spacing: CGFloat = 10
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-         
+    
         presenter.view = self
         presenter.request()
         
         switch presenter.category {
         case .popular:
-            self.navigationItem.title = "Popular"
+            self.navigationItem.title = Constants.Strings.popular
             
         case .topRated:
-            self.navigationItem.title = "Top Rated"
+            self.navigationItem.title = Constants.Strings.topRated
         }
         
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        collectionView.contentInset = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
+        collectionView.contentInset = Constants.CollectionView.contentInset
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
@@ -44,7 +42,7 @@ class MoviesScrollViewController: UIViewController {
 
         self.extendedLayoutIncludesOpaqueBars = true
         
-        collectionView.register(UINib(nibName: "FullsizeMovieCell", bundle: nil), forCellWithReuseIdentifier: "fullsizeMovieCell")
+        collectionView.register(Constants.UINibs.movieCellNib, forCellWithReuseIdentifier: Constants.Strings.movieCellReuseIdentifier)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -86,10 +84,9 @@ extension MoviesScrollViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "fullsizeMovieCell", for: indexPath) as! FullsizeMovieCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.Strings.movieCellReuseIdentifier, for: indexPath) as! FullsizeMovieCell
         
         let movie = movies[indexPath.row]
-        
         cell.configure(withMovie: movie)
         
         return cell
@@ -100,22 +97,25 @@ extension MoviesScrollViewController: UICollectionViewDataSource {
 extension MoviesScrollViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row + 10 >= movies.count {
+        if indexPath.row + Constants.CollectionView.requestAdditionalMoviesWhenLeftCount >= movies.count {
             presenter.requestNext()
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return spacing
+        return Constants.CollectionView.spacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let insets = collectionView.contentInset
         let availableWidth = collectionView.bounds.width - insets.left - insets.right
         if (indexPath.row + 1) % 3 == 0 {
-            return CGSize(width: availableWidth, height: availableWidth * 1.5)
+            return CGSize(width: availableWidth,
+                          height: availableWidth * Constants.CollectionView.cellSizeRatio)
         } else {
-            return CGSize(width: (availableWidth - spacing) / 2, height: (availableWidth - spacing) / 2 * 1.5)
+            let width = (availableWidth - Constants.CollectionView.spacing) / 2.0
+            return CGSize(width: width,
+                          height: width * Constants.CollectionView.cellSizeRatio)
         }
     }
     
@@ -123,4 +123,21 @@ extension MoviesScrollViewController: UICollectionViewDelegateFlowLayout {
         presenter.showDetails(movie: movies[indexPath.row])
     }
     
+}
+
+fileprivate struct Constants {
+    struct UINibs {
+        static let movieCellNib = UINib(nibName: "FullsizeMovieCell", bundle: nil)
+    }
+    struct Strings {
+        static let movieCellReuseIdentifier = "fullsizeMovieCell"
+        static let popular = NSLocalizedString("Popular", comment: #file)
+        static let topRated = NSLocalizedString("Top Rated", comment: #file)
+    }
+    struct CollectionView {
+        static let contentInset = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
+        static let spacing: CGFloat = 10.0
+        static let cellSizeRatio: CGFloat = 1.5
+        static let requestAdditionalMoviesWhenLeftCount = 10
+    }
 }

@@ -45,7 +45,7 @@ class BrowseViewController: UITableViewController {
     func configureRandomMovieImageView() {
         randomMovieImageView.contentMode = .scaleAspectFill
         randomMovieImageView.clipsToBounds = true
-        randomMovieImageView.layer.cornerRadius = 8.0
+        randomMovieImageView.layer.cornerRadius = Constants.RandomMovieImageView.cornerRadius
         randomMovieTitle.adjustsFontSizeToFitWidth = true
     }
     
@@ -59,11 +59,12 @@ class BrowseViewController: UITableViewController {
         presenter.loadSearchResultsScene()
         let searchController = self.navigationItem.searchController!
         searchController.searchResultsUpdater = self
-        searchController.searchBar.delegate = self
-        searchController.searchBar.barStyle = .black
-        searchController.searchBar.tintColor = .white
-        searchController.searchBar.placeholder = "Title"
-        searchController.searchBar.keyboardAppearance = .dark
+        let searchBar = searchController.searchBar
+        searchBar.delegate = self
+        searchBar.barStyle = .black
+        searchBar.tintColor = .white
+        searchBar.placeholder = Constants.SearchBar.placeholder
+        searchBar.keyboardAppearance = .dark
         self.definesPresentationContext = true
     }
     
@@ -101,14 +102,14 @@ class BrowseViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "genreCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: UITableViewCell.self), for: indexPath)
         
         cell.accessoryType = .disclosureIndicator
         
         cell.selectionStyle = .none
         cell.textLabel?.textColor = .white
         cell.textLabel?.text = presenter.genres[indexPath.row].localizedString
-        cell.backgroundColor = .clear
+        cell.backgroundColor = self.view.backgroundColor
         
         return cell        
     }
@@ -170,4 +171,13 @@ extension BrowseViewController: UISearchResultsUpdating {
         }
     }
     
+}
+
+fileprivate struct Constants {
+    struct SearchBar {
+        static let placeholder = NSLocalizedString("Title", comment: #file)
+    }
+    struct RandomMovieImageView {
+        static let cornerRadius: CGFloat = 8.0
+    }
 }
