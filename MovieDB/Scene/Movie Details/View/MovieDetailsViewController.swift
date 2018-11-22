@@ -241,7 +241,7 @@ extension MovieDetailsViewController: UICollectionViewDelegateFlowLayout {
         if collectionView === reviewsCollectionView {
             let offset = Constants.Reviews.contentInset
             let height = reviewsCollectionView.bounds.height
-            let width = reviewsCollectionView.bounds.width - 2 * (offset.left + offset.right)
+            let width = reviewsCollectionView.bounds.width - (offset.left + offset.right + Constants.Reviews.spacing)
 
             return CGSize(width: width, height: height)
         } else {
@@ -286,7 +286,7 @@ extension MovieDetailsViewController: UIScrollViewDelegate {
         }
         
         let xOffset = Constants.Reviews.contentInset.left
-        targetContentOffset.pointee.x -= xOffset * 2
+        targetContentOffset.pointee.x -= xOffset
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
