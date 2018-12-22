@@ -4,7 +4,7 @@
 ### Архитектура ###
 Используется [VIPER](https://medium.com/@smalam119/viper-design-pattern-for-ios-application-development-7a9703902af6):
 
-<img src="https://cdn-images-1.medium.com/max/1600/1*-Mfew6qvLQ-t-DSOkY23Aw.png" height="300" />
+<img src="https://www.objc.io/images/issue-13/2014-06-07-viper-intro-0a53d9f8.jpg" height="300" />
 
 * View отвечает за отображение данных (фильмы, актеры, обзоры)
 * Presenter - за предоставление данных для View в удобном виде
