@@ -8,11 +8,11 @@
 
 import UIKit
 
-class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate {
+class MovieDetailsViewController: UIViewController, MovieDetailsImageDestination {
 
     @IBOutlet weak var scrollView: UIScrollView!
 
-    @IBOutlet weak var backdropHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var closeButton: UIButton!
 
     @IBOutlet weak var watchTrailerSectionHeightConstraint: NSLayoutConstraint!
 
@@ -22,6 +22,8 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
 
     @IBOutlet weak var backdropImageView: UIImageView!
 
+    @IBOutlet weak var backdropImageViewToStatusBarCoveringConstraint: NSLayoutConstraint!
+    
     @IBOutlet weak var posterImageView: UIImageView!
 
     @IBOutlet weak var titleLabel: UILabel!
@@ -51,6 +53,10 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
     private var reviews: [Review] = []
     private var casts: [Person] = []
     private var youtubeTrailerID: String!
+    
+    var imageTransitionTo: UIImageView! {
+        return posterImageView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,6 +64,7 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         presenter.view = self
         presenter.request()
 
+        configureBackdropImageView()
         configurePosterImageView()
         configureReviewsCollectionView()
         configureCastsCollectionView()
@@ -71,6 +78,10 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         watchTrailerButton.layer.cornerRadius = Constants.WatchTrailer.cornerRadius
 
         scrollView.delegate = self
+    }
+    
+    private func configureBackdropImageView() {
+        backdropImageViewToStatusBarCoveringConstraint.constant = -UIApplication.shared.statusBarFrame.height
     }
 
     private func configurePosterImageView() {
@@ -95,17 +106,12 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
     }
 
     private func configureCloseButton() {
-        let closeButton = UIButton()
         closeButton.setTitle(Constants.Strings.close, for: .normal)
-        closeButton.addTarget(self, action: #selector(close), for: .touchUpInside)
         closeButton.tintColor = .white
         closeButton.sizeToFit()
         closeButton.contentEdgeInsets = Constants.CloseButton.contentEdgeInsets
         closeButton.layer.cornerRadius = closeButton.bounds.height / 2.0
         closeButton.backgroundColor = Constants.CloseButton.backgroundColor
-
-        let closeBarButton = UIBarButtonItem(customView: closeButton)
-        self.navigationItem.rightBarButtonItem = closeBarButton
     }
 
     private func configureHeaderBlurView() {
@@ -143,7 +149,7 @@ class MovieDetailsViewController: UIViewController, UIGestureRecognizerDelegate 
         (UIApplication.shared.delegate as! AppDelegate).openYoutube(id: youtubeTrailerID!)
     }
 
-    @objc func close() {
+    @IBAction func close() {
         presenter.dismiss()
     }
 
@@ -288,14 +294,9 @@ extension MovieDetailsViewController: UIScrollViewDelegate {
         let xOffset = Constants.Reviews.contentInset.left
         targetContentOffset.pointee.x -= xOffset
     }
-
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard scrollView === self.scrollView else {
-            return
-        }
-
-        let offset = -scrollView.contentOffset.y
-        backdropHeightConstraint.constant = Constants.BackdropImageView.backdropMinSize + max(0.0, offset)
+        scrollView.bounces = scrollView.contentOffset.y > 100.0
     }
 
 }
@@ -304,7 +305,7 @@ fileprivate struct Constants {
     struct Strings {
         static let reviewCellReuseIdentifier = "reviewCell"
         static let castCellReuseIdentifier = "castCell"
-        static let close = NSLocalizedString("Close", comment: #file)
+        static let close = NSLocalizedString("x", comment: #file)
     }
     struct UINibs {
         static var reviewCellNib: UINib {

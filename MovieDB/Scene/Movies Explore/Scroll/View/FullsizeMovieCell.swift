@@ -25,6 +25,7 @@ class FullsizeMovieCell: UICollectionViewCell {
         super.awakeFromNib()
         
         posterImageView.contentMode = .scaleAspectFill
+        posterImageView.layer.cornerRadius = Constants.cornerRadius
     }
     
     override func prepareForReuse() {
@@ -40,29 +41,20 @@ class FullsizeMovieCell: UICollectionViewCell {
     func configure(withMovie movie: Movie) {
         titleLabel.text = movie.title
         
-        self.posterURL = movie.posterURL ?? movie.backdropURL
-        posterImageView.sd_setImage(with: posterURL, placeholderImage: nil, options: []) { [weak self] image, _, _, imageURL in
-            guard let self = self else {
+        let posterURL = movie.posterURL ?? movie.backdropURL
+        self.posterURL = posterURL
+        posterImageView.sd_setImage(with: posterURL) { [weak self] _, error, _, _ in
+            guard error == nil else {
                 return
             }
-        
-            var roundedImage: UIImage?
-            let size = self.posterImageView.bounds.size
-            let backgroundColor = self.backgroundColor!.cgColor
             
-            let roundingTask = DispatchWorkItem(block: {
-                roundedImage = image?.rounded(forSize: size, withCornerRadius: Constants.cornerRadius, backgroundColor: backgroundColor)
-            })
-            DispatchQueue.global().async(execute: roundingTask)
-            
-            roundingTask.notify(queue: .main, execute: { [weak self] in
-                guard self?.posterURL == imageURL else {
+            DispatchQueue.main.async {
+                guard posterURL == self?.posterURL else {
                     return
                 }
                 
-                self?.posterImageView.image = roundedImage
                 self?.titleLabel.text = nil
-            })
+            }
         }
 
     }

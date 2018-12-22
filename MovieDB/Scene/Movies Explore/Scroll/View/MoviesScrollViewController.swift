@@ -8,13 +8,15 @@
 
 import UIKit
 
-class MoviesScrollViewController: UIViewController {
-    
+class MoviesScrollViewController: UIViewController, MoviesListImageSource {
+
     @IBOutlet weak var collectionView: UICollectionView!
     
     var presenter: MoviesScrollPresenter!
     
     private var movies: [Movie] = []
+    
+    private(set) var imageTransitionFrom: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -120,6 +122,9 @@ extension MoviesScrollViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath)!
+        imageTransitionFrom = cell.contentView.subviews.first(where: { $0 is UIImageView }) as? UIImageView
+        
         presenter.showDetails(movie: movies[indexPath.row])
     }
     

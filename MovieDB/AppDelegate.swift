@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import CoreData
+import Firebase
 import SDWebImage
 
 @UIApplicationMain
@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        FirebaseApp.configure()
+        
         SDImageCache.shared().maxMemoryCountLimit = 50
         
         window = UIWindow(frame: UIScreen.main.bounds)

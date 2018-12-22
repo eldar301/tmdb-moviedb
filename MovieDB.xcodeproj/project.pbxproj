@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2C1231C4219324ED005155E9 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1231C3219324ED005155E9 /* GradientView.swift */; };
+		2C40AF5421A95CE100493FA2 /* FromMoviesListToMovieDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C40AF5321A95CE100493FA2 /* FromMoviesListToMovieDetails.swift */; };
+		2C40AF5621A9AED800493FA2 /* FromMovieDetailsToMoviesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C40AF5521A9AED800493FA2 /* FromMovieDetailsToMoviesList.swift */; };
+		2C9FB8F221A6CCB800B896E8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C9FB8F121A6CCB700B896E8 /* GoogleService-Info.plist */; };
 		2CF1ED63219ACACC0087D580 /* UIImage+RoundedCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF1ED62219ACACC0087D580 /* UIImage+RoundedCorners.swift */; };
 		780124B421390A5A007599EF /* UIViewNibInitiazlied.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780124B321390A5A007599EF /* UIViewNibInitiazlied.swift */; };
 		780199DE214949E3009F7F90 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C971A621345F3400CE1105 /* Router.swift */; };
@@ -101,6 +104,9 @@
 
 /* Begin PBXFileReference section */
 		2C1231C3219324ED005155E9 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
+		2C40AF5321A95CE100493FA2 /* FromMoviesListToMovieDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromMoviesListToMovieDetails.swift; sourceTree = "<group>"; };
+		2C40AF5521A9AED800493FA2 /* FromMovieDetailsToMoviesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromMovieDetailsToMoviesList.swift; sourceTree = "<group>"; };
+		2C9FB8F121A6CCB700B896E8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2CF1ED62219ACACC0087D580 /* UIImage+RoundedCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+RoundedCorners.swift"; sourceTree = "<group>"; };
 		43150E8BF9686D06E9BA190A /* Pods-MovieDB.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieDB.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MovieDB/Pods-MovieDB.debug.xcconfig"; sourceTree = "<group>"; };
 		4524388A3B3CA88B1486FFBE /* Pods_MovieDBTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovieDBTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -249,6 +255,15 @@
 				2C1231C3219324ED005155E9 /* GradientView.swift */,
 			);
 			path = GradientView;
+			sourceTree = "<group>";
+		};
+		2C40AF5121A95BE100493FA2 /* Custom View Controllers Transitions */ = {
+			isa = PBXGroup;
+			children = (
+				2C40AF5321A95CE100493FA2 /* FromMoviesListToMovieDetails.swift */,
+				2C40AF5521A9AED800493FA2 /* FromMovieDetailsToMoviesList.swift */,
+			);
+			path = "Custom View Controllers Transitions";
 			sourceTree = "<group>";
 		};
 		2CF1ED61219ACAB10087D580 /* Extensions */ = {
@@ -576,13 +591,15 @@
 			isa = PBXGroup;
 			children = (
 				2CF1ED61219ACAB10087D580 /* Extensions */,
+				7856BB2F21299CA20057A193 /* Core */,
+				7856BB502129A56A0057A193 /* Gateway */,
+				2C40AF5121A95BE100493FA2 /* Custom View Controllers Transitions */,
 				7831C9822132CFFC00BCC902 /* Custom Views */,
 				78172150212C46980082A649 /* Scene */,
-				7856BB502129A56A0057A193 /* Gateway */,
-				7856BB2F21299CA20057A193 /* Core */,
 				78CFD331212873B900519038 /* AppDelegate.swift */,
 				78CFD33B212873C000519038 /* Assets.xcassets */,
 				78CFD33D212873C000519038 /* LaunchScreen.storyboard */,
+				2C9FB8F121A6CCB700B896E8 /* GoogleService-Info.plist */,
 				78CFD340212873C000519038 /* Info.plist */,
 			);
 			path = MovieDB;
@@ -769,6 +786,7 @@
 				78132235212F2BF800060AB4 /* MovieDetailsStoryboard.storyboard in Resources */,
 				7813222D212EB8C700060AB4 /* ReviewCell.xib in Resources */,
 				781B733C212CB67300B2F772 /* FullsizeMovieCell.xib in Resources */,
+				2C9FB8F221A6CCB800B896E8 /* GoogleService-Info.plist in Resources */,
 				78172159212C479A0082A649 /* MoviesScrollStoryboard.storyboard in Resources */,
 				7831C9842132D00C00BCC902 /* RatingView.xib in Resources */,
 			);
@@ -801,18 +819,26 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-MovieDB/Pods-MovieDB-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
-				"${BUILT_PRODUCTS_DIR}/XCDYouTubeKit/XCDYouTubeKit.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCDYouTubeKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -893,6 +919,7 @@
 				2C1231C4219324ED005155E9 /* GradientView.swift in Sources */,
 				785BD58B213AE3D000788912 /* MainViewController.swift in Sources */,
 				7856BB3821299DC70057A193 /* Review.swift in Sources */,
+				2C40AF5421A95CE100493FA2 /* FromMoviesListToMovieDetails.swift in Sources */,
 				78363BEA21381D2E006A3123 /* TransformToDateFromYYYYMMDD.swift in Sources */,
 				7856BB5C2129A6AB0057A193 /* ReviewRS.swift in Sources */,
 				78FAE670213FE86600B47620 /* MovieCell.swift in Sources */,
@@ -910,6 +937,7 @@
 				7856BB3621299DBC0057A193 /* Person.swift in Sources */,
 				7856BB3C21299EDD0057A193 /* MovieDetailsProvider.swift in Sources */,
 				7856BB4C2129A48D0057A193 /* MovieAPI.swift in Sources */,
+				2C40AF5621A9AED800493FA2 /* FromMovieDetailsToMoviesList.swift in Sources */,
 				78B50913213885A0001DEC76 /* MoviesExplorePresenter.swift in Sources */,
 				781C4DDD212AF6960075168E /* NetworkHelper.swift in Sources */,
 				78C971A02134027800CE1105 /* BrowsePresenter.swift in Sources */,

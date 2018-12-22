@@ -72,9 +72,13 @@ class Router {
 
         movieDetailsVC.presenter = presenter
 
-        let navVC = UINavigationController(rootViewController: movieDetailsVC)
+//        let navVC = UINavigationController(rootViewController: movieDetailsVC)
+        
+        if let imageSourceVC = currentViewController as? MoviesListImageSource {
+            movieDetailsVC.transitioningDelegate = imageSourceVC
+        }
 
-        presentModally(childVC: navVC)
+        presentModally(childVC: movieDetailsVC)
     }
 
     func showGenreExplorer(input: DetailedMovieSearchPresenterInput) {
